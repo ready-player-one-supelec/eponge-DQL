@@ -16,6 +16,8 @@ class Player :
         self.trainable = True
         self.exploiting = False
         self.playRandomly = False
+        self.gamesWon = 0
+        self.gamesLost = 0
 
         self.createQNetwork()
         self.createOptimiser()
@@ -88,3 +90,13 @@ class Player :
                     if 0 < action <= 3 :
                         ask = False
         return action
+
+    def resetStats(self) :
+        self.gamesWon = 0
+        self.gamesLost = 0
+
+    def updateStats(self, reward) :
+        if reward == 1 :
+            self.gamesWon += 1
+        else :
+            self.gamesLost += 1

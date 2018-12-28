@@ -10,19 +10,33 @@ class Player :
     def __init__(self, name, isBot) :
         self.name = name
         self.isBot = isBot
-        self.learningRate = 0
-        self.discountFactor = 0
-        self.explorationRate = 0
-        self.trainable = True
-        self.exploiting = False
-        self.playRandomly = False
-        self.gamesWon = 0
-        self.gamesLost = 0
 
+        self.initializeProperties()
         self.createQNetwork()
         self.createOptimiser()
         self.initializeQNetwork()
 
+
+    def initializeProperties(self) :
+        # Constants
+        self.learningRate = 0
+        self.discountFactor = 0
+        self.explorationRate = 0
+
+        # Behaviour when playing & training
+        self.trainable = True
+        self.exploiting = False
+        self.playRandomly = False
+
+        # Statistics
+        self.gamesWon = 0
+        self.gamesLost = 0
+
+        # Training
+        self.statesSequence = []
+        self.trainingData = []
+        self.maxBatchSize = 10000
+        # trainingData will not have more than maxBatchSize elements
 
     def createQNetwork(self) :
         # input layer
@@ -100,3 +114,17 @@ class Player :
             self.gamesWon += 1
         else :
             self.gamesLost += 1
+
+    def addStateSequence(self, currentState, action, reward, nextState) :
+        self.statesSequence.append([currentState, action, reward, nextState])
+
+    def correctStateSequence(self, reward, nextState) :
+        if len(self.statesSequence) != 0 :
+            self.statesSequence[-1][-2:] = [reward, nextState]
+
+    def addStateSequence2trainingData(self) :
+        self.trainingData = self.trainingData + self.statesSequence
+        while len(self.trainingData) > self.maxBatchSize :
+            self.trainingData.pop(random.randrange(len(self.trainingData)))
+        random.shuffle(self.trainingData)
+        self.statesSequence = []

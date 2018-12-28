@@ -13,8 +13,11 @@ class Player :
 
         self.createQNetwork()
         self.createOptimiser()
+        self.initializeQNetwork()
 
-        self.evaluate([[1, 2, 3, 4]])
+        print(self.predict([[0.25, 0.5, 0.75, 1]]))
+        self.train([[0.25, 0.5, 0.75, 1]], [[0,0.25,0.5]])
+        print(self.predict([[0.25, 0.5, 0.75, 1]]))
 
     def createQNetwork(self) :
         # input layer
@@ -38,10 +41,17 @@ class Player :
         # Gradient Descent Optimiser definition
         self.optimiser = tf.train.GradientDescentOptimizer(learning_rate=self.learningRate).minimize(self.cost)
 
-        self.init_op = tf.global_variables_initializer()
+    def initializeQNetwork(self) :
+        # Reinitialise the network according to createQNetwork
+        init_op = tf.global_variables_initializer()
+        self.sess = tf.Session()
+        self.sess.run(init_op)
 
     def predict(self, input) :
-        with tf.Session() as sess :
-            sess.run(self.init_op)
-            prediction = sess.run(self.y_, feed_dict={self.x: input})
+        prediction = self.sess.run(self.y_, feed_dict={self.x: input})
         return prediction
+
+    def train(self, input, output, epochs=1000) :
+        for i in range(epochs) :
+            _, c = self.sess.run([self.optimiser, self.cost], feed_dict={self.x:input, self.y: output})
+            print("Cost is ", c)

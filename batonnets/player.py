@@ -3,21 +3,24 @@
 
 import tensorflow as tf
 import numpy as np
+import random
 
 class Player :
 
-    def __init__(self, name, isBot, learning_rate) :
+    def __init__(self, name, isBot) :
         self.name = name
         self.isBot = isBot
-        self.learningRate = learning_rate
+        self.learningRate = 0
+        self.discountFactor = 0
+        self.explorationRate = 0
+        self.trainable = True
+        self.exploiting = False
+        self.playRandomly = False
 
         self.createQNetwork()
         self.createOptimiser()
         self.initializeQNetwork()
 
-        print(self.predict([[0.25, 0.5, 0.75, 1]]))
-        self.train([[0.25, 0.5, 0.75, 1]], [[0,0.25,0.5]])
-        print(self.predict([[0.25, 0.5, 0.75, 1]]))
 
     def createQNetwork(self) :
         # input layer
@@ -55,3 +58,31 @@ class Player :
         for i in range(epochs) :
             _, c = self.sess.run([self.optimiser, self.cost], feed_dict={self.x:input, self.y: output})
             print("Cost is ", c)
+
+    def updateConstants(self, learningRate, discountFactor, explorationRate) :
+        if not isinstance(learningRate, type(None)) :
+            self.learningRate = learningRate
+        if not isinstance(discountFactor, type(None)) :
+            self.discountFactor = discountFactor
+        if not isinstance(explorationRate, type(None)) :
+            self.explorationRate = explorationRate
+
+    def play(self, currentNumberSticks) :
+        if self.isBot :
+            if not self.playRandomly and (self.exploiting or random.random() > self.explorationRate) :
+                encodedState = [int(i) for i in bin(currentNumberSticks)[2:]]
+                action = 1 + self.sess.run(tf.argmax(self.predict([encodedState])[0]))
+            else :
+                action = random.randint(1,3)
+        else :
+            ask = True
+            while ask :
+                action = input("Choose action: ")
+                try :
+                    action = int(action)
+                except :
+                    ask = True
+                else :
+                    if 0 < action <= 3 :
+                        ask = False
+        return action

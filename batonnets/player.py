@@ -55,6 +55,8 @@ class Player :
         return prediction
 
     def train(self, input, output, epochs=1000) :
+        if not self.trainable :
+            return
         for i in range(epochs) :
             _, c = self.sess.run([self.optimiser, self.cost], feed_dict={self.x:input, self.y: output})
             print("Cost is ", c)

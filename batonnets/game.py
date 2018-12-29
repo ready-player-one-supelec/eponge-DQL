@@ -17,6 +17,6 @@ class Game :
         return self.currentNumberSticks <= 0
 
     def move(self, action) :
-        self.currentNumberSticks -= action
+        self.currentNumberSticks = max(0, self.currentNumberSticks - action)
         reward = -1 if self.isOver() else 0
         return reward

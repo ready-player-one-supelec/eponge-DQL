@@ -17,6 +17,10 @@ class Players :
             return self.player2
         raise IndexError
 
+    def addStateSequence2trainingData(self) :
+        self.player1.addStateSequence2trainingData()
+        self.player2.addStateSequence2trainingData()
+
     def updateStats(self, winnerID) :
         self[winnerID].updateStats(1)
         self[1 - winnerID].updateStats(-1)

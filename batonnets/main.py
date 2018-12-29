@@ -19,6 +19,8 @@ def gameMaster(game, players) :
         currentPlayer = 1 - currentPlayer
         players[currentPlayer].correctStateSequence(-reward, game.currentNumberSticks)
     players.updateStats(currentPlayer)
+    players.addStateSequence2trainingData()
+    players.train()
     game.reset()
     return players
 
@@ -29,8 +31,9 @@ explorationRate = 0.999
 
 game = Game(nbSticks)
 player = Player("Toto", True)
-player.updateConstants(None, None, 0.5)
-player2 = Player("Joueur", False)
+player.updateConstants(0.1, 1, 0.5)
+player2 = Player("Joueur", True)
+player2.updateConstants(0.1, 1, 0.5)
 
 players = Players(player, player2)
 

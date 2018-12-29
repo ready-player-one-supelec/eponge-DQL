@@ -55,6 +55,9 @@ class Player :
         self.b2 = tf.Variable(tf.random_normal([3]), name="b2")
         self.y_ = tf.add(tf.matmul(self.hiddenLayer, self.w2), self.b2)
 
+        # choice
+        self.choice = 1 + tf.argmax(self.y_, axis=1)
+
         # masked output
         self.mask = tf.placeholder(tf.float32, (None, 3))
         # mask has 3 values : 1 equals to 1 & the other 2 equal to 0
@@ -86,9 +89,6 @@ class Player :
         if len(encodedState) < 4 :
             encodedState = [0] * (4 - len(encodedState)) + encodedState
         return encodedState
-
-    def predict(self, input) :
-        return self.sess.run(self.y_, feed_dict={self.x: input})
 
     def computeAllOutputs(self) :
         allOutputs = []
@@ -122,7 +122,9 @@ class Player :
     def train(self) :
         if not self.trainable :
             return
-        nbOfBatches = int(len(self.trainingData) // self.miniBatchSize) + 1
+        nbOfBatches = int(len(self.trainingData) // self.miniBatchSize)
+        if len(self.trainingData) % self.miniBatchSize != 0 :
+            nbOfBatches += 1
         allOutputs = self.computeAllOutputs()
         allMasks = self.createMasks()
         for i in range(nbOfBatches) :
@@ -134,7 +136,6 @@ class Player :
             masks = allMasks[beginning : end]
             feed_dict = {self.x:input, self.y: output, self.mask: masks}
             _, c = self.sess.run([self.optimiser, self.cost], feed_dict=feed_dict)
-            print("Cost is ", c)
 
     def updateConstants(self, learningRate, discountFactor, explorationRate) :
         if not isinstance(learningRate, type(None)) :
@@ -150,7 +151,7 @@ class Player :
         if self.isBot :
             if not self.playRandomly and (self.exploiting or random.random() > self.explorationRate) :
                 encodedState = self.encodeState(currentNumberSticks)
-                action = 1 + self.sess.run(tf.argmax(self.predict([encodedState])[0]))
+                action = self.sess.run(self.choice, feed_dict={self.x: [encodedState]})[0]
             else :
                 action = random.randint(1,3)
         else :

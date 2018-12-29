@@ -89,6 +89,8 @@ class Player :
         if self.isBot :
             if not self.playRandomly and (self.exploiting or random.random() > self.explorationRate) :
                 encodedState = [int(i) for i in bin(currentNumberSticks)[2:]]
+                if len(encodedState) < 4 :
+                    encodedState = [0] * (4 - len(encodedState)) + encodedState
                 action = 1 + self.sess.run(tf.argmax(self.predict([encodedState])[0]))
             else :
                 action = random.randint(1,3)

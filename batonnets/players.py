@@ -25,7 +25,7 @@ class Players :
         self[winnerID].updateStats(1)
         self[1 - winnerID].updateStats(-1)
 
-    def updateConstants(self, learningRate, discountFactor, explorationRate) :
+    def updateConstants(self, learningRate=None, discountFactor=None, explorationRate=None) :
         self.player1.updateConstants(learningRate, discountFactor, explorationRate)
         self.player2.updateConstants(learningRate, discountFactor, explorationRate)
 

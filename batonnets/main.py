@@ -18,6 +18,7 @@ def gameMaster(game, players) :
         players[currentPlayer].addStateSequence(currentState, action, reward, game.currentNumberSticks)
         currentPlayer = 1 - currentPlayer
         players[currentPlayer].correctStateSequence(-reward, game.currentNumberSticks)
+    players.updateStats(currentPlayer)
     game.reset()
     return players
 

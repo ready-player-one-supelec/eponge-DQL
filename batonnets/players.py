@@ -17,6 +17,10 @@ class Players :
             return self.player2
         raise IndexError
 
+    def updateStats(self, winnerID) :
+        self[winnerID].updateStats(1)
+        self[1 - winnerID].updateStats(-1)
+
     def updateConstants(self, learningRate, discountFactor, explorationRate) :
         self.player1.updateConstants(learningRate, discountFactor, explorationRate)
         self.player2.updateConstants(learningRate, discountFactor, explorationRate)

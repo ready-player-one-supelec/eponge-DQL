@@ -37,6 +37,7 @@ class Player :
         self.trainingData = []
         self.maxBatchSize = 10000
         # trainingData will not have more than maxBatchSize elements
+        self.miniBatchSize = 32
 
     def createQNetwork(self) :
         # input layer
@@ -54,9 +55,19 @@ class Player :
         self.b2 = tf.Variable(tf.random_normal([3]), name="b2")
         self.y_ = tf.add(tf.matmul(self.hiddenLayer, self.w2), self.b2)
 
+        # masked output
+        self.mask = tf.placeholder(tf.float32, (None, 3))
+        # mask has 3 values : 1 equals to 1 & the other 2 equal to 0
+        self.y_masked = tf.multiply(self.y_, self.mask)
+
+        # used to compute the expected output
+        self.rewards = tf.placeholder(tf.float32)
+        self.discountFactorPlaceHolder = tf.placeholder(tf.float32)
+        self.expectedOutput = tf.add(self.rewards, self.discountFactorPlaceHolder * tf.math.reduce_max(self.y_, axis=1))
+
     def createOptimiser(self) :
         # is this loss ?
-        self.cost = tf.losses.mean_squared_error(self.y, self.y_)
+        self.cost = tf.losses.mean_squared_error(self.y, self.y_masked)
         # Gradient Descent Optimiser definition
         self.optimiser = tf.train.GradientDescentOptimizer(learning_rate=self.learningRate).minimize(self.cost)
 
@@ -66,20 +77,70 @@ class Player :
         self.sess = tf.Session()
         self.sess.run(init_op)
 
-    def predict(self, input) :
-        prediction = self.sess.run(self.y_, feed_dict={self.x: input})
-        return prediction
+    def encodeState(self, state) :
+        if state >= 0 :
+            binaire = bin(state)[2:]
+        else :
+            binaire = bin(state)[3:]
+        encodedState = [int(i) for i in binaire]
+        if len(encodedState) < 4 :
+            encodedState = [0] * (4 - len(encodedState)) + encodedState
+        return encodedState
 
-    def train(self, input, output, epochs=1000) :
+    def predict(self, input) :
+        return self.sess.run(self.y_, feed_dict={self.x: input})
+
+    def computeAllOutputs(self) :
+        allOutputs = []
+        actions = []
+        rewards = []
+        nextStates = []
+        for i in range(len(self.trainingData)) :
+            state, action, reward, nextState = self.trainingData[i]
+            actions.append(action)
+            rewards.append(reward)
+            nextStates.append(nextState)
+        feed_dict={self.x: [self.encodeState(nextState) for nextState in nextStates],
+                    self.rewards: rewards,
+                    self.discountFactorPlaceHolder: self.discountFactor}
+        tmp = self.sess.run(self.expectedOutput, feed_dict=feed_dict)
+        for i in range(len(actions)) :
+            L = [0] * 3
+            L[actions[i] - 1] = tmp[i]
+            allOutputs.append(L)
+        return allOutputs
+
+    def createMasks(self) :
+        masks = []
+        for i in range(len(self.trainingData)) :
+            mask = [0] * 3
+            action = self.trainingData[i][1]
+            mask[action - 1] = 1
+            masks.append(mask)
+        return masks
+
+    def train(self) :
         if not self.trainable :
             return
-        for i in range(epochs) :
-            _, c = self.sess.run([self.optimiser, self.cost], feed_dict={self.x:input, self.y: output})
+        nbOfBatches = int(len(self.trainingData) // self.miniBatchSize) + 1
+        allOutputs = self.computeAllOutputs()
+        allMasks = self.createMasks()
+        for i in range(nbOfBatches) :
+            beginning = self.miniBatchSize * i
+            end = min(self.miniBatchSize * (i + 1), len(self.trainingData))
+            input = [self.encodeState(transition[0]) for transition in self.trainingData[beginning : end]]
+            # Input refers to the actual state
+            output = allOutputs[beginning : end]
+            masks = allMasks[beginning : end]
+            feed_dict = {self.x:input, self.y: output, self.mask: masks}
+            _, c = self.sess.run([self.optimiser, self.cost], feed_dict=feed_dict)
             print("Cost is ", c)
 
     def updateConstants(self, learningRate, discountFactor, explorationRate) :
         if not isinstance(learningRate, type(None)) :
             self.learningRate = learningRate
+            self.createOptimiser()
+            # the optimiser must be reinitialised since the learning rate changed
         if not isinstance(discountFactor, type(None)) :
             self.discountFactor = discountFactor
         if not isinstance(explorationRate, type(None)) :
@@ -88,9 +149,7 @@ class Player :
     def play(self, currentNumberSticks) :
         if self.isBot :
             if not self.playRandomly and (self.exploiting or random.random() > self.explorationRate) :
-                encodedState = [int(i) for i in bin(currentNumberSticks)[2:]]
-                if len(encodedState) < 4 :
-                    encodedState = [0] * (4 - len(encodedState)) + encodedState
+                encodedState = self.encodeState(currentNumberSticks)
                 action = 1 + self.sess.run(tf.argmax(self.predict([encodedState])[0]))
             else :
                 action = random.randint(1,3)

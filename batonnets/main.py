@@ -29,11 +29,12 @@ def setOfGames(nbGames, game, players, learningRate, discountFactor, exploration
         print("PLAYING ", i)
         players.updateConstants(explorationRate=explorationRateTable[i])
         gameMaster(game, players)
+        players.training()
     return players
 
 
 nbSticks = 12
-learningRate = 0.01
+learningRate = 0.001
 discountFactor = 0.9
 explorationRateInit = 0.999
 explorationRateMin = 0.1
@@ -43,13 +44,10 @@ player = Player("Toto", True)
 player2 = Player("Joueur", True)
 players = Players(player, player2)
 
-nbGames = 5000
+nbGames = 2000
 explorationRateTable = [max(explorationRateInit ** i, explorationRateMin) for i in range(nbGames)]
 
-for i in range(100) :
-    print("training : ", i)
-    setOfGames(50, game, players, learningRate, discountFactor, explorationRateTable[50 * i : 50 * (i+1)])
-    players.train()
+setOfGames(nbGames, game, players, learningRate, discountFactor, explorationRateTable)
 
 for i in range(1,13) :
     print("----------")

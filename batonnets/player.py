@@ -19,9 +19,9 @@ class Player :
 
     def initializeProperties(self) :
         # Constants
-        self.learningRate = 0
-        self.discountFactor = 0
-        self.explorationRate = 0
+        self.learningRate = 0.001
+        self.discountFactor = 0.9
+        self.explorationRate = 0.999
 
         # Behaviour when playing & training
         self.trainable = True
@@ -45,15 +45,20 @@ class Player :
         # expected output placeholder
         self.y = tf.placeholder(tf.float32, [None, 3])
 
-        # hidden layer
-        self.w1 = tf.Variable(tf.random_normal([4, 4], stddev=1), name='W1')
-        self.b1 = tf.Variable(tf.random_normal([4]), name='b1')
-        self.hiddenLayer = tf.nn.relu(tf.add(tf.matmul(self.x, self.w1), self.b1))
+        # first hidden layer
+        self.w1 = tf.Variable(tf.random_normal([4, 10], stddev=1), name='W1')
+        self.b1 = tf.Variable(tf.random_normal([10]), name='b1')
+        self.hiddenLayer1 = tf.math.tanh(tf.add(tf.matmul(self.x, self.w1), self.b1))
+
+        # second hidden layer
+        self.w2 = tf.Variable(tf.random_normal([10, 5], stddev=1), name='W2')
+        self.b2 = tf.Variable(tf.random_normal([5]), name='b2')
+        self.hiddenLayer2 = tf.math.tanh(tf.add(tf.matmul(self.hiddenLayer1, self.w2), self.b2))
 
         # output layer
-        self.w2 = tf.Variable(tf.random_normal([4, 3], stddev=1), name='W2')
-        self.b2 = tf.Variable(tf.random_normal([3]), name="b2")
-        self.y_ = tf.add(tf.matmul(self.hiddenLayer, self.w2), self.b2)
+        self.wOutput = tf.Variable(tf.random_normal([5, 3], stddev=1), name='W2')
+        self.bOutput = tf.Variable(tf.random_normal([3]), name="b2")
+        self.y_ = tf.add(tf.matmul(self.hiddenLayer2, self.wOutput), self.bOutput)
 
         # choice
         self.choice = 1 + tf.argmax(self.y_, axis=1)
@@ -66,13 +71,20 @@ class Player :
         # used to compute the expected output
         self.rewards = tf.placeholder(tf.float32)
         self.discountFactorPlaceHolder = tf.placeholder(tf.float32)
-        self.expectedOutput = tf.add(self.rewards, self.discountFactorPlaceHolder * tf.math.reduce_max(self.y_, axis=1))
+        # evaluate whether the input is 0000, in which case, the expected output
+        # for a transition to 0000 ought to be only the rewards
+        # as a matter of fact, the value of the network at 0000 is irrelevant
+        # this filter is always 1 unless the input is 0000, in which case, the filter value is 0
+        self.filter = 1 - tf.math.reduce_prod(tf.dtypes.cast(tf.equal(self.x, 0 * self.x), tf.float32), axis=1)
+        self.expectedOutput = tf.add(self.rewards, self.filter * self.discountFactorPlaceHolder * tf.math.reduce_max(self.y_, axis=1))
+        # this filter allows us to ignore the discount factor iff the input is 0000
 
     def createOptimiser(self) :
         # is this loss ?
         self.cost = tf.losses.mean_squared_error(self.y, self.y_masked)
         # Gradient Descent Optimiser definition
-        self.optimiser = tf.train.GradientDescentOptimizer(learning_rate=self.learningRate).minimize(self.cost)
+        self.optimiser = tf.train.AdamOptimizer(learning_rate=self.learningRate)
+        self.train = self.optimiser.minimize(self.cost)
 
     def initializeQNetwork(self) :
         # Reinitialise the network according to createQNetwork
@@ -119,7 +131,7 @@ class Player :
             masks.append(mask)
         return masks
 
-    def train(self) :
+    def training(self) :
         if not self.trainable :
             return
         nbOfBatches = int(len(self.trainingData) // self.miniBatchSize)
@@ -135,13 +147,14 @@ class Player :
             output = allOutputs[beginning : end]
             masks = allMasks[beginning : end]
             feed_dict = {self.x:input, self.y: output, self.mask: masks}
-            _, c = self.sess.run([self.optimiser, self.cost], feed_dict=feed_dict)
+            _, c = self.sess.run([self.train, self.cost], feed_dict=feed_dict)
 
     def updateConstants(self, learningRate, discountFactor, explorationRate) :
         if not isinstance(learningRate, type(None)) :
             self.learningRate = learningRate
             self.createOptimiser()
             # the optimiser must be reinitialised since the learning rate changed
+            self.sess.run(tf.variables_initializer(self.optimiser.variables()))
         if not isinstance(discountFactor, type(None)) :
             self.discountFactor = discountFactor
         if not isinstance(explorationRate, type(None)) :

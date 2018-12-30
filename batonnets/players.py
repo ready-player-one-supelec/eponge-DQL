@@ -33,9 +33,9 @@ class Players :
         self.player1.resetStats()
         self.player2.resetStats()
 
-    def train(self) :
-        self.player1.train()
-        self.player2.train()
+    def training(self) :
+        self.player1.training()
+        self.player2.training()
 
     def displayStats(self) :
         print("{} won {} times out of {} games".format(self[0].name, self[0].gamesWon, self[0].gamesWon + self[0].gamesLost))

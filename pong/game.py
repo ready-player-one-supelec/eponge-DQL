@@ -17,7 +17,7 @@ class Game :
 
     def __enter__(self) :
         self.env = gym.make('Pong-v0')
-        self.observation = self.env.reset()
+        self.reset()
         return self
 
     def __exit__(self, type, value, traceback) :
@@ -35,3 +35,9 @@ class Game :
 
     def wait(self) :
         time.sleep(0.05)
+
+    def setLimit(self, limit) :
+        self.limit = limit
+
+    def reset(self) :
+        self.observation = self.env.reset()

@@ -38,7 +38,7 @@ class Player :
         # Training
         self.statesSequence = []
         self.trainingData = []
-        self.maxBatchSize = 10000
+        self.maxBatchSize = 1500
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
 
@@ -117,6 +117,53 @@ class Player :
         self.listener = keyboard.Listener(on_press = on_press, on_release = on_release)
         self.listener.start()
 
+    def computeAllOutputs(self) :
+        allOutputs = []
+        actions = []
+        rewards = []
+        nextStates = []
+        for i in range(len(self.trainingData)) :
+            state, action, reward, nextState = self.trainingData[i]
+            actions.append(action)
+            rewards.append(reward)
+            nextStates.append(nextState)
+        feed_dict={self.x: nextStates,
+                    self.rewards: rewards,
+                    self.discountFactorPlaceHolder: self.discountFactor}
+        tmp = self.sess.run(self.expectedOutput, feed_dict=feed_dict)
+        for i in range(len(actions)) :
+            L = [0] * 3
+            L[actions[i]] = tmp[i]
+            allOutputs.append(L)
+        return allOutputs
+
+    def createMasks(self) :
+        masks = []
+        for i in range(len(self.trainingData)) :
+            mask = [0] * 3
+            action = self.trainingData[i][1]
+            mask[action] = 1
+            masks.append(mask)
+        return masks
+
+    def training(self) :
+        if not self.trainable :
+            return
+        nbOfBatches = int(len(self.trainingData) // self.miniBatchSize)
+        if len(self.trainingData) % self.miniBatchSize != 0 :
+            nbOfBatches += 1
+        allOutputs = self.computeAllOutputs()
+        allMasks = self.createMasks()
+        for i in range(nbOfBatches) :
+            beginning = self.miniBatchSize * i
+            end = min(self.miniBatchSize * (i + 1), len(self.trainingData))
+            input = [transition[0] for transition in self.trainingData[beginning : end]]
+            # Input refers to the actual state
+            output = allOutputs[beginning : end]
+            masks = allMasks[beginning : end]
+            feed_dict = {self.x:input, self.y: output, self.mask: masks}
+            _, c = self.sess.run([self.train, self.cost], feed_dict=feed_dict)
+
     def play(self, observation) :
         if self.isBot :
             if not self.playRandomly and (self.exploiting or random.random() > self.explorationRate) :
@@ -129,9 +176,9 @@ class Player :
     def updateConstants(self, learningRate = None, discountFactor = None, explorationRate = None) :
         if not isinstance(learningRate, type(None)) :
             self.learningRate = learningRate
-            # self.createOptimiser()
+            self.createOptimiser()
             # the optimiser must be reinitialised since the learning rate changed
-            # self.sess.run(tf.variables_initializer(self.optimiser.variables()))
+            self.sess.run(tf.variables_initializer(self.optimiser.variables()))
         if not isinstance(discountFactor, type(None)) :
             self.discountFactor = discountFactor
         if not isinstance(explorationRate, type(None)) :

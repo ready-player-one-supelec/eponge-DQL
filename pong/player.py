@@ -11,10 +11,10 @@ class Player :
         self.name = name
         self.isBot = isBot
         self.possibleActions = [0,4,5]
+        # respectively doing nothing, going up and going down
         if not self.isBot :
             self.chosenAction = 0
             self.defineKeyboardListener()
-        # respectively doing nothing, going up and going down
 
     def defineKeyboardListener(self) :
 

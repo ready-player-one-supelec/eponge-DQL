@@ -5,9 +5,9 @@ from game import Game
 from player import Player
 import random
 
-player = Player("Toto", True)
+player = Player(name = "Toto", isBot = False)
 
-with Game(True) as game :
+with Game(display = True) as game :
     i = 0
     done = False
     while not done :

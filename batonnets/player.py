@@ -48,7 +48,7 @@ class Player :
         # first hidden layer
         self.w1 = tf.Variable(tf.random_normal([4, 10], stddev=1), name='W1')
         self.b1 = tf.Variable(tf.random_normal([10]), name='b1')
-        self.hiddenLayer1 = tf.math.tanh(tf.add(tf.matmul(self.x, self.w1), self.b1))
+        self.hiddenLayer1 = tf.nn.relu(tf.add(tf.matmul(self.x, self.w1), self.b1))
 
         # output layer
         self.wOutput = tf.Variable(tf.random_normal([10, 3], stddev=1), name='Wout')

@@ -61,7 +61,8 @@ class Player :
         self.layer1_conv = tf.layers.conv2d(inputs=self.gray_x,
                                             filters=16,
                                             kernel_size=8,
-                                            strides=4)
+                                            strides=4,
+                                            activation=tf.nn.relu)
         self.layer1_conv = tf.layers.max_pooling2d(inputs=self.layer1_conv,
                                                     pool_size=2,
                                                     strides=2)
@@ -70,7 +71,8 @@ class Player :
         self.layer2_conv = tf.layers.conv2d(inputs=self.layer1_conv,
                                             filters=32,
                                             kernel_size=4,
-                                            strides=2)
+                                            strides=2,
+                                            activation=tf.nn.relu)
         self.layer2_conv = tf.layers.max_pooling2d(inputs=self.layer2_conv,
                                                     pool_size=2,
                                                     strides=2)

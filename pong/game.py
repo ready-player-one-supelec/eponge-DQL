@@ -8,10 +8,14 @@ class Game :
 
     def __init__(self, display = False) :
         self.display = display
+        self.observation = None
+
+        self.possibleActions = [0,4,5]
+        # respectively doing nothing, going up and going down
 
     def __enter__(self) :
         self.env = gym.make('Pong-v0')
-        self.env.reset()
+        self.observation = self.env.reset()
         return self
 
     def __exit__(self, type, value, traceback) :
@@ -23,7 +27,9 @@ class Game :
         assert(isinstance(display, bool))
         if self.display :
             self.env.render()
-        return self.env.step(action)
+        observation, reward, done, info = self.env.step(self.possibleActions[action])
+        self.observation = observation
+        return observation, reward, done
 
     def wait(self) :
         time.sleep(0.05)

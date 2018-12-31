@@ -11,7 +11,7 @@ with Game(display = True) as game :
     currentObservation = game.observation
     i = 0
     done = False
-    while not done :
+    while not (done or i > game.limit) :
         action = player.play()
         observation, reward, done = game.step(action)
         player.addStateSequence(currentObservation, action, reward, observation)

@@ -5,7 +5,7 @@ from game import Game
 from player import Player
 import random
 
-player = Player(name = "Toto", isBot = False)
+player = Player(name = "Toto", isBot = True)
 
 with Game(display = True) as game :
     currentObservation = game.observation

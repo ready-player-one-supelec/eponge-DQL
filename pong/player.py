@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import tensorflow as tf
 import random
 from pynput import keyboard
 from pynput.keyboard import Key
@@ -15,6 +16,9 @@ class Player :
             self.defineKeyboardListener()
 
         self.initializeProperties()
+        self.createQNetwork()
+        self.createOptimiser()
+        self.initializeQNetwork()
 
     def initializeProperties(self) :
         # Constants
@@ -37,6 +41,59 @@ class Player :
         self.maxBatchSize = 10000
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
+
+        print("Properties initialized")
+
+    def createQNetwork(self) :
+        # input layer
+        self.x = tf.placeholder(tf.float32, [None, 210,160,3])
+        # expected output placeholder
+        self.y = tf.placeholder(tf.float32, [None, 3])
+
+        self.flattened_x = tf.contrib.layers.flatten(self.x)
+
+        # first hidden layer
+        self.w1 = tf.Variable(tf.random_normal([100800, 10], stddev=1), name='W1')
+        self.b1 = tf.Variable(tf.random_normal([10]), name='b1')
+        self.hiddenLayer1 = tf.nn.relu(tf.add(tf.matmul(self.flattened_x, self.w1), self.b1))
+
+        # output layer
+        self.wOutput = tf.Variable(tf.random_normal([10, 3], stddev=1), name='Wout')
+        self.bOutput = tf.Variable(tf.random_normal([3]), name="bout")
+        self.y_ = tf.add(tf.matmul(self.hiddenLayer1, self.wOutput), self.bOutput)
+
+        # choice
+        self.choice = 1 + tf.argmax(self.y_, axis=1)
+
+        # masked output
+        self.mask = tf.placeholder(tf.float32, (None, 3))
+        # mask has 3 values : 1 equals to 1 & the other 2 equal to 0
+        self.y_masked = tf.multiply(self.y_, self.mask)
+
+        # used to compute the expected output
+        self.rewards = tf.placeholder(tf.float32)
+        self.discountFactorPlaceHolder = tf.placeholder(tf.float32)
+        self.filter = tf.dtypes.cast(tf.equal(self.rewards, 0 * self.rewards), tf.float32)
+        self.expectedOutput = tf.add(self.rewards, self.filter * self.discountFactorPlaceHolder * tf.math.reduce_max(self.y_, axis=1))
+        # this filter allows us to ignore the discount factor iff the game is over
+
+        print("Q Network created")
+
+    def createOptimiser(self) :
+        # is this loss ?
+        self.cost = tf.losses.mean_squared_error(self.y, self.y_masked)
+        # Gradient Descent Optimiser definition
+        self.optimiser = tf.train.AdamOptimizer(learning_rate=self.learningRate)
+        self.train = self.optimiser.minimize(self.cost)
+        print("Optimiser created")
+
+    def initializeQNetwork(self) :
+        # Reinitialise the network according to createQNetwork
+        init_op = tf.global_variables_initializer()
+        self.sess = tf.Session()
+        self.sess.run(init_op)
+        print("Variables initialized")
+
 
     def defineKeyboardListener(self) :
 

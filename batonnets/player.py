@@ -48,17 +48,12 @@ class Player :
         # first hidden layer
         self.w1 = tf.Variable(tf.random_normal([4, 10], stddev=1), name='W1')
         self.b1 = tf.Variable(tf.random_normal([10]), name='b1')
-        self.hiddenLayer1 = tf.math.tanh(tf.add(tf.matmul(self.x, self.w1), self.b1))
-
-        # second hidden layer
-        self.w2 = tf.Variable(tf.random_normal([10, 5], stddev=1), name='W2')
-        self.b2 = tf.Variable(tf.random_normal([5]), name='b2')
-        self.hiddenLayer2 = tf.math.tanh(tf.add(tf.matmul(self.hiddenLayer1, self.w2), self.b2))
+        self.hiddenLayer1 = tf.nn.relu(tf.add(tf.matmul(self.x, self.w1), self.b1))
 
         # output layer
-        self.wOutput = tf.Variable(tf.random_normal([5, 3], stddev=1), name='W2')
-        self.bOutput = tf.Variable(tf.random_normal([3]), name="b2")
-        self.y_ = tf.add(tf.matmul(self.hiddenLayer2, self.wOutput), self.bOutput)
+        self.wOutput = tf.Variable(tf.random_normal([10, 3], stddev=1), name='Wout')
+        self.bOutput = tf.Variable(tf.random_normal([3]), name="bout")
+        self.y_ = tf.add(tf.matmul(self.hiddenLayer1, self.wOutput), self.bOutput)
 
         # choice
         self.choice = 1 + tf.argmax(self.y_, axis=1)

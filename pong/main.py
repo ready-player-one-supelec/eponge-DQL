@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from game import Game
+from player import Player
 import random
 
-actions = [0,4,5]
+player = Player("Toto", True)
 
 with Game(True) as game :
     i = 0
     done = False
     while not done :
-        action = random.choice(actions)
+        action = player.play()
         observation, reward, done, info = game.step(action)
         i += 1
         print(done, i)

@@ -76,7 +76,8 @@ class Player :
 
     def createOptimiser(self) :
         # is this loss ?
-        self.cost = tf.losses.mean_squared_error(self.y, self.y_masked)
+        self.cost = -tf.reduce_mean(tf.reduce_sum(self.y * tf.log(self.y_masked)
+                         + (1 - self.y) * tf.log(1 - self.y_masked), axis=1))
         # Gradient Descent Optimiser definition
         self.optimiser = tf.train.AdamOptimizer(learning_rate=self.learningRate)
         self.train = self.optimiser.minimize(self.cost)

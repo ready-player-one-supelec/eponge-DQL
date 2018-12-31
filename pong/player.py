@@ -50,17 +50,47 @@ class Player :
         # expected output placeholder
         self.y = tf.placeholder(tf.float32, [None, 3])
 
-        self.flattened_x = tf.contrib.layers.flatten(self.x)
+        self.cropped_x = tf.image.crop_to_bounding_box(self.x,
+                                                        offset_height=35,
+                                                        offset_width=0,
+                                                        target_height=160,
+                                                        target_width=160)
+        self.gray_x = tf.image.rgb_to_grayscale(self.cropped_x) / 255
 
-        # first hidden layer
-        self.w1 = tf.Variable(tf.random_normal([100800, 10], stddev=1), name='W1')
-        self.b1 = tf.Variable(tf.random_normal([10]), name='b1')
-        self.hiddenLayer1 = tf.nn.relu(tf.add(tf.matmul(self.flattened_x, self.w1), self.b1))
+        # first convolutional layer
+        self.layer1_conv = tf.layers.conv2d(inputs=self.gray_x,
+                                            filters=16,
+                                            kernel_size=8,
+                                            strides=4)
+        self.layer1_conv = tf.layers.max_pooling2d(inputs=self.layer1_conv,
+                                                    pool_size=2,
+                                                    strides=2)
+
+        # second convolutional layer
+        self.layer2_conv = tf.layers.conv2d(inputs=self.layer1_conv,
+                                            filters=32,
+                                            kernel_size=4,
+                                            strides=2)
+        self.layer2_conv = tf.layers.max_pooling2d(inputs=self.layer2_conv,
+                                                    pool_size=2,
+                                                    strides=2)
+
+        self.flattened = tf.layers.flatten(self.layer2_conv)
+
+        # first dense layer
+        self.w1 = tf.Variable(tf.random_normal([512, 100], stddev=1), name='W1')
+        self.b1 = tf.Variable(tf.random_normal([100]), name='b1')
+        self.layer1_dense = tf.nn.relu(tf.add(tf.matmul(self.flattened, self.w1), self.b1))
+
+        # second dense layer
+        self.w2 = tf.Variable(tf.random_normal([100, 10], stddev=1), name='W2')
+        self.b2 = tf.Variable(tf.random_normal([10]), name='b2')
+        self.layer2_dense = tf.nn.relu(tf.add(tf.matmul(self.layer1_dense, self.w2), self.b2))
 
         # output layer
         self.wOutput = tf.Variable(tf.random_normal([10, 3], stddev=1), name='Wout')
         self.bOutput = tf.Variable(tf.random_normal([3]), name="bout")
-        self.y_ = tf.add(tf.matmul(self.hiddenLayer1, self.wOutput), self.bOutput)
+        self.y_ = tf.add(tf.matmul(self.layer2_dense, self.wOutput), self.bOutput)
 
         # choice
         self.choice = tf.argmax(self.y_, axis=1)
@@ -191,8 +221,12 @@ class Player :
     def updateStats(self, reward) :
         if reward == 1 :
             self.gamesWon += 1
-        else :
+        elif reward == -1 :
             self.gamesLost += 1
+
+    def displayStats(self) :
+        # print("{} victories & {} defeats".format(self.gamesWon, self.gamesLost))
+        print(self.gamesWon, self.gamesLost)
 
     def addStateSequence(self, currentState, action, reward, nextState) :
         self.statesSequence.append([currentState, action, reward, nextState])

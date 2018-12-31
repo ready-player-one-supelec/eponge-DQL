@@ -6,10 +6,11 @@ from player import Player
 import random
 
 player = Player(name = "Toto", isBot = True)
-player.updateConstants(explorationRate=0)
 
 with Game(display = False) as game :
-    for i in range(2) :
+    for i in range(100) :
+        game.setLimit(min(2000, 100 * i))
+        player.updateConstants(explorationRate=max(0.999 ** i, 0.1))
         currentStep = 0
         done = False
         while not (done or currentStep > game.limit) :
@@ -17,9 +18,25 @@ with Game(display = False) as game :
             action = player.play(currentObservation)
             observation, reward, done = game.step(action)
             player.addStateSequence(currentObservation, action, reward, observation)
+            player.updateStats(reward)
             currentStep += 1
-            print(done, currentStep)
+            print("LEARNING ", i, currentStep)
             # game.wait()
+        player.displayStats()
+        player.resetStats()
         player.addStateSequence2trainingData()
         player.training()
+        game.reset()
+
+with Game(display = True) as game :
+    for i in range(100) :
+        player.exploiting = True
+        done = False
+        currentStep = 0
+        while not (done or currentStep > game.limit) :
+            currentObservation = game.observation
+            action = player.play(currentObservation)
+            observation, reward, done = game.step(action)
+            currentStep += 1
+            print("PLAYING ", i, currentStep)
         game.reset()

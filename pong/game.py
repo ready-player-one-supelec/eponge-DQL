@@ -9,7 +9,7 @@ class Game :
     def __init__(self, display = False) :
         self.display = display
         self.observation = None
-        self.limit = 10000
+        self.limit = 100
         # no more than self.limit steps for a game (against endless games)
 
         self.possibleActions = [0,4,5]

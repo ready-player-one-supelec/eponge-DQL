@@ -63,7 +63,7 @@ class Player :
         self.y_ = tf.add(tf.matmul(self.hiddenLayer1, self.wOutput), self.bOutput)
 
         # choice
-        self.choice = 1 + tf.argmax(self.y_, axis=1)
+        self.choice = tf.argmax(self.y_, axis=1)
 
         # masked output
         self.mask = tf.placeholder(tf.float32, (None, 3))
@@ -117,9 +117,12 @@ class Player :
         self.listener = keyboard.Listener(on_press = on_press, on_release = on_release)
         self.listener.start()
 
-    def play(self) :
+    def play(self, observation) :
         if self.isBot :
-            return random.randint(0,2)
+            if not self.playRandomly and (self.exploiting or random.random() > self.explorationRate) :
+                return self.sess.run(self.choice, feed_dict={self.x: [observation]})[0]
+            else :
+                return random.randrange(0,3)
         else :
             return self.chosenAction
 

@@ -124,8 +124,8 @@ class Player :
         init_op = tf.global_variables_initializer()
         self.sess = tf.Session()
         self.sess.run(init_op)
+        self.saver = tf.train.Saver()
         print("Variables initialized")
-
 
     def defineKeyboardListener(self) :
 
@@ -239,3 +239,13 @@ class Player :
             self.trainingData.pop(random.randrange(len(self.trainingData)))
         random.shuffle(self.trainingData)
         self.statesSequence = []
+
+    def saveQNetwork(self, path, global_step = None) :
+        self.saver.save(self.sess, path, global_step = global_step)
+        print("Network saved!")
+
+    def restoreQNetwork(self, path, global_step = None):
+        if isinstance(global_step, int) :
+            path += "-{}".format(global_step)
+        self.saver.restore(self.sess, path)
+        print("Network restored!")

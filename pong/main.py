@@ -5,10 +5,11 @@ from game import Game
 from player import Player
 import random
 
+nbOfTrainings = 10
 player = Player(name = "Toto", isBot = True)
 
 with Game(display = False) as game :
-    for i in range(100) :
+    for i in range(nbOfTrainings) :
         game.setLimit(min(2000, 100 * i))
         player.updateConstants(explorationRate=max(0.999 ** i, 0.1))
         currentStep = 0
@@ -28,8 +29,11 @@ with Game(display = False) as game :
         player.training()
         game.reset()
 
+player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfTrainings)
+# player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfTrainings)
+
 with Game(display = True) as game :
-    for i in range(100) :
+    for i in range(10) :
         player.exploiting = True
         done = False
         currentStep = 0

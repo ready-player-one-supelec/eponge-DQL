@@ -232,14 +232,16 @@ class Player :
         print(self.gamesWon, self.gamesLost)
 
     def addStateSequence(self, currentState, action, reward, nextState) :
-        self.statesSequence.append([currentState, action, reward, nextState])
+        if self.trainable :
+            self.statesSequence.append([currentState, action, reward, nextState])
 
     def addStateSequence2trainingData(self) :
-        self.trainingData = self.trainingData + self.statesSequence
-        while len(self.trainingData) > self.maxBatchSize :
-            self.trainingData.pop(random.randrange(len(self.trainingData)))
-        random.shuffle(self.trainingData)
-        self.statesSequence = []
+        if self.trainable :
+            self.trainingData = self.trainingData + self.statesSequence
+            while len(self.trainingData) > self.maxBatchSize :
+                self.trainingData.pop(random.randrange(len(self.trainingData)))
+            self.statesSequence = []
+            random.shuffle(self.trainingData)
 
     def saveQNetwork(self, path, global_step = None) :
         self.saver.save(self.sess, path, global_step = global_step)
@@ -250,3 +252,11 @@ class Player :
             path += "-{}".format(global_step)
         self.saver.restore(self.sess, path)
         print("Network restored!")
+
+    def setBehaviour(self, isTraining) :
+        if isTraining :
+            self.exploiting = False
+            self.trainable = True
+        else :
+            self.exploiting = True
+            self.trainable = False

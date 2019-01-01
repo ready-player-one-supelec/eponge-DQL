@@ -28,10 +28,11 @@ def train(player) :
     nbOfTrainings = 1000
     player.updateConstants(discountFactor = 0.99)
     learningRateTable = [0.05, 0.01, 0.005, 0.001]
+    index = int(nbOfTrainings // len(learningRateTable))
     with Game(display = False) as game :
         for i in range(nbOfTrainings) :
-            if i % nbOfTrainings == 0 :
-                player.updateConstants(learningRate = learningRateTable[i // nbOfTrainings])
+            if i % index == 0 :
+                player.updateConstants(learningRate = learningRateTable[i // index])
             player.updateConstants(explorationRate=(0.55 + 0.45 * math.cos(math.pi * i / nbOfTrainings)))
             currentStep = 0
             done = False

@@ -199,6 +199,7 @@ class Player :
     def play(self, observation) :
         if self.isBot :
             if not self.playRandomly and (self.exploiting or random.random() > self.explorationRate) :
+                print(self.sess.run(self.y_, feed_dict={self.x:[observation]})[0])
                 return self.sess.run(self.choice, feed_dict={self.x: [observation]})[0]
             else :
                 return random.randrange(0,3)

@@ -38,7 +38,7 @@ class Player :
         # Training
         self.statesSequence = []
         self.trainingData = []
-        self.maxBatchSize = 1500
+        self.maxBatchSize = 10000
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
 
@@ -115,7 +115,7 @@ class Player :
         # is this loss ?
         self.cost = tf.losses.mean_squared_error(self.y, self.y_masked)
         # Gradient Descent Optimiser definition
-        self.optimiser = tf.train.AdamOptimizer(learning_rate=self.learningRate)
+        self.optimiser = tf.train.RMSPropOptimizer(learning_rate=self.learningRate)
         self.train = self.optimiser.minimize(self.cost)
         print("Optimiser created")
 

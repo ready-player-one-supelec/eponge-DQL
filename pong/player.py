@@ -8,7 +8,7 @@ from pynput.keyboard import Key
 
 class ImagePreprocessor :
 
-    def __init__(self) :
+    def __init__(self, imageSize) :
         # input layer
         self.x = tf.placeholder(tf.float32, [None, 210, 160, 3])
 
@@ -19,7 +19,7 @@ class ImagePreprocessor :
                                                         target_width=160)
         self.gray = tf.image.rgb_to_grayscale(self.cropped) / 255
         self.resized = tf.image.resize_images(
-            self.gray, [84, 84], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+            self.gray, [imageSize, imageSize], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
         # output layer : image has been properly preprocessed
         self.squeezed = tf.squeeze(self.resized)
@@ -37,12 +37,15 @@ class Player :
             self.defineKeyboardListener()
 
         self.initializeProperties()
-        self.processor = ImagePreprocessor()
+        self.processor = ImagePreprocessor(self.imageSize)
         self.createQNetwork()
         self.createOptimiser()
         self.initializeQNetwork()
 
     def initializeProperties(self) :
+        # Q Network Constants
+        self.imageSize = 80
+
         # Constants
         self.learningRate = 0.001
         self.discountFactor = 0.9
@@ -67,39 +70,55 @@ class Player :
 
     def createQNetwork(self) :
         # input layer
-        self.x = tf.placeholder(tf.float32, [None, 84, 84, 1])
+        self.x = tf.placeholder(tf.float32, [None, self.imageSize, self.imageSize, 1])
         # expected output placeholder
         self.y = tf.placeholder(tf.float32, [None, 3])
 
         # first convolutional layer
         self.layer1_conv = tf.layers.conv2d(inputs=self.x,
-                                            filters=16,
+                                            filters=32,
                                             kernel_size=8,
                                             strides=4,
-                                            activation=tf.nn.relu)
+                                            activation=tf.nn.relu,
+                                            padding="same")
         self.layer1_conv = tf.layers.max_pooling2d(inputs=self.layer1_conv,
                                                     pool_size=2,
-                                                    strides=2)
+                                                    strides=2,
+                                                    padding="same")
 
         # second convolutional layer
         self.layer2_conv = tf.layers.conv2d(inputs=self.layer1_conv,
-                                            filters=32,
+                                            filters=64,
                                             kernel_size=4,
                                             strides=2,
-                                            activation=tf.nn.relu)
+                                            activation=tf.nn.relu,
+                                            padding="same")
         self.layer2_conv = tf.layers.max_pooling2d(inputs=self.layer2_conv,
                                                     pool_size=2,
-                                                    strides=2)
+                                                    strides=2,
+                                                    padding="same")
 
-        self.flattened = tf.layers.flatten(self.layer2_conv)
+        # third convolutional layer
+        self.layer3_conv = tf.layers.conv2d(inputs=self.layer2_conv,
+                                            filters=64,
+                                            kernel_size=3,
+                                            strides=1,
+                                            activation=tf.nn.relu,
+                                            padding="same")
+        self.layer3_conv = tf.layers.max_pooling2d(inputs=self.layer3_conv,
+                                                    pool_size=2,
+                                                    strides=2,
+                                                    padding="same")
+
+        self.flattened = tf.layers.flatten(self.layer3_conv)
 
         # first dense layer
-        self.w1 = tf.Variable(tf.random_normal([128, 512], stddev=1), name='W1')
-        self.b1 = tf.Variable(tf.random_normal([512]), name='b1')
+        self.w1 = tf.Variable(tf.random_normal([256, 256], stddev=1), name='W1')
+        self.b1 = tf.Variable(tf.random_normal([256]), name='b1')
         self.layer1_dense = tf.nn.relu(tf.add(tf.matmul(self.flattened, self.w1), self.b1))
 
         # output layer
-        self.wOutput = tf.Variable(tf.random_normal([512, 3], stddev=1), name='Wout')
+        self.wOutput = tf.Variable(tf.random_normal([256, 3], stddev=1), name='Wout')
         self.bOutput = tf.Variable(tf.random_normal([3]), name="bout")
         self.y_ = tf.add(tf.matmul(self.layer1_dense, self.wOutput), self.bOutput)
 

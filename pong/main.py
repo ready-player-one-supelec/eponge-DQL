@@ -5,7 +5,9 @@ from game import Game
 from player import Player
 import random
 import math
+import time
 
+t = time.time()
 player = Player(name = "Toto", isBot = True)
 
 def setOfGames(player, isTraining, nbOfGames, display) :
@@ -50,7 +52,11 @@ def setOfGames(player, isTraining, nbOfGames, display) :
             player.training()
             game.reset()
 
-# player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfTrainings)
-# player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfTrainings)
+nbOfGames = 4
+# player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
 
-setOfGames(player=player, isTraining=True, nbOfGames=1000, display=False)
+setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
+
+player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
+with open("./Saved_Networks/duration-test.ckpt-{}".format(nbOfGames), "w") as f :
+    f.write("Duration for {} training games : {}".format(nbOfGames, time.time() - t))

@@ -51,7 +51,6 @@ class Player :
         # Behaviour when playing & training
         self.trainable = True
         self.exploiting = False
-        self.playRandomly = False
 
         # Statistics
         self.gamesWon = 0
@@ -210,7 +209,7 @@ class Player :
 
     def play(self, observation) :
         if self.isBot :
-            if not self.playRandomly and (self.exploiting or random.random() > self.explorationRate) :
+            if self.exploiting or random.random() > self.explorationRate :
                 y_, choice = self.sess.run([self.y_, self.choice], feed_dict={self.x:self.processor.process(self.sess, [observation])})
                 print(y_)
                 return choice

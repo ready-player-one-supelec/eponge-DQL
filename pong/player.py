@@ -6,6 +6,27 @@ import random
 from pynput import keyboard
 from pynput.keyboard import Key
 
+class ImagePreprocessor :
+
+    def __init__(self) :
+        # input layer
+        self.x = tf.placeholder(tf.float32, [None, 210, 160, 3])
+
+        self.cropped = tf.image.crop_to_bounding_box(self.x,
+                                                        offset_height=35,
+                                                        offset_width=0,
+                                                        target_height=160,
+                                                        target_width=160)
+        self.gray = tf.image.rgb_to_grayscale(self.cropped) / 255
+        self.resized = tf.image.resize_images(
+            self.gray, [84, 84], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+
+        # output layer : image has been properly preprocessed
+        self.squeezed = tf.squeeze(self.resized)
+
+    def process(self, sess, images) :
+        return sess.run(self.resized, feed_dict = { self.x: images})
+
 class Player :
 
     def __init__(self, name, isBot) :
@@ -16,6 +37,7 @@ class Player :
             self.defineKeyboardListener()
 
         self.initializeProperties()
+        self.processor = ImagePreprocessor()
         self.createQNetwork()
         self.createOptimiser()
         self.initializeQNetwork()
@@ -46,19 +68,12 @@ class Player :
 
     def createQNetwork(self) :
         # input layer
-        self.x = tf.placeholder(tf.float32, [None, 210,160,3])
+        self.x = tf.placeholder(tf.float32, [None, 84, 84, 1])
         # expected output placeholder
         self.y = tf.placeholder(tf.float32, [None, 3])
 
-        self.cropped_x = tf.image.crop_to_bounding_box(self.x,
-                                                        offset_height=35,
-                                                        offset_width=0,
-                                                        target_height=160,
-                                                        target_width=160)
-        self.gray_x = tf.image.rgb_to_grayscale(self.cropped_x) / 255
-
         # first convolutional layer
-        self.layer1_conv = tf.layers.conv2d(inputs=self.gray_x,
+        self.layer1_conv = tf.layers.conv2d(inputs=self.x,
                                             filters=16,
                                             kernel_size=8,
                                             strides=4,
@@ -80,19 +95,14 @@ class Player :
         self.flattened = tf.layers.flatten(self.layer2_conv)
 
         # first dense layer
-        self.w1 = tf.Variable(tf.random_normal([512, 100], stddev=1), name='W1')
-        self.b1 = tf.Variable(tf.random_normal([100]), name='b1')
+        self.w1 = tf.Variable(tf.random_normal([128, 512], stddev=1), name='W1')
+        self.b1 = tf.Variable(tf.random_normal([512]), name='b1')
         self.layer1_dense = tf.nn.relu(tf.add(tf.matmul(self.flattened, self.w1), self.b1))
 
-        # second dense layer
-        self.w2 = tf.Variable(tf.random_normal([100, 10], stddev=1), name='W2')
-        self.b2 = tf.Variable(tf.random_normal([10]), name='b2')
-        self.layer2_dense = tf.nn.relu(tf.add(tf.matmul(self.layer1_dense, self.w2), self.b2))
-
         # output layer
-        self.wOutput = tf.Variable(tf.random_normal([10, 3], stddev=1), name='Wout')
+        self.wOutput = tf.Variable(tf.random_normal([512, 3], stddev=1), name='Wout')
         self.bOutput = tf.Variable(tf.random_normal([3]), name="bout")
-        self.y_ = tf.add(tf.matmul(self.layer2_dense, self.wOutput), self.bOutput)
+        self.y_ = tf.add(tf.matmul(self.layer1_dense, self.wOutput), self.bOutput)
 
         # choice
         self.choice = tf.argmax(self.y_, axis=1)
@@ -159,7 +169,7 @@ class Player :
             actions.append(action)
             rewards.append(reward)
             nextStates.append(nextState)
-        feed_dict={self.x: nextStates,
+        feed_dict={self.x: self.processor.process(self.sess, nextStates),
                     self.rewards: rewards,
                     self.discountFactorPlaceHolder: self.discountFactor}
         tmp = self.sess.run(self.expectedOutput, feed_dict=feed_dict)
@@ -193,14 +203,17 @@ class Player :
             # Input refers to the actual state
             output = allOutputs[beginning : end]
             masks = allMasks[beginning : end]
-            feed_dict = {self.x:input, self.y: output, self.mask: masks}
+            feed_dict = { self.x:self.processor.process(self.sess, input),
+                        self.y: output,
+                        self.mask: masks}
             _, c = self.sess.run([self.train, self.cost], feed_dict=feed_dict)
 
     def play(self, observation) :
         if self.isBot :
             if not self.playRandomly and (self.exploiting or random.random() > self.explorationRate) :
-                print(self.sess.run(self.y_, feed_dict={self.x:[observation]})[0])
-                return self.sess.run(self.choice, feed_dict={self.x: [observation]})[0]
+                y_, choice = self.sess.run([self.y_, self.choice], feed_dict={self.x:self.processor.process(self.sess, [observation])})
+                print(y_)
+                return choice
             else :
                 return random.randrange(0,3)
         else :

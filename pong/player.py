@@ -207,12 +207,13 @@ class Player :
                         self.mask: masks}
             _, c = self.sess.run([self.train, self.cost], feed_dict=feed_dict)
 
-    def play(self, observation) :
+    def play(self, observation = None) :
         if self.isBot :
-            if self.exploiting or random.random() > self.explorationRate :
+            if not isinstance(observation, type(None)) and (self.exploiting or random.random() > self.explorationRate) :
+                observation = observation[-1]
                 y_, choice = self.sess.run([self.y_, self.choice], feed_dict={self.x:self.processor.process(self.sess, [observation])})
-                print(y_)
-                return choice
+                # print(y_)
+                return choice[0]
             else :
                 return random.randrange(0,3)
         else :
@@ -245,7 +246,7 @@ class Player :
 
     def addStateSequence(self, currentState, action, reward, nextState) :
         if self.trainable :
-            self.statesSequence.append([currentState, action, reward, nextState])
+            self.statesSequence.append([currentState[-1], action, reward, nextState[-1]])
 
     def addStateSequence2trainingData(self) :
         if self.trainable :

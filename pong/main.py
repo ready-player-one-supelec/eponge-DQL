@@ -22,15 +22,22 @@ def setOfGames(player, isTraining, nbOfGames, display) :
             if isTraining :
                 if i % index == 0 :
                     player.updateConstants(learningRate = learningRateTable[i // index])
-                player.updateConstants(explorationRate=(0.55 + 0.45 * math.cos(math.pi * i / nbOfGames)))
+                player.updateConstants(explorationRate=0*(0.55 + 0.45 * math.cos(math.pi * i / nbOfGames)))
 
             currentStep = 0
             done = False
+            observations = [game.observation]
+            for _ in range(3) :
+                observation, reward, done = game.step(player.play(None))
+                observations.append(observation)
+                currentStep += 1
             while not (done or currentStep > game.limit) :
-                currentObservation = game.observation
-                action = player.play(currentObservation)
+                action = player.play(observations)
                 observation, reward, done = game.step(action)
-                player.addStateSequence(currentObservation, action, reward, observation)
+                previousState = observations[:]
+                observations.pop(0)
+                observations.append(observation)
+                player.addStateSequence(previousState, action, reward, observations)
                 player.updateStats(reward)
                 currentStep += 1
                 print(text + "Game : {} ; Step : {} ; Action : {}".format(i+1, currentStep, action))

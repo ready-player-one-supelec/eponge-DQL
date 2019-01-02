@@ -41,7 +41,9 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 player.updateStats(reward)
                 currentStep += 1
                 print(text + "Game : {} ; Step : {} ; Action : {}".format(i+1, currentStep, action))
-                # game.wait()
+
+                if not player.isBot :
+                    game.wait()
             player.displayStats()
             player.resetStats()
             player.addStateSequence2trainingData()

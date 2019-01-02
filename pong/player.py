@@ -10,7 +10,7 @@ class ImagePreprocessor :
 
     def __init__(self, imageSize) :
         # input layer
-        self.x = tf.placeholder(tf.float32, [None, 210, 160, 3])
+        self.x = tf.placeholder(tf.float32, [4, 210, 160, 3])
 
         self.cropped = tf.image.crop_to_bounding_box(self.x,
                                                         offset_height=35,
@@ -24,8 +24,12 @@ class ImagePreprocessor :
         # output layer : image has been properly preprocessed
         self.squeezed = tf.squeeze(self.resized)
 
+        # stacks images on top of each other like a convolutional filter,
+        # instead of putting them one after the other
+        self.transposed = tf.transpose(self.squeezed, [1, 2, 0])
+
     def process(self, sess, images) :
-        return sess.run(self.resized, feed_dict = { self.x: images})
+        return sess.run(self.transposed, feed_dict = { self.x: images})
 
 class Player :
 
@@ -70,7 +74,7 @@ class Player :
 
     def createQNetwork(self) :
         # input layer
-        self.x = tf.placeholder(tf.float32, [None, self.imageSize, self.imageSize, 1])
+        self.x = tf.placeholder(tf.float32, [None, self.imageSize, self.imageSize, 4])
         # expected output placeholder
         self.y = tf.placeholder(tf.float32, [None, 3])
 
@@ -186,8 +190,8 @@ class Player :
             state, action, reward, nextState = self.trainingData[i]
             actions.append(action)
             rewards.append(reward)
-            nextStates.append(nextState)
-        feed_dict={self.x: self.processor.process(self.sess, nextStates),
+            nextStates.append(self.processor.process(self.sess,nextState))
+        feed_dict={self.x: nextStates,
                     self.rewards: rewards,
                     self.discountFactorPlaceHolder: self.discountFactor}
         tmp = self.sess.run(self.expectedOutput, feed_dict=feed_dict)
@@ -217,20 +221,19 @@ class Player :
         for i in range(nbOfBatches) :
             beginning = self.miniBatchSize * i
             end = min(self.miniBatchSize * (i + 1), len(self.trainingData))
-            input = [transition[0] for transition in self.trainingData[beginning : end]]
+            input = [self.processor.process(self.sess, transition[0]) for transition in self.trainingData[beginning : end]]
             # Input refers to the actual state
             output = allOutputs[beginning : end]
             masks = allMasks[beginning : end]
-            feed_dict = { self.x:self.processor.process(self.sess, input),
+            feed_dict = { self.x: input,
                         self.y: output,
                         self.mask: masks}
             _, c = self.sess.run([self.train, self.cost], feed_dict=feed_dict)
 
-    def play(self, observation = None) :
+    def play(self, observations = None) :
         if self.isBot :
-            if not isinstance(observation, type(None)) and (self.exploiting or random.random() > self.explorationRate) :
-                observation = observation[-1]
-                y_, choice = self.sess.run([self.y_, self.choice], feed_dict={self.x:self.processor.process(self.sess, [observation])})
+            if not isinstance(observations, type(None)) and (self.exploiting or random.random() > self.explorationRate) :
+                y_, choice = self.sess.run([self.y_, self.choice], feed_dict={self.x:[self.processor.process(self.sess, observations)]})
                 # print(y_)
                 return choice[0]
             else :
@@ -265,7 +268,7 @@ class Player :
 
     def addStateSequence(self, currentState, action, reward, nextState) :
         if self.trainable :
-            self.statesSequence.append([currentState[-1], action, reward, nextState[-1]])
+            self.statesSequence.append([currentState, action, reward, nextState])
 
     def addStateSequence2trainingData(self) :
         if self.trainable :

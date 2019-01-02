@@ -22,7 +22,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
             if isTraining :
                 if i % index == 0 :
                     player.updateConstants(learningRate = learningRateTable[i // index])
-                player.updateConstants(explorationRate=0*(0.55 + 0.45 * math.cos(math.pi * i / nbOfGames)))
+                player.updateConstants(explorationRate=(0.55 + 0.45 * math.cos(math.pi * i / nbOfGames)))
 
             currentStep = 0
             done = False

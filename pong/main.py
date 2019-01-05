@@ -29,13 +29,13 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 observation, reward, done = game.step(player.play(None))
                 observations.append(observation)
                 currentStep += 1
+            player.buffer = player.processor.process(observations)
             while not done:
                 action = player.play(observations)
                 observation, reward, done = game.step(action)
-                previousState = observations[:]
                 observations.pop(0)
                 observations.append(observation)
-                player.addStateSequence(previousState, action, reward, observations)
+                player.addStateSequence(action, reward, observations)
                 player.training(currentStep)
                 player.updateStats(reward)
                 currentStep += 1

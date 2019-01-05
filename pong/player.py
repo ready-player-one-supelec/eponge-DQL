@@ -84,10 +84,10 @@ class Player :
         nextStates = []
         for i in range(self.miniBatchSize) :
             state, action, reward, nextState = self.miniBatch[i]
-            states.append(self.processor.process(state))
+            states.append(state)
             actions.append(action)
             rewards.append(reward)
-            nextStates.append(self.processor.process(nextState))
+            nextStates.append(nextState)
         output = self.TDTarget.computeTarget(nextStates, rewards)
         return output, states, actions
 
@@ -103,7 +103,7 @@ class Player :
     def play(self, observations = None) :
         if self.isBot :
             if not isinstance(observations, type(None)) and (self.exploiting or random.random() > self.explorationRate) :
-                return self.QNetwork.evaluate(self.processor.process(observations))
+                return self.QNetwork.evaluate(observations)
             else :
                 return random.randrange(0,3)
         else :
@@ -128,8 +128,10 @@ class Player :
         # print("{} victories & {} defeats".format(self.gamesWon, self.gamesLost))
         print(self.gamesWon, self.gamesLost)
 
-    def addStateSequence(self, currentState, action, reward, nextState) :
-        self.trainingData.append([currentState, action, reward, nextState])
+    def addStateSequence(self, action, reward, nextState) :
+        nS = self.processor.process(nextState)
+        self.trainingData.append([self.buffer, action, reward, nS])
+        self.buffer = nS
         while len(self.trainingData) > self.maxBatchSize :
             self.trainingData.pop(random.randrange(len(self.trainingData)))
 

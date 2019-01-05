@@ -19,8 +19,13 @@ class Player :
             self.defineKeyboardListener()
 
         self.initializeProperties()
-        self.processor = ImagePreprocessor(self.imageSize)
-        self.QNetwork = DQN(self.imageSize)
+        self.QNetwork = DQN(self.imageSize, "QN")
+        self.TDTarget = DQN(self.imageSize, "TD")
+        self.sess = tf.Session()
+        self.QNetwork.setSess(self.sess)
+        self.TDTarget.setSess(self.sess)
+        self.processor = ImagePreprocessor(self.imageSize, self.sess)
+        self.sess.run(tf.global_variables_initializer())
 
     def initializeProperties(self) :
         # Q Network Constants

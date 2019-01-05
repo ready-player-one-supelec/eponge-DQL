@@ -5,43 +5,43 @@ import tensorflow as tf
 
 class ImagePreprocessor :
 
-    def __init__(self, imageSize) :
-        # input layer
-        self.x = tf.placeholder(tf.float32, [4, 210, 160, 3])
+    def __init__(self, imageSize, sess) :
+        self.scope = "processor"
+        with tf.variable_scope(self.scope) :
+            # input layer
+            self.x = tf.placeholder(tf.float32, [4, 210, 160, 3])
 
-        self.cropped = tf.image.crop_to_bounding_box(self.x,
-                                                        offset_height=35,
-                                                        offset_width=0,
-                                                        target_height=160,
-                                                        target_width=160)
-        self.gray = tf.image.rgb_to_grayscale(self.cropped) / 255
-        self.resized = tf.image.resize_images(
-            self.gray, [imageSize, imageSize], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+            self.cropped = tf.image.crop_to_bounding_box(self.x,
+                                                            offset_height=35,
+                                                            offset_width=0,
+                                                            target_height=160,
+                                                            target_width=160)
+            self.gray = tf.image.rgb_to_grayscale(self.cropped) / 255
+            self.resized = tf.image.resize_images(
+                self.gray, [imageSize, imageSize], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
-        # output layer : image has been properly preprocessed
-        self.squeezed = tf.squeeze(self.resized)
+            # output layer : image has been properly preprocessed
+            self.squeezed = tf.squeeze(self.resized)
 
-        # stacks images on top of each other like a convolutional filter,
-        # instead of putting them one after the other
-        self.transposed = tf.transpose(self.squeezed, [1, 2, 0])
+            # stacks images on top of each other like a convolutional filter,
+            # instead of putting them one after the other
+            self.transposed = tf.transpose(self.squeezed, [1, 2, 0])
 
-        self.sess = tf.Session()
-        self.sess.run(tf.global_variables_initializer())
+        self.sess = sess
 
     def process(self, images) :
-        return self.sess.run(self.transposed, feed_dict = { self.x: images})
+        return self.transposed.eval(feed_dict = { self.x: images}, session = self.sess)
 
 
 class DQN :
 
-    def __init__(self, imageSize) :
+    def __init__(self, imageSize, scope) :
 
-        self.initializeProperties()
-        self.createQNetwork(imageSize)
-        self.createOptimiser()
-
-        self.sess = tf.Session()
-        self.sess.run(tf.global_variables_initializer())
+        self.scope = scope
+        with tf.variable_scope(self.scope):
+            self.initializeProperties()
+            self.createQNetwork(imageSize)
+            self.createOptimiser()
         self.saver = tf.train.Saver()
 
     def initializeProperties(self) :
@@ -164,3 +164,6 @@ class DQN :
             path += "-{}".format(global_step)
         self.saver.restore(self.sess, path)
         print("Network restored!")
+
+    def setSess(self, sess) :
+        self.sess = sess

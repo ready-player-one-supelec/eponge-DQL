@@ -94,17 +94,10 @@ class DQN :
         self.flattened = tf.layers.flatten(self.layer3_conv)
 
         # first dense layer
-        self.w1 = tf.Variable(tf.random_normal([256, 256], stddev=1), name='W1')
-        self.b1 = tf.Variable(tf.random_normal([256]), name='b1')
-        self.layer1_dense = tf.nn.relu(tf.add(tf.matmul(self.flattened, self.w1), self.b1))
+        self.layer1_dense = tf.layers.dense(self.flattened, 256, activation=tf.nn.relu)
 
         # output layer
-        self.wOutput = tf.Variable(tf.random_normal([256, 3], stddev=1), name='Wout')
-        self.bOutput = tf.Variable(tf.random_normal([3]), name="bout")
-        self.y_ = tf.add(tf.matmul(self.layer1_dense, self.wOutput), self.bOutput)
-
-        # choice
-        self.choice = tf.argmax(self.y_, axis=1)
+        self.y_ = tf.layers.dense(self.layer1_dense, 3)
 
         # masked output
         self.actions = tf.placeholder(tf.int32)
@@ -114,7 +107,7 @@ class DQN :
 
         # used to compute the expected output
         self.rewards = tf.placeholder(tf.float32)
-        self.discountFactorPlaceHolder = tf.placeholder(tf.float32)
+        self.discountFactorPlaceHolder = tf.Variable(self.discountFactor, trainable = False)
         self.filter = tf.dtypes.cast(tf.equal(self.rewards, 0 * self.rewards), tf.float32)
         self.expectedOutput = tf.add(self.rewards, self.filter * self.discountFactorPlaceHolder * tf.math.reduce_max(self.y_, axis=1))
         # this filter allows us to ignore the discount factor iff the game is over
@@ -132,8 +125,7 @@ class DQN :
     def computeTarget(self, nextStates, rewards) :
         feed_dict = {
             self.x: nextStates,
-            self.rewards: rewards,
-            self.discountFactorPlaceHolder: self.discountFactor
+            self.rewards: rewards
         }
         return self.sess.run(self.expectedOutput, feed_dict = feed_dict)
 
@@ -144,13 +136,10 @@ class DQN :
         _, c = self.sess.run([self.train, self.cost], feed_dict=feed_dict)
 
     def evaluate(self, observations) :
-        y_, choice = self.sess.run([self.y_, self.choice], feed_dict={self.x:[observations]})
-        # print(y_)
-        return choice[0]
+        choice = self.sess.run([self.y_, self.choice], feed_dict={self.x:[observations]})
+        return np.argmax(choice[0])
 
-    def updateConstants(self, learningRate = None, discountFactor = None) :
-        if not isinstance(discountFactor, type(None)) :
-            self.discountFactor = discountFactor
+    def updateConstants(self, learningRate = None) :
         if not isinstance(learningRate, type(None)) :
             self.learningRate = learningRate
             self.createOptimiser()

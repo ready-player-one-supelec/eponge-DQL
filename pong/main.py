@@ -14,7 +14,6 @@ def setOfGames(player, isTraining, nbOfGames, display) :
     # isTraining = True for a training session, False for a test session
     text = "TRAINING ; " if isTraining else "PLAYING ; "
 
-    player.updateConstants(discountFactor = 0.99)
     player.setBehaviour(isTraining)
 
     with Game(display = display) as game :

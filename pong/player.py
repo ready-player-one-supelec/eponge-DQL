@@ -96,8 +96,8 @@ class Player :
         else :
             return self.chosenAction
 
-    def updateConstants(self, learningRate = None, discountFactor = None, explorationRate = None) :
-        self.QNetwork.updateConstants(learningRate, discountFactor)
+    def updateConstants(self, learningRate = None, explorationRate = None) :
+        self.QNetwork.updateConstants(learningRate)
         if not isinstance(explorationRate, type(None)) :
             self.explorationRate = explorationRate
 

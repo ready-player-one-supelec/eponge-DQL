@@ -35,9 +35,10 @@ class ImagePreprocessor :
 
 class DQN :
 
-    def __init__(self, imageSize, scope) :
+    def __init__(self, imageSize, scope, miniBatchSize) :
 
         self.scope = scope
+        self.miniBatchSize = miniBatchSize
         with tf.variable_scope(self.scope):
             self.initializeProperties()
             self.createQNetwork(imageSize)
@@ -53,7 +54,7 @@ class DQN :
         # input layer
         self.x = tf.placeholder(tf.float32, [None, imageSize, imageSize, 4])
         # expected output placeholder
-        self.y = tf.placeholder(tf.float32, [None, 3])
+        self.y = tf.placeholder(tf.float32)
 
         # first convolutional layer
         self.layer1_conv = tf.layers.conv2d(inputs=self.x,
@@ -106,9 +107,10 @@ class DQN :
         self.choice = tf.argmax(self.y_, axis=1)
 
         # masked output
-        self.mask = tf.placeholder(tf.float32, (None, 3))
-        # mask has 3 values : 1 equals to 1 & the other 2 equal to 0
-        self.y_masked = tf.multiply(self.y_, self.mask)
+        self.actions = tf.placeholder(tf.int32)
+        batch_nums = tf.range(0, limit=self.miniBatchSize)
+        indices = tf.stack((batch_nums, self.actions), axis=1) # the axis is the dimension number
+        self.y_masked = tf.gather_nd(self.y_, indices)
 
         # used to compute the expected output
         self.rewards = tf.placeholder(tf.float32)
@@ -135,10 +137,10 @@ class DQN :
         }
         return self.sess.run(self.expectedOutput, feed_dict = feed_dict)
 
-    def training(self, input, output, masks) :
+    def training(self, input, output, actions) :
         feed_dict = { self.x: input,
                     self.y: output,
-                    self.mask: masks}
+                    self.actions: actions}
         _, c = self.sess.run([self.train, self.cost], feed_dict=feed_dict)
 
     def evaluate(self, observations) :

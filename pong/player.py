@@ -19,8 +19,8 @@ class Player :
             self.defineKeyboardListener()
 
         self.initializeProperties()
-        self.QNetwork = DQN(self.imageSize, "QN")
-        self.TDTarget = DQN(self.imageSize, "TD")
+        self.QNetwork = DQN(self.imageSize, "QN", self.miniBatchSize)
+        self.TDTarget = DQN(self.imageSize, "TD", self.miniBatchSize)
         self.sess = tf.Session()
         self.QNetwork.setSess(self.sess)
         self.TDTarget.setSess(self.sess)
@@ -78,8 +78,6 @@ class Player :
         self.listener.start()
 
     def computeAllOutputs(self) :
-        allOutputs = []
-        masks = []
         states = []
         actions = []
         rewards = []
@@ -90,15 +88,8 @@ class Player :
             actions.append(action)
             rewards.append(reward)
             nextStates.append(self.processor.process(nextState))
-        tmp = self.TDTarget.computeTarget(nextStates, rewards)
-        for i in range(len(actions)) :
-            L = [0] * 3
-            mask = [0] * 3
-            L[actions[i]] = tmp[i]
-            mask[actions[i]] = 1
-            allOutputs.append(L)
-            masks.append(mask)
-        return allOutputs, states, masks
+        output = self.TDTarget.computeTarget(nextStates, rewards)
+        return output, states, actions
 
     def training(self, step) :
         if not self.trainable or len(self.trainingData) < self.startTraining:
@@ -106,8 +97,8 @@ class Player :
         if step % self.synchronisationPeriod == 0 :
             self.synchronise()
         self.miniBatch = random.sample(self.trainingData, self.miniBatchSize)
-        output, input, masks = self.computeAllOutputs()
-        self.QNetwork.training(input, output, masks)
+        output, input, actions = self.computeAllOutputs()
+        self.QNetwork.training(input, output, actions)
 
     def play(self, observations = None) :
         if self.isBot :
@@ -139,7 +130,7 @@ class Player :
 
     def addStateSequence(self, currentState, action, reward, nextState) :
         self.trainingData.append([currentState, action, reward, nextState])
-        if len(self.trainingData) > self.maxBatchSize :
+        while len(self.trainingData) > self.maxBatchSize :
             self.trainingData.pop(random.randrange(len(self.trainingData)))
 
     def saveQNetwork(self, path, global_step = None) :

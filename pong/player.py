@@ -26,10 +26,12 @@ class Player :
         self.TDTarget.setSess(self.sess)
         self.processor = ImagePreprocessor(self.imageSize, self.sess)
         self.sess.run(tf.global_variables_initializer())
+        self.synchronise()
 
     def initializeProperties(self) :
         # Q Network Constants
         self.imageSize = 80
+        self.synchronisationPeriod = 2000
 
         # Constants
         self.explorationRate = 0.999
@@ -88,7 +90,7 @@ class Player :
             actions.append(action)
             rewards.append(reward)
             nextStates.append(self.processor.process(nextState))
-        tmp = self.QNetwork.computeTarget(nextStates, rewards)
+        tmp = self.TDTarget.computeTarget(nextStates, rewards)
         for i in range(len(actions)) :
             L = [0] * 3
             mask = [0] * 3
@@ -98,9 +100,11 @@ class Player :
             masks.append(mask)
         return allOutputs, states, masks
 
-    def training(self) :
+    def training(self, step) :
         if not self.trainable or len(self.trainingData) < self.startTraining:
             return
+        if step % self.synchronisationPeriod == 0 :
+            self.synchronise()
         self.miniBatch = random.sample(self.trainingData, self.miniBatchSize)
         output, input, masks = self.computeAllOutputs()
         self.QNetwork.training(input, output, masks)
@@ -147,3 +151,15 @@ class Player :
     def setBehaviour(self, isTraining) :
         self.trainable = isTraining
         self.exploiting = not isTraining
+
+    def synchronise(self):
+        e1_params = [t for t in tf.trainable_variables() if t.name.startswith(self.QNetwork.scope)]
+        e1_params = sorted(e1_params, key=lambda v: v.name)
+        e2_params = [t for t in tf.trainable_variables() if t.name.startswith(self.TDTarget.scope)]
+        e2_params = sorted(e2_params, key=lambda v: v.name)
+
+        update_ops = []
+        for e1_v, e2_v in zip(e1_params, e2_params):
+            op = e2_v.assign(e1_v)
+            update_ops.append(op)
+        self.sess.run(update_ops)

@@ -46,8 +46,8 @@ class DQN :
 
     def initializeProperties(self) :
 
-        self.learningRate = 0.001
-        self.discountFactor = 0.9
+        self.learningRate = 0.00025
+        self.discountFactor = 0.99
 
     def createQNetwork(self, imageSize) :
         # input layer
@@ -123,7 +123,7 @@ class DQN :
         # is this loss ?
         self.cost = tf.losses.mean_squared_error(self.y, self.y_masked)
         # Gradient Descent Optimiser definition
-        self.optimiser = tf.train.RMSPropOptimizer(learning_rate=self.learningRate)
+        self.optimiser = tf.train.RMSPropOptimizer(self.learningRate, 0.99, 0.0, 1e-6)
         self.train = self.optimiser.minimize(self.cost)
         print("Optimiser created")
 

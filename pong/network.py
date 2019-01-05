@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import tensorflow as tf
+import numpy as np
 
 class ImagePreprocessor :
 
@@ -135,7 +136,7 @@ class DQN :
         _, c = self.sess.run([self.train, self.cost], feed_dict=feed_dict)
 
     def evaluate(self, observations) :
-        choice = self.sess.run([self.y_, self.choice], feed_dict={self.x:[observations]})
+        choice = self.sess.run(self.y_, feed_dict={self.x:[observations]})
         return np.argmax(choice[0])
 
     def updateConstants(self, learningRate = None) :

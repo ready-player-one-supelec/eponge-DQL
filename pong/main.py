@@ -40,6 +40,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 observations.pop(0)
                 observations.append(observation)
                 player.addStateSequence(previousState, action, reward, observations)
+                player.training()
                 player.updateStats(reward)
                 currentStep += 1
                 print(text + "Game : {} ; Step : {} ; Action : {}".format(i+1, currentStep, action))
@@ -48,8 +49,6 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                     game.wait()
             player.displayStats()
             player.resetStats()
-            player.addStateSequence2trainingData()
-            player.training()
             game.reset()
 
 nbOfGames = 4
@@ -57,6 +56,6 @@ nbOfGames = 4
 
 setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
 
-player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
-with open("./Saved_Networks/duration-test.ckpt-{}".format(nbOfGames), "w") as f :
-    f.write("Duration for {} training games : {}".format(nbOfGames, time.time() - t))
+# player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
+# with open("./Saved_Networks/duration-test.ckpt-{}".format(nbOfGames), "w") as f :
+#     f.write("Duration for {} training games : {}".format(nbOfGames, time.time() - t))

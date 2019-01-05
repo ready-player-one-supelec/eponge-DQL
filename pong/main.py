@@ -29,7 +29,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 observation, reward, done = game.step(player.play(None))
                 observations.append(observation)
                 currentStep += 1
-            while not (done or currentStep > game.limit) :
+            while not done:
                 action = player.play(observations)
                 observation, reward, done = game.step(action)
                 previousState = observations[:]

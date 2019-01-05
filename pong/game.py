@@ -9,8 +9,6 @@ class Game :
     def __init__(self, display = False) :
         self.display = display
         self.observation = None
-        self.limit = 10000
-        # no more than self.limit steps for a game (against endless games)
 
         self.possibleActions = [0,4,5]
         # respectively doing nothing, going up and going down
@@ -35,9 +33,6 @@ class Game :
 
     def wait(self) :
         time.sleep(0.05)
-
-    def setLimit(self, limit) :
-        self.limit = limit
 
     def reset(self) :
         self.observation = self.env.reset()

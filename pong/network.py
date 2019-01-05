@@ -101,15 +101,14 @@ class DQN :
 
         # masked output
         self.actions = tf.placeholder(tf.int32)
-        batch_nums = tf.range(0, limit=self.miniBatchSize)
-        indices = tf.stack((batch_nums, self.actions), axis=1) # the axis is the dimension number
-        self.y_masked = tf.gather_nd(self.y_, indices)
+        indices = tf.range(self.miniBatchSize) * 3 + self.actions
+        self.y_masked = tf.gather(tf.reshape(self.y_, [-1]), indices)
 
         # used to compute the expected output
         self.rewards = tf.placeholder(tf.float32)
-        self.discountFactorPlaceHolder = tf.Variable(self.discountFactor, trainable = False)
-        self.filter = tf.dtypes.cast(tf.equal(self.rewards, 0 * self.rewards), tf.float32)
-        self.expectedOutput = tf.add(self.rewards, self.filter * self.discountFactorPlaceHolder * tf.math.reduce_max(self.y_, axis=1))
+        self.zeros = tf.fill([self.miniBatchSize], 0.0)
+        self.discountFactorPlaceHolder = tf.constant(self.discountFactor)
+        self.expectedOutput = tf.where(tf.not_equal(self.rewards, self.zeros), self.rewards, self.discountFactorPlaceHolder * tf.math.reduce_max(self.y_, axis=1))
         # this filter allows us to ignore the discount factor iff the game is over
 
         print("Q Network created")

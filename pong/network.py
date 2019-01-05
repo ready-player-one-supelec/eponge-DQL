@@ -63,10 +63,10 @@ class DQN :
                                             strides=4,
                                             activation=tf.nn.relu,
                                             padding="same")
-        # self.layer1_conv = tf.layers.max_pooling2d(inputs=self.layer1_conv,
-        #                                             pool_size=2,
-        #                                             strides=2,
-        #                                             padding="same")
+        self.layer1_conv = tf.layers.max_pooling2d(inputs=self.layer1_conv,
+                                                    pool_size=2,
+                                                    strides=2,
+                                                    padding="same")
 
         # second convolutional layer
         self.layer2_conv = tf.layers.conv2d(inputs=self.layer1_conv,
@@ -75,10 +75,10 @@ class DQN :
                                             strides=2,
                                             activation=tf.nn.relu,
                                             padding="same")
-        # self.layer2_conv = tf.layers.max_pooling2d(inputs=self.layer2_conv,
-        #                                             pool_size=2,
-        #                                             strides=2,
-        #                                             padding="same")
+        self.layer2_conv = tf.layers.max_pooling2d(inputs=self.layer2_conv,
+                                                    pool_size=2,
+                                                    strides=2,
+                                                    padding="same")
 
         # third convolutional layer
         self.layer3_conv = tf.layers.conv2d(inputs=self.layer2_conv,
@@ -87,14 +87,14 @@ class DQN :
                                             strides=1,
                                             activation=tf.nn.relu,
                                             padding="same")
-        # self.layer3_conv = tf.layers.max_pooling2d(inputs=self.layer3_conv,
-        #                                             pool_size=2,
-        #                                             strides=2,
-        #                                             padding="same")
+        self.layer3_conv = tf.layers.max_pooling2d(inputs=self.layer3_conv,
+                                                    pool_size=2,
+                                                    strides=2,
+                                                    padding="same")
         self.flattened = tf.layers.flatten(self.layer3_conv)
 
         # first dense layer
-        self.w1 = tf.Variable(tf.random_normal([6400, 256], stddev=1), name='W1')
+        self.w1 = tf.Variable(tf.random_normal([256, 256], stddev=1), name='W1')
         self.b1 = tf.Variable(tf.random_normal([256]), name='b1')
         self.layer1_dense = tf.nn.relu(tf.add(tf.matmul(self.flattened, self.w1), self.b1))
 

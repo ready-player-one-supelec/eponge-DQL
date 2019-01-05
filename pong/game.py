@@ -3,6 +3,7 @@
 
 import gym
 import time
+import random
 
 class Game :
 
@@ -36,3 +37,6 @@ class Game :
 
     def reset(self) :
         self.observation = self.env.reset()
+
+    def random_step(self) :
+        return self.step(random.randrange(0,3))

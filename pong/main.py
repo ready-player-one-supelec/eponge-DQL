@@ -26,12 +26,12 @@ def setOfGames(player, isTraining, nbOfGames, display) :
             done = False
             observations = [game.observation]
             for _ in range(3) :
-                observation, reward, done = game.step(player.play(None))
+                observation, reward, done = game.random_step()
                 observations.append(observation)
                 currentStep += 1
             player.buffer = player.processor.process(observations)
             while not done:
-                action = player.play(observations)
+                action = player.play()
                 observation, reward, done = game.step(action)
                 observations.pop(0)
                 observations.append(observation)

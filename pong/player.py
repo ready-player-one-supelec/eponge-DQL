@@ -77,33 +77,20 @@ class Player :
         self.listener = keyboard.Listener(on_press = on_press, on_release = on_release)
         self.listener.start()
 
-    def computeAllOutputs(self) :
-        states = []
-        actions = []
-        rewards = []
-        nextStates = []
-        for i in range(self.miniBatchSize) :
-            state, action, reward, nextState = self.miniBatch[i]
-            states.append(state)
-            actions.append(action)
-            rewards.append(reward)
-            nextStates.append(nextState)
-        output = self.TDTarget.computeTarget(nextStates, rewards)
-        return output, states, actions
-
     def training(self, step) :
         if not self.trainable or len(self.trainingData) < self.startTraining:
             return
         if step % self.synchronisationPeriod == 0 :
             self.synchronise()
         self.miniBatch = random.sample(self.trainingData, self.miniBatchSize)
-        output, input, actions = self.computeAllOutputs()
-        self.QNetwork.training(input, output, actions)
+        states, actions, rewards, nextStates = zip(*self.miniBatch)
+        output = self.TDTarget.computeTarget(nextStates, rewards)
+        self.QNetwork.training(states, output, actions)
 
-    def play(self, observations = None) :
+    def play(self) :
         if self.isBot :
-            if not isinstance(observations, type(None)) and (self.exploiting or random.random() > self.explorationRate) :
-                return self.QNetwork.evaluate(observations)
+            if self.exploiting or random.random() > self.explorationRate :
+                return self.QNetwork.evaluate(self.buffer)
             else :
                 return random.randrange(0,3)
         else :

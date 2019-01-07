@@ -48,11 +48,9 @@ class Player :
         # Training
         self.images = []
         self.transitions = []
-        self.trainingData = []
         self.maxBatchSize = 10000
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
-        self.miniBatch = []
         self.startTraining = 100
         # the training will happen iff we have more than startTraining data in trainingData
 
@@ -86,10 +84,13 @@ class Player :
         if step % self.synchronisationPeriod == 0 :
             self.synchronise()
         tmp = random.sample(range(len(self.transitions)), self.miniBatchSize)
-        self.miniBatch = []
+        states, actions, rewards, nextStates = [], [], [], []
         for i in tmp :
-            self.miniBatch.append([self.images[i]] + self.transitions[i] + [self.images[i+1]])
-        states, actions, rewards, nextStates = zip(*self.miniBatch)
+            states.append(self.images[i])
+            a,r = self.transitions[i]
+            actions.append(a)
+            rewards.append(r)
+            nextStates.append(self.images[i+1])
         output = self.TDTarget.computeTarget(nextStates, rewards)
         self.QNetwork.training(states, output, actions)
 
@@ -124,7 +125,7 @@ class Player :
     def addStateSequence(self, action, reward, nextState) :
         self.images.append(self.processor.process(nextState))
         self.transitions.append([action, reward])
-        while len(self.trainingData) > self.maxBatchSize :
+        while len(self.transitions) > self.maxBatchSize :
             self.images.pop(0)
             self.transitions.pop(0)
 

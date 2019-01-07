@@ -28,7 +28,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 observation, reward, done = game.random_step()
                 observations.append(observation)
                 currentStep += 1
-            player.buffer = player.processor.process(observations)
+            player.images.append(player.processor.process(observations))
             while not done:
                 action = player.play()
                 observation, reward, done = game.step(action)

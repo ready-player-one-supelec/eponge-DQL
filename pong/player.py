@@ -4,7 +4,6 @@
 import tensorflow as tf
 import random
 import time
-import numpy as np
 from pynput import keyboard
 from pynput.keyboard import Key
 from network import DQN, ImagePreprocessor
@@ -46,11 +45,11 @@ class Player :
         self.gamesLost = 0
 
         # Training
-        self.images = []
-        self.transitions = []
+        self.trainingData = []
         self.maxBatchSize = 10000
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
+        self.miniBatch = []
         self.startTraining = 100
         # the training will happen iff we have more than startTraining data in trainingData
 
@@ -79,25 +78,19 @@ class Player :
         self.listener.start()
 
     def training(self, step) :
-        if not self.trainable or len(self.transitions) < self.startTraining:
+        if not self.trainable or len(self.trainingData) < self.startTraining:
             return
         if step % self.synchronisationPeriod == 0 :
             self.synchronise()
-        tmp = random.sample(range(len(self.transitions)), self.miniBatchSize)
-        states, actions, rewards, nextStates = [], [], [], []
-        for i in tmp :
-            states.append(self.images[i])
-            a,r = self.transitions[i]
-            actions.append(a)
-            rewards.append(r)
-            nextStates.append(self.images[i+1])
+        self.miniBatch = random.sample(self.trainingData, self.miniBatchSize)
+        states, actions, rewards, nextStates = zip(*self.miniBatch)
         output = self.TDTarget.computeTarget(nextStates, rewards)
         self.QNetwork.training(states, output, actions)
 
     def play(self) :
         if self.isBot :
             if self.exploiting or random.random() > self.explorationRate :
-                return self.QNetwork.evaluate(self.images[-1])
+                return self.QNetwork.evaluate(self.buffer)
             else :
                 return random.randrange(0,3)
         else :
@@ -123,11 +116,11 @@ class Player :
         print(self.gamesWon, self.gamesLost)
 
     def addStateSequence(self, action, reward, nextState) :
-        self.images.append(self.processor.process(nextState))
-        self.transitions.append([action, reward])
-        while len(self.transitions) > self.maxBatchSize :
-            self.images.pop(0)
-            self.transitions.pop(0)
+        nS = self.processor.process(nextState)
+        self.trainingData.append([self.buffer, action, reward, nS])
+        self.buffer = nS
+        while len(self.trainingData) > self.maxBatchSize :
+            self.trainingData.pop(random.randrange(len(self.trainingData)))
 
     def saveQNetwork(self, path, global_step = None) :
         self.QNetwork.saveQNetwork(path, global_step)

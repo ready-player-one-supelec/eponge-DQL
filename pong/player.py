@@ -120,7 +120,7 @@ class Player :
         self.trainingData.append([self.buffer, action, reward, nS])
         self.buffer = nS
         while len(self.trainingData) > self.maxBatchSize :
-            self.trainingData.pop(random.randrange(len(self.trainingData)))
+            self.trainingData.pop(0)
 
     def saveQNetwork(self, path, global_step = None) :
         self.QNetwork.saveQNetwork(path, global_step)

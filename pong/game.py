@@ -25,7 +25,8 @@ class Game :
     def step(self, action, display = None) :
         if isinstance(display, type(None)) :
             display = self.display
-        if display :
+        assert(isinstance(display, bool))
+        if self.display :
             self.env.render()
         observation, reward, done, info = self.env.step(self.possibleActions[action])
         self.observation = observation

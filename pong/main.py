@@ -30,6 +30,8 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 currentStep += 1
             player.buffer = player.processor.process(observations)
             while not done:
+                if not player.isBot :
+                    game.wait()
                 action = player.play()
                 observation, reward, done = game.step(action)
                 observations.pop(0)
@@ -38,10 +40,8 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 player.training(currentStep)
                 player.updateStats(reward)
                 currentStep += 1
-                print(text + "Game : {} ; Step : {} ; Action : {}".format(i+1, currentStep, action))
 
-                if not player.isBot :
-                    game.wait()
+            print(text + "Game : {} ; Step : {}".format(i+1, currentStep))
             player.displayStats()
             player.resetStats()
             game.reset()

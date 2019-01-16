@@ -10,14 +10,14 @@ class ImagePreprocessor :
         self.scope = "processor"
         with tf.variable_scope(self.scope) :
             # input layer
-            self.x = tf.placeholder(tf.float32, [4, 210, 160, 3])
+            self.x = tf.placeholder(dtype = tf.uint8, shape = [4, 210, 160, 3])
 
             self.cropped = tf.image.crop_to_bounding_box(self.x,
                                                             offset_height=35,
                                                             offset_width=0,
                                                             target_height=160,
                                                             target_width=160)
-            self.gray = tf.image.rgb_to_grayscale(self.cropped) / 255
+            self.gray = tf.image.rgb_to_grayscale(self.cropped)
             self.resized = tf.image.resize_images(
                 self.gray, [imageSize, imageSize], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
@@ -53,12 +53,12 @@ class DQN :
 
     def createQNetwork(self, imageSize) :
         # input layer
-        self.x = tf.placeholder(tf.float32, [None, imageSize, imageSize, 4])
+        self.x = tf.placeholder(tf.uint8, [None, imageSize, imageSize, 4])
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 
         # first convolutional layer
-        self.layer1_conv = tf.layers.conv2d(inputs=self.x,
+        self.layer1_conv = tf.layers.conv2d(inputs=self.x / 255,
                                             filters=32,
                                             kernel_size=8,
                                             strides=4,

@@ -24,7 +24,7 @@ def hist(filename) :
     ax = plt.gca()
     sns.distplot(liste, bins = bins, hist = True, kde = False, norm_hist = False, ax = ax)
     ax2 = plt.twinx()
-    sns.distplot(liste, bins = bins, hist = False, kde = True, norm_hist = True, kde_kws={"bw":1,"color":"r"}, ax = ax2)
+    sns.distplot(liste, bins=bins, hist=False, kde=True, norm_hist=True, kde_kws={"bw":1, "color":"r"}, ax = ax2)
     ax2.grid(None)
     ax.set_xlabel("Relative score (goals scored - goals conceded)")
     ax.set_ylabel("Number of games")
@@ -36,9 +36,10 @@ def hist(filename) :
 
 fig = plt.figure()
 sns.set()
-hist("pong3000.out")
+path = "Saved_Networks/WithoutMaxPooling/7000/"
+hist(path+"pong7000.out")
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()
 fig.set_size_inches(20, 10)
-plt.savefig("hist_kde3000.png", dpi = 300)
+plt.savefig(path+"hist_kde.png", dpi = 300)
 plt.show()

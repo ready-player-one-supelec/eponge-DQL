@@ -62,40 +62,25 @@ class DQN :
                                             filters=32,
                                             kernel_size=8,
                                             strides=4,
-                                            activation=tf.nn.relu,
-                                            padding="same")
-        self.layer1_conv = tf.layers.max_pooling2d(inputs=self.layer1_conv,
-                                                    pool_size=2,
-                                                    strides=2,
-                                                    padding="same")
+                                            activation=tf.nn.relu)
 
         # second convolutional layer
         self.layer2_conv = tf.layers.conv2d(inputs=self.layer1_conv,
                                             filters=64,
                                             kernel_size=4,
                                             strides=2,
-                                            activation=tf.nn.relu,
-                                            padding="same")
-        self.layer2_conv = tf.layers.max_pooling2d(inputs=self.layer2_conv,
-                                                    pool_size=2,
-                                                    strides=2,
-                                                    padding="same")
+                                            activation=tf.nn.relu)
 
         # third convolutional layer
         self.layer3_conv = tf.layers.conv2d(inputs=self.layer2_conv,
                                             filters=64,
                                             kernel_size=3,
                                             strides=1,
-                                            activation=tf.nn.relu,
-                                            padding="same")
-        self.layer3_conv = tf.layers.max_pooling2d(inputs=self.layer3_conv,
-                                                    pool_size=2,
-                                                    strides=2,
-                                                    padding="same")
+                                            activation=tf.nn.relu)
         self.flattened = tf.layers.flatten(self.layer3_conv)
 
         # first dense layer
-        self.layer1_dense = tf.layers.dense(self.flattened, 256, activation=tf.nn.relu)
+        self.layer1_dense = tf.layers.dense(self.flattened, 512, activation=tf.nn.relu)
 
         # output layer
         self.y_ = tf.layers.dense(self.layer1_dense, 3)

@@ -44,11 +44,14 @@ def setOfGames(player, isTraining, nbOfGames, display) :
             player.resetStats()
             game.reset()
 
-nbOfGames = 3000
-player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
-setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = True)
+def testing(display = False) :
+    network2restore = 7000
+    nbOfGames = 1000
+    player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = network2restore)
+    setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
 
-# setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
-# player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
-# with open("./Saved_Networks/duration-test.ckpt-{}".format(nbOfGames), "w") as f :
-#     f.write("Duration for {} training games : {}".format(nbOfGames, time.time() - t))
+def training() :
+    setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
+    player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
+    with open("./Saved_Networks/duration-test.ckpt-{}".format(nbOfGames), "w") as f :
+        f.write("Duration for {} training games : {}".format(nbOfGames, time.time() - t))

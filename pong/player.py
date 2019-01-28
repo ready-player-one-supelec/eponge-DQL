@@ -117,10 +117,11 @@ class Player :
 
     def addStateSequence(self, action, reward, nextState) :
         nS = self.processor.process(nextState)
-        self.trainingData.append([self.buffer, action, reward, nS])
+        if self.trainable :
+            self.trainingData.append([self.buffer, action, reward, nS])
+            while len(self.trainingData) > self.maxBatchSize :
+                self.trainingData.pop(0)
         self.buffer = nS
-        while len(self.trainingData) > self.maxBatchSize :
-            self.trainingData.pop(0)
 
     def saveQNetwork(self, path, global_step = None) :
         self.QNetwork.saveQNetwork(path, global_step)

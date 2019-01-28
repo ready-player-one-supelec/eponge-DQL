@@ -15,9 +15,13 @@ def hist(filename) :
     for i in range(len(L)) :
         toto = L[i][:-1].split(" ")
         if len(toto) == 2 :
-            vic = int(toto[0])
-            defeat = int(toto[1])
-            liste.append(vic - defeat)
+            try :
+                vic = int(toto[0])
+                defeat = int(toto[1])
+            except :
+                pass
+            else :
+                liste.append(vic - defeat)
     plt.title("Number of games = {} ; max = {}".format(len(liste),max(liste)))
     plt.xlim(-25,25)
     bins = np.arange(-21, 23) - 0.5
@@ -37,7 +41,7 @@ def hist(filename) :
 fig = plt.figure()
 sns.set()
 path = "Saved_Networks/WithoutMaxPooling/7000/"
-hist(path+"pong7000.out")
+hist(path+"testing7000with5000.out")
 figManager = plt.get_current_fig_manager()
 figManager.window.showMaximized()
 fig.set_size_inches(20, 10)

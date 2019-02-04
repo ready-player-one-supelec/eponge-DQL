@@ -10,14 +10,14 @@ class ImagePreprocessor :
         self.scope = "processor"
         with tf.variable_scope(self.scope) :
             # input layer
-            self.x = tf.placeholder(tf.float32, [4, 210, 160, 3])
+            self.x = tf.placeholder(dtype = tf.uint8, shape = [4, 210, 160, 3])
 
             self.cropped = tf.image.crop_to_bounding_box(self.x,
                                                             offset_height=35,
                                                             offset_width=0,
                                                             target_height=160,
                                                             target_width=160)
-            self.gray = tf.image.rgb_to_grayscale(self.cropped) / 255
+            self.gray = tf.image.rgb_to_grayscale(self.cropped)
             self.resized = tf.image.resize_images(
                 self.gray, [imageSize, imageSize], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
 
@@ -53,49 +53,34 @@ class DQN :
 
     def createQNetwork(self, imageSize) :
         # input layer
-        self.x = tf.placeholder(tf.float32, [None, imageSize, imageSize, 4])
+        self.x = tf.placeholder(tf.uint8, [None, imageSize, imageSize, 4])
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 
         # first convolutional layer
-        self.layer1_conv = tf.layers.conv2d(inputs=self.x,
+        self.layer1_conv = tf.layers.conv2d(inputs=self.x / 255,
                                             filters=32,
                                             kernel_size=8,
                                             strides=4,
-                                            activation=tf.nn.relu,
-                                            padding="same")
-        self.layer1_conv = tf.layers.max_pooling2d(inputs=self.layer1_conv,
-                                                    pool_size=2,
-                                                    strides=2,
-                                                    padding="same")
+                                            activation=tf.nn.relu)
 
         # second convolutional layer
         self.layer2_conv = tf.layers.conv2d(inputs=self.layer1_conv,
                                             filters=64,
                                             kernel_size=4,
                                             strides=2,
-                                            activation=tf.nn.relu,
-                                            padding="same")
-        self.layer2_conv = tf.layers.max_pooling2d(inputs=self.layer2_conv,
-                                                    pool_size=2,
-                                                    strides=2,
-                                                    padding="same")
+                                            activation=tf.nn.relu)
 
         # third convolutional layer
         self.layer3_conv = tf.layers.conv2d(inputs=self.layer2_conv,
                                             filters=64,
                                             kernel_size=3,
                                             strides=1,
-                                            activation=tf.nn.relu,
-                                            padding="same")
-        self.layer3_conv = tf.layers.max_pooling2d(inputs=self.layer3_conv,
-                                                    pool_size=2,
-                                                    strides=2,
-                                                    padding="same")
+                                            activation=tf.nn.relu)
         self.flattened = tf.layers.flatten(self.layer3_conv)
 
         # first dense layer
-        self.layer1_dense = tf.layers.dense(self.flattened, 256, activation=tf.nn.relu)
+        self.layer1_dense = tf.layers.dense(self.flattened, 512, activation=tf.nn.relu)
 
         # output layer
         self.y_ = tf.layers.dense(self.layer1_dense, 3)

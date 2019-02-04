@@ -31,7 +31,7 @@ class Player :
     def initializeProperties(self) :
         # Q Network Constants
         self.imageSize = 80
-        self.synchronisationPeriod = 2000
+        self.synchronisationPeriod = 10000
 
         # Constants
         self.explorationRate = 0.999
@@ -46,11 +46,11 @@ class Player :
 
         # Training
         self.trainingData = []
-        self.maxBatchSize = 10000
+        self.maxBatchSize = 1000000
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
         self.miniBatch = []
-        self.startTraining = 100
+        self.startTraining = 50000
         # the training will happen iff we have more than startTraining data in trainingData
 
         print("Properties initialized")
@@ -117,10 +117,11 @@ class Player :
 
     def addStateSequence(self, action, reward, nextState) :
         nS = self.processor.process(nextState)
-        self.trainingData.append([self.buffer, action, reward, nS])
+        if self.trainable :
+            self.trainingData.append([self.buffer, action, reward, nS])
+            while len(self.trainingData) > self.maxBatchSize :
+                self.trainingData.pop(0)
         self.buffer = nS
-        while len(self.trainingData) > self.maxBatchSize :
-            self.trainingData.pop(random.randrange(len(self.trainingData)))
 
     def saveQNetwork(self, path, global_step = None) :
         self.QNetwork.saveQNetwork(path, global_step)

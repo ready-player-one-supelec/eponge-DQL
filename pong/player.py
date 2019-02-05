@@ -4,9 +4,9 @@
 import tensorflow as tf
 import random
 import time
-from pynput import keyboard
-from pynput.keyboard import Key
-from network import DQN, ImagePreprocessor
+# from pynput import keyboard
+# from pynput.keyboard import Key
+from network import DQN, FeatureExtractor
 
 
 class Player :
@@ -19,12 +19,12 @@ class Player :
             self.defineKeyboardListener()
 
         self.initializeProperties()
-        self.QNetwork = DQN(self.imageSize, "QN", self.miniBatchSize)
-        self.TDTarget = DQN(self.imageSize, "TD", self.miniBatchSize)
+        self.QNetwork = DQN([None, 4, 4], "QN", self.miniBatchSize)
+        self.TDTarget = DQN([None, 4, 4], "TD", self.miniBatchSize)
         self.sess = tf.Session()
         self.QNetwork.setSess(self.sess)
         self.TDTarget.setSess(self.sess)
-        self.processor = ImagePreprocessor(self.imageSize, self.sess)
+        self.processor = FeatureExtractor()
         self.sess.run(tf.global_variables_initializer())
         self.synchronise()
 
@@ -55,27 +55,27 @@ class Player :
 
         print("Properties initialized")
 
-    def defineKeyboardListener(self) :
+    # def defineKeyboardListener(self) :
 
-        def on_press(key):
-            try:
-                if key == Key.up :
-                    self.chosenAction = 1
-                elif key == Key.down :
-                    self.chosenAction = 2
-                else :
-                    self.chosenAction = 0
-            except AttributeError:
-                self.chosenAction = 0
+    #     def on_press(key):
+    #         try:
+    #             if key == Key.up :
+    #                 self.chosenAction = 1
+    #             elif key == Key.down :
+    #                 self.chosenAction = 2
+    #             else :
+    #                 self.chosenAction = 0
+    #         except AttributeError:
+    #             self.chosenAction = 0
 
-        def on_release(key):
-            self.chosenAction = 0
-            if key == keyboard.Key.esc:
-                # Stop listener
-                return False
+    #     def on_release(key):
+    #         self.chosenAction = 0
+    #         if key == keyboard.Key.esc:
+    #             # Stop listener
+    #             return False
 
-        self.listener = keyboard.Listener(on_press = on_press, on_release = on_release)
-        self.listener.start()
+    #     self.listener = keyboard.Listener(on_press = on_press, on_release = on_release)
+    #     self.listener.start()
 
     def training(self, step) :
         if not self.trainable or len(self.trainingData) < self.startTraining:

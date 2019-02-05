@@ -33,16 +33,36 @@ class ImagePreprocessor :
     def process(self, images) :
         return self.transposed.eval(feed_dict = { self.x: images}, session = self.sess)
 
+class FeatureExtractor:
+    def process(self, images):
+        res = []
+        for image in images:
+            im = self._to_gray_scale(image)[34:194, :]
+            ball = im == 236
+            left_slider = im [:, 16] == 74
+            right_slider = im[:, 143] == 92
+            res.append([
+                *np.unravel_index(ball.argmax(), ball.shape),
+                left_slider.argmax(),
+                right_slider.argmax()
+                ])
+        return np.array(res)
+
+    
+    @staticmethod
+    def _to_gray_scale(im):
+        return im[:,:,2]
+
 
 class DQN :
 
-    def __init__(self, imageSize, scope, miniBatchSize) :
+    def __init__(self, inputSize, scope, miniBatchSize) :
 
         self.scope = scope
         self.miniBatchSize = miniBatchSize
         with tf.variable_scope(self.scope):
             self.initializeProperties()
-            self.createQNetwork(imageSize)
+            self.createQNetwork(inputSize)
             self.createOptimiser()
         self.saver = tf.train.Saver()
 
@@ -51,39 +71,27 @@ class DQN :
         self.learningRate = 0.00025
         self.discountFactor = 0.99
 
-    def createQNetwork(self, imageSize) :
+    def createQNetwork(self, inputSize) :
         # input layer
-        self.x = tf.placeholder(tf.uint8, [None, imageSize, imageSize, 4])
+        self.x = tf.placeholder(tf.uint8, inputSize)
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 
-        # first convolutional layer
-        self.layer1_conv = tf.layers.conv2d(inputs=self.x / 255,
-                                            filters=32,
-                                            kernel_size=8,
-                                            strides=4,
-                                            activation=tf.nn.relu)
+        self._x = tf.cast(self.x, tf.float32)
 
-        # second convolutional layer
-        self.layer2_conv = tf.layers.conv2d(inputs=self.layer1_conv,
-                                            filters=64,
-                                            kernel_size=4,
-                                            strides=2,
-                                            activation=tf.nn.relu)
-
-        # third convolutional layer
-        self.layer3_conv = tf.layers.conv2d(inputs=self.layer2_conv,
-                                            filters=64,
-                                            kernel_size=3,
-                                            strides=1,
-                                            activation=tf.nn.relu)
-        self.flattened = tf.layers.flatten(self.layer3_conv)
+        self.flatten = tf.layers.flatten(self._x)
 
         # first dense layer
-        self.layer1_dense = tf.layers.dense(self.flattened, 512, activation=tf.nn.relu)
+        self.layer1_dense = tf.layers.dense(self.flatten, 32, activation=tf.nn.relu)
+
+        # second dense layer
+        self.layer2_dense = tf.layers.dense(self.layer1_dense, 16, activation=tf.nn.relu)
+
+        # third dense layer
+        self.layer3_dense = tf.layers.dense(self.layer2_dense, 8, activation=tf.nn.relu)
 
         # output layer
-        self.y_ = tf.layers.dense(self.layer1_dense, 3)
+        self.y_ = tf.layers.dense(self.layer3_dense, 3)
 
         # masked output
         self.actions = tf.placeholder(tf.int32)

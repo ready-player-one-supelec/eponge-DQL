@@ -52,6 +52,6 @@ def testing(display = False) :
 
 def training() :
     setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
-    player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
-    with open("./Saved_Networks/duration-test.ckpt-{}".format(nbOfGames), "w") as f :
+    player.saveQNetwork("./Saved_Networks/dql-{}.ckpt".format(t), global_step = nbOfGames)
+    with open("./Saved_Networks/duration-test.ckpt-{}-{}".format(nbOfGames, t), "w") as f :
         f.write("Duration for {} training games : {}".format(nbOfGames, time.time() - t))

@@ -114,6 +114,9 @@ class Player :
     def displayStats(self) :
         # print("{} victories & {} defeats".format(self.gamesWon, self.gamesLost))
         print(self.gamesWon, self.gamesLost)
+    
+    def getStats(self):
+        return self.gamesWon, self.gamesLost
 
     def addStateSequence(self, action, reward, nextState) :
         nS = self.processor.process(nextState)

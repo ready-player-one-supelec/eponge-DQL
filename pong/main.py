@@ -7,11 +7,9 @@ import random
 import math
 import time
 
-t = time.time()
-player = Player(name = "Toto", isBot = True)
-
 def setOfGames(player, isTraining, nbOfGames, display) :
     # isTraining = True for a training session, False for a test session
+    stats = []
     text = "TRAINING ; " if isTraining else "PLAYING ; "
 
     player.setBehaviour(isTraining)
@@ -40,18 +38,23 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 currentStep += 1
 
             print(text + "Game : {} ; Step : {}".format(i+1, currentStep))
+            stats.append(player.getStats())
             player.displayStats()
             player.resetStats()
             game.reset()
+    return stats
 
-def testing(display = False) :
-    network2restore = 7000
-    nbOfGames = 1000
-    player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = network2restore)
-    setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
+def test(filePath, step, nbOfGames, display = False) :
+    player = Player(name = "Toto", isBot=True)
+    player.restoreQNetwork(filePath, global_step = step)
+    return setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
 
-def training() :
+def train(filePath, nbOfGames, last_step = 0) :
+    t = time.time()
+    player = Player(name = "Toto", isBot = True)
+    if last_step != 0:
+        player.restoreQNetwork(filePath, global_step = last_step)
     setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
-    player.saveQNetwork("./Saved_Networks/dql-{}.ckpt".format(t), global_step = nbOfGames)
-    with open("./Saved_Networks/duration-test.ckpt-{}-{}".format(nbOfGames, t), "w") as f :
+    player.saveQNetwork(filePath, global_step = last_step + nbOfGames)
+    with open(filePath + "{}duration".format(last_step + nbOfGames), "w") as f :
         f.write("Duration for {} training games : {}".format(nbOfGames, time.time() - t))

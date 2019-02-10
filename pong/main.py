@@ -25,10 +25,20 @@ def setOfGames(player, isTraining, nbOfGames, display) :
             done = False
             observations = [game.observation]
             for _ in range(3) :
-                observation, reward, done = game.random_step()
+                observation, reward, done = game.step(0)
                 observations.append(observation)
                 currentStep += 1
             player.buffer = player.processor.process(observations)
+
+            while (player.buffer[:,:3]==0).all():
+                # skip first empty frames
+                # the ball is not yet on the screen
+                observation, reward, done = game.step(0)
+                observations.pop(0)
+                observations.append(observation)
+                currentStep += 1
+                player.buffer = player.processor.process(observations)
+
             while not done:
                 action = player.play()
                 observation, reward, done = game.step(action)
@@ -45,13 +55,14 @@ def setOfGames(player, isTraining, nbOfGames, display) :
             game.reset()
 
 def testing(display = False) :
-    network2restore = 7000
+    network2restore = 2000
     nbOfGames = 1000
     player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = network2restore)
     setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
 
-def training() :
-    setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
+def training(display = False) :
+    nbOfGames = 1000
+    setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = display)
     player.saveQNetwork("./Saved_Networks/dql-{}.ckpt".format(t), global_step = nbOfGames)
     with open("./Saved_Networks/duration-test.ckpt-{}-{}".format(nbOfGames, t), "w") as f :
         f.write("Duration for {} training games : {}".format(nbOfGames, time.time() - t))

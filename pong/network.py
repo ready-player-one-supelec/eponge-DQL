@@ -90,13 +90,13 @@ class DQN :
         self.flatten = tf.layers.flatten(self._x)
 
         # first dense layer
-        self.layer1_dense = tf.layers.dense(self.flatten, 10, activation=tf.nn.tanh)
+        self.layer1_dense = tf.layers.dense(self.flatten, 10, activation=tf.nn.leaky_relu)
 
         # second dense layer
-        self.layer2_dense = tf.layers.dense(self.layer1_dense, 16, activation=tf.nn.tanh)
+        self.layer2_dense = tf.layers.dense(self.layer1_dense, 10, activation=tf.nn.leaky_relu)
 
         # output layer
-        self.y_before_softmax = tf.layers.dense(self.layer2_dense, 3, activation=tf.nn.tanh)
+        self.y_before_softmax = tf.layers.dense(self.layer2_dense, 3)
 
         self.y_ = tf.nn.softmax(self.y_before_softmax)
         # masked output

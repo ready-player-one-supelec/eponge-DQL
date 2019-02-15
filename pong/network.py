@@ -46,8 +46,15 @@ class FeatureExtractor:
                 left_slider.argmax(),
                 right_slider.argmax()
                 ])
-        return np.array(res)
-
+        if (res[-1][0], res[-1][1]) != (0, 0) and (res[-2][0], res[-2][1]) != (0, 0):
+            direction = (res[-1][0] - res[-2][0], res[-1][1] - res[-2][1])
+            norm = (direction[0] **2 + direction[1] **2)**(1/2)
+            direction = (direction[0]/norm, direction[1]/norm)
+        else:
+            direction = (0, 0)
+        output = np.array([*direction, *res[-1]], dtype=np.float)
+        output[2:] /= 160.0
+        return output
     
     @staticmethod
     def _to_gray_scale(im):
@@ -73,7 +80,7 @@ class DQN :
 
     def createQNetwork(self, inputSize) :
         # input layer
-        self.x = tf.placeholder(tf.uint8, inputSize)
+        self.x = tf.placeholder(tf.float32, inputSize)
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 
@@ -82,16 +89,13 @@ class DQN :
         self.flatten = tf.layers.flatten(self._x)
 
         # first dense layer
-        self.layer1_dense = tf.layers.dense(self.flatten, 32, activation=tf.nn.relu)
+        self.layer1_dense = tf.layers.dense(self.flatten, 10, activation=tf.nn.tanh)
 
         # second dense layer
-        self.layer2_dense = tf.layers.dense(self.layer1_dense, 16, activation=tf.nn.relu)
-
-        # third dense layer
-        self.layer3_dense = tf.layers.dense(self.layer2_dense, 8, activation=tf.nn.relu)
+        self.layer2_dense = tf.layers.dense(self.layer1_dense, 16, activation=tf.nn.tanh)
 
         # output layer
-        self.y_before_softmax = tf.layers.dense(self.layer3_dense, 3, activation=tf.nn.softmax)
+        self.y_before_softmax = tf.layers.dense(self.layer2_dense, 3, activation=tf.nn.tanh)
 
         self.y_ = tf.nn.softmax(self.y_before_softmax)
         # masked output
@@ -131,7 +135,6 @@ class DQN :
 
     def evaluate(self, observations) :
         choice = self.sess.run(self.y_, feed_dict={self.x:[observations]})
-        print(observations, choice)
         return np.argmax(choice[0])
 
     def updateConstants(self, learningRate = None) :

@@ -19,8 +19,8 @@ class Player :
             self.defineKeyboardListener()
 
         self.initializeProperties()
-        self.QNetwork = DQN([None, 4, 4], "QN", self.miniBatchSize)
-        self.TDTarget = DQN([None, 4, 4], "TD", self.miniBatchSize)
+        self.QNetwork = DQN([None, 6], "QN", self.miniBatchSize)
+        self.TDTarget = DQN([None, 6], "TD", self.miniBatchSize)
         self.sess = tf.Session()
         self.QNetwork.setSess(self.sess)
         self.TDTarget.setSess(self.sess)

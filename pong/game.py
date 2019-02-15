@@ -28,7 +28,6 @@ class Game :
         assert(isinstance(display, bool))
         if self.display :
             self.env.render()
-            time.sleep(0.02)
         observation, reward, done, info = self.env.step(self.possibleActions[action])
         self.observation = observation
         return observation, reward, done

@@ -49,7 +49,8 @@ class FeatureExtractor:
         if (res[-1][0], res[-1][1]) != (0, 0) and (res[-2][0], res[-2][1]) != (0, 0):
             direction = (res[-1][0] - res[-2][0], res[-1][1] - res[-2][1])
             norm = (direction[0] **2 + direction[1] **2)**(1/2)
-            direction = (direction[0]/norm, direction[1]/norm)
+            if norm != 0:
+                direction = (direction[0]/norm, direction[1]/norm)
         else:
             direction = (0, 0)
         output = np.array([*direction, *res[-1]], dtype=np.float)

@@ -91,12 +91,13 @@ class DQN :
         self.layer3_dense = tf.layers.dense(self.layer2_dense, 8, activation=tf.nn.relu)
 
         # output layer
-        self.y_ = tf.layers.dense(self.layer3_dense, 3)
+        self.y_before_softmax = tf.layers.dense(self.layer3_dense, 3, activation=tf.nn.softmax)
 
+        self.y_ = tf.nn.softmax(self.y_before_softmax)
         # masked output
         self.actions = tf.placeholder(tf.int32)
         indices = tf.range(self.miniBatchSize) * 3 + self.actions
-        self.y_masked = tf.gather(tf.reshape(self.y_, [-1]), indices)
+        self.y_masked = tf.gather(tf.reshape(self.y_before_softmax, [-1]), indices)
 
         # used to compute the expected output
         self.rewards = tf.placeholder(tf.float32)
@@ -109,7 +110,7 @@ class DQN :
 
     def createOptimiser(self) :
         # is this loss ?
-        self.cost = tf.losses.mean_squared_error(self.y, self.y_masked)
+        self.cost = tf.losses.softmax_cross_entropy(self.y, self.y_masked)
         # Gradient Descent Optimiser definition
         self.optimiser = tf.train.RMSPropOptimizer(self.learningRate, 0.99, 0.0, 1e-6)
         self.train = self.optimiser.minimize(self.cost)
@@ -130,6 +131,7 @@ class DQN :
 
     def evaluate(self, observations) :
         choice = self.sess.run(self.y_, feed_dict={self.x:[observations]})
+        print(observations, choice)
         return np.argmax(choice[0])
 
     def updateConstants(self, learningRate = None) :

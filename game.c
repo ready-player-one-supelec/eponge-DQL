@@ -21,7 +21,7 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
         }
         updateValues(boule);
         draw(ecran, background, boule);
-        SDL_Delay(10);
+        SDL_Delay(20);
     }
 }
 

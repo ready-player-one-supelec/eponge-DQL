@@ -3,19 +3,21 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 
 #include "tools.h"
 #include "game.h"
 #include "graphique.h"
 
-void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
+void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Font *font) {
     int continuer = 1;
     SDL_Event event;
     initBoule(boule);
     Tuyau tuyaux[NOMBRE_TUYAUX];
     tuyaux[0].x = 700 ;
-    tuyaux[0].y = TROU_CENTRE_YMAX;//randCenter();
+    tuyaux[0].y = randCenter();
     int i, tmp, score = 0;
+
     for (i = 1; i < NOMBRE_TUYAUX ; i++) {
         nextTuyau(&tuyaux[i], &tuyaux[(i-1) % NOMBRE_TUYAUX]);
     }
@@ -53,7 +55,7 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
                 }
             }
         }
-        draw(ecran, background, boule, tuyaux);
+        draw(ecran, background, boule, tuyaux, font, score);
         SDL_Delay(20);
     }
 }

@@ -2,8 +2,8 @@
 #define DEF_TOOLS
 
 #define GRAVITY 0.4
-#define LARGEUR_FENETRE 1080 // Il faut de préférence une largeur supérieure à 720
-#define HAUTEUR_FENETRE 720 // Il faut de préférence une hauteur supérieure à 440
+#define LARGEUR_FENETRE 720//1080 // Il faut de préférence une largeur supérieure à 720
+#define HAUTEUR_FENETRE 440//720 // Il faut de préférence une hauteur supérieure à 440
 #define LARGEUR_TUYAU 100
 #define HAUTEUR_TROU 150
 #define TROU_CENTRE_YMIN 100
@@ -28,6 +28,14 @@ typedef struct Tuyau Tuyau;
 struct Tuyau {
     float x;
     float y;
+};
+
+typedef struct Font Font;
+struct Font {
+    SDL_Color color;
+    TTF_Font *font;
+    SDL_Surface *textSurface;
+    char text[31];
 };
 
 int min(int v1, int v2);

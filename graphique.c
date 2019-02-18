@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 
 #include "tools.h"
 #include "graphique.h"
 
-void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[]) {
+void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score) {
     SDL_Rect position;
     position.x = 0;
     position.y = 0;
@@ -19,6 +20,13 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     for (int i = 0; i < NOMBRE_TUYAUX; i++) {
         drawTuyau(ecran, &tuyaux[i]);
     }
+
+    position.x = 10;
+    position.y = 10;
+    sprintf(font->text, "Score : %d", score);
+    font->textSurface = TTF_RenderText_Blended(font->font, font->text, font->color);
+    SDL_BlitSurface(font->textSurface, NULL, ecran, &position);
+
     SDL_Flip(ecran);
 }
 

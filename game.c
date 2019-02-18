@@ -20,9 +20,16 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
                 break;
         }
         updateValues(boule);
+        if (reachedBottom(ecran, boule)) {
+            continuer = 0;
+        }
         draw(ecran, background, boule);
         SDL_Delay(20);
     }
+}
+
+int reachedBottom(SDL_Surface *ecran, Boule *boule) {
+    return boule->y > (ecran->h - boule->height);
 }
 
 void updateValues(Boule *boule) {

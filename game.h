@@ -5,5 +5,6 @@
 
 void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule);
 void updateValues(Boule *boule);
+int reachedBottom(SDL_Surface *ecran, Boule *boule);
 
 #endif

@@ -6,6 +6,7 @@ struct Boule {
     SDL_Surface *image;
     float y;
     float vy;
+    int height;
 };
 
 #endif

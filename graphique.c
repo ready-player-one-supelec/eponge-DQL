@@ -6,7 +6,7 @@
 #include "tools.h"
 #include "graphique.h"
 
-void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], int nombreTuyaux) {
+void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[]) {
     SDL_Rect position;
     position.x = 0;
     position.y = 0;
@@ -16,10 +16,9 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     position.y = boule->y;
     SDL_BlitSurface(boule->image, NULL, ecran, &position);
 
-    for (int i = 0; i < nombreTuyaux; i++) {
+    for (int i = 0; i < NOMBRE_TUYAUX; i++) {
         drawTuyau(ecran, &tuyaux[i]);
     }
-
     SDL_Flip(ecran);
 }
 

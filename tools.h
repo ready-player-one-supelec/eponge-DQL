@@ -2,13 +2,17 @@
 #define DEF_TOOLS
 
 #define GRAVITY 0.4
-#define LARGEUR_FENETRE 640
-#define HAUTEUR_FENETRE 480
+#define LARGEUR_FENETRE 1080 // Il faut de préférence une largeur supérieure à 720
+#define HAUTEUR_FENETRE 720 // Il faut de préférence une hauteur supérieure à 440
 #define LARGEUR_TUYAU 100
 #define HAUTEUR_TROU 150
 #define TROU_CENTRE_YMIN 100
-#define TROU_CENTRE_YMAX 380
+#define TROU_CENTRE_YMAX (HAUTEUR_FENETRE - (HAUTEUR_TROU/2) - 100)
 #define PAS_ENTRE_TUYAU 300
+#define TOLERANCE 2 //nombre de pixels de tolérance pour les collisions
+#define ESPACE_INTER_TUYAU (PAS_ENTRE_TUYAU+LARGEUR_TUYAU)
+#define NOMBRE_TUYAUX (2+(LARGEUR_FENETRE/ESPACE_INTER_TUYAU))
+#define BOULE_XAXIS 100;
 
 typedef struct Boule Boule;
 struct Boule {

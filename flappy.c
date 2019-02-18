@@ -19,13 +19,28 @@ int main (int argc, char *argv[]) {
     SDL_FillRect(background, NULL, SDL_MapRGB(ecran->format, 135, 206, 235));
     Boule boule;
     boule.image = IMG_Load("Images/boule.png");
-    boule.y = 50;
-    boule.vy = 0;
-    boule.x = 100;
-    boule.vx = 2;
     boule.height = boule.image->w;
 
+    int continuer = 1;
+    SDL_Event event;
     game(ecran, background, &boule);
+    while(continuer) {
+        SDL_WaitEvent(&event);
+        switch (event.type) {
+            case SDL_QUIT :
+                continuer = 0;
+                break;
+            case SDL_KEYDOWN :
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE :
+                        continuer = 0;
+                        break;
+                    case 13 :
+                        game(ecran, background, &boule);
+                        break;
+                }
+        }
+    }
 
     return EXIT_SUCCESS;
 }

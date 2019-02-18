@@ -2,9 +2,11 @@
 #define DEF_GAME
 
 void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule);
-void updateValues(Boule *boule, Tuyau tuyaux[], int nombreTuyaux);
-int death(SDL_Surface *ecran, Boule *boule);
+void updateValues(Boule *boule, Tuyau tuyaux[]);
+int death(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[]);
 int randCenter();
 void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau);
+int collision(Boule boule, Tuyau tuyau);
+void initBoule(Boule *boule);
 
 #endif

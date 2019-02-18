@@ -18,9 +18,19 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
             case SDL_QUIT :
                 continuer = 0;
                 break;
+            case SDL_KEYDOWN :
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE :
+                        continuer = 0;
+                        break;
+                    case SDLK_SPACE :
+                        boule->vy = -7.5;
+                        break;
+                }
+                break;
         }
         updateValues(boule);
-        if (reachedBottom(ecran, boule)) {
+        if (death(ecran, boule)) {
             continuer = 0;
         }
         draw(ecran, background, boule);
@@ -28,11 +38,13 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
     }
 }
 
-int reachedBottom(SDL_Surface *ecran, Boule *boule) {
-    return boule->y > (ecran->h - boule->height);
+int death(SDL_Surface *ecran, Boule *boule) {
+    return (boule->y > (ecran->h - boule->height)) ||
+            boule->y <= 0;
 }
 
 void updateValues(Boule *boule) {
     boule->vy += GRAVITY;
     boule->y += boule->vy;
+    boule->x += boule->vx;
 }

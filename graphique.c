@@ -12,7 +12,7 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
     position.y = 0;
     SDL_BlitSurface(background, NULL, ecran, &position);
 
-    position.x = 100;
+    position.x = boule->x;
     position.y = boule->y;
     SDL_BlitSurface(boule->image, NULL, ecran, &position);
 

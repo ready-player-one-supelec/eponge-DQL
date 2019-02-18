@@ -23,6 +23,8 @@ int main (int argc, char *argv[]) {
     boule->image = IMG_Load("Images/boule.png");
     boule->y = 0;
     boule->vy = 0;
+    boule->x = 100;
+    boule->vx = 1;
     boule->height = boule->image->w;
 
     game(ecran, background, boule);

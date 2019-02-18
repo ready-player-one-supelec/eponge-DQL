@@ -18,16 +18,15 @@ int main (int argc, char *argv[]) {
 
     SDL_Surface *background = SDL_CreateRGBSurface(SDL_HWSURFACE, ecran->w, ecran->h, 32, 0, 0, 0, 0);
     SDL_FillRect(background, NULL, SDL_MapRGB(ecran->format, 135, 206, 235));
-    Boule tmp;
-    Boule *boule = &tmp;
-    boule->image = IMG_Load("Images/boule.png");
-    boule->y = 10;
-    boule->vy = 0;
-    boule->x = 100;
-    boule->vx = 1;
-    boule->height = boule->image->w;
+    Boule boule;
+    boule.image = IMG_Load("Images/boule.png");
+    boule.y = 0;
+    boule.vy = 0;
+    boule.x = 100;
+    boule.vx = 2;
+    boule.height = boule.image->w;
 
-    game(ecran, background, boule);
+    game(ecran, background, &boule);
 
     return EXIT_SUCCESS;
 }

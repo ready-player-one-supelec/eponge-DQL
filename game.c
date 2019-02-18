@@ -40,7 +40,7 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
 
 int death(SDL_Surface *ecran, Boule *boule) {
     return (boule->y > (ecran->h - boule->height)) ||
-            boule->y <= 0;
+            boule->y < 0;
 }
 
 void updateValues(Boule *boule) {

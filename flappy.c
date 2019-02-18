@@ -21,7 +21,7 @@ int main (int argc, char *argv[]) {
     Boule tmp;
     Boule *boule = &tmp;
     boule->image = IMG_Load("Images/boule.png");
-    boule->y = 0;
+    boule->y = 10;
     boule->vy = 0;
     boule->x = 100;
     boule->vx = 1;

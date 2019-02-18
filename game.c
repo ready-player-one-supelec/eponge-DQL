@@ -41,6 +41,11 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
         if (death(ecran, boule)) {
             continuer = 0;
         }
+        for (int i = 0; i < nombreTuyaux; i++) {
+            if (tuyaux[i].x < -LARGEUR_TUYAU) {
+                nextTuyau(&tuyaux[i], &tuyaux[(nombreTuyaux + i-1) % nombreTuyaux]);
+            }
+        }
         draw(ecran, background, boule, tuyaux, nombreTuyaux);
         SDL_Delay(20);
     }

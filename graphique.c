@@ -28,7 +28,7 @@ void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau) {
     SDL_Surface *lowerPart = NULL;
     SDL_Rect position;
     int largeur;
-    if (tuyau->x >= -LARGEUR_TUYAU && tuyau->x < LARGEUR_FENETRE) {
+    if (tuyau->x < LARGEUR_FENETRE) {
         if (tuyau->x >= 0 && tuyau->x < LARGEUR_FENETRE - LARGEUR_TUYAU) {
             largeur = LARGEUR_TUYAU;;
             position.x = tuyau->x;

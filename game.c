@@ -19,7 +19,7 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Font *font)
     int i, tmp, score = 0;
 
     for (i = 1; i < NOMBRE_TUYAUX ; i++) {
-        nextTuyau(&tuyaux[i], &tuyaux[(i-1) % NOMBRE_TUYAUX]);
+        nextTuyau(&tuyaux[i], &tuyaux[(NOMBRE_TUYAUX + i-1) % NOMBRE_TUYAUX]);
     }
     while (continuer) {
         SDL_PollEvent(&event);

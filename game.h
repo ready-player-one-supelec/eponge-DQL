@@ -4,5 +4,7 @@
 void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule);
 void updateValues(Boule *boule, Tuyau tuyaux[], int nombreTuyaux);
 int death(SDL_Surface *ecran, Boule *boule);
+int randCenter();
+void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau);
 
 #endif

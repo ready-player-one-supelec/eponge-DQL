@@ -15,11 +15,10 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
     int nombreTuyaux = 3;
     Tuyau tuyaux[3];
     tuyaux[0].x = 700;
-    tuyaux[0].y = 200;
-    tuyaux[1].x = 1000;
-    tuyaux[1].y = 300;
-    tuyaux[2].x = 1300;
-    tuyaux[2].y = 250;
+    tuyaux[0].y = randCenter();
+    for (int i = 1; i < nombreTuyaux ; i++) {
+        nextTuyau(&tuyaux[i], &tuyaux[(i-1) % nombreTuyaux]);
+    }
 
     while (continuer) {
         SDL_PollEvent(&event);
@@ -58,4 +57,13 @@ void updateValues(Boule *boule, Tuyau tuyaux[], int nombreTuyaux) {
     for (int i = 0; i < nombreTuyaux; i++) {
         tuyaux[i].x -= boule->vx;
     }
+}
+
+int randCenter() {
+    return random() % (TROU_CENTRE_YMAX - TROU_CENTRE_YMIN) + TROU_CENTRE_YMIN;
+}
+
+void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau) {
+    tuyau->x = previousTuyau->x + PAS_ENTRE_TUYAU;
+    tuyau->y = randCenter();
 }

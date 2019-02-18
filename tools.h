@@ -8,6 +8,7 @@
 #define HAUTEUR_TROU 150
 #define TROU_CENTRE_YMIN 100
 #define TROU_CENTRE_YMAX 380
+#define PAS_ENTRE_TUYAU 300
 
 typedef struct Boule Boule;
 struct Boule {

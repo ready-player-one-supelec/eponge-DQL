@@ -4,21 +4,25 @@ CFLAGS=-O3 #Option d'optimisation du programme
 LDFLAGS=-lSDL -lSDL_mixer -lSDL_image#Linker
 EXEC=flappy  #Nom du programme � modifier
 
-OBJS=flappy.o graphique.o game.o
+OBJS=flappy.o graphique.o game.o tools.o
 
 all: $(EXEC)
 
 flappy: $(OBJS)
 	$(CPP) $(CFLAGS) -o flappy $(OBJS) $(LDFLAGS)
 
-flappy.o: flappy.c flappy.h graphique.h game.h
+flappy.o: flappy.c tools.h game.h
 	$(CPP) $(CFLAGS) -c flappy.c
 
-graphique.o : graphique.c flappy.h graphique.h
+graphique.o : graphique.c tools.h graphique.h
 	$(CPP) $(CFLAGS) -c graphique.c
 
-game.o : game.c flappy.h game.h graphique.h
+game.o : game.c tools.h game.h graphique.h
 	$(CPP) $(CFLAGS) -c game.c
+
+tools.o : tools.c tools.h
+	$(CPP) $(CFLAGS) -c tools.c
+
 
 
 clean:

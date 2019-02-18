@@ -4,13 +4,17 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
-#include "flappy.h"
+#include "tools.h"
 #include "game.h"
 #include "graphique.h"
 
 void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
     int continuer = 1;
     SDL_Event event;
+
+    Tuyau tuyau;
+    tuyau.x = 700;
+    tuyau.y = 200;
 
     while (continuer) {
         SDL_PollEvent(&event);
@@ -29,11 +33,11 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
                 }
                 break;
         }
-        updateValues(boule);
+        updateValues(boule, &tuyau);
         if (death(ecran, boule)) {
             continuer = 0;
         }
-        draw(ecran, background, boule);
+        draw(ecran, background, boule, &tuyau);
         SDL_Delay(20);
     }
 }
@@ -43,8 +47,8 @@ int death(SDL_Surface *ecran, Boule *boule) {
             boule->y < 0;
 }
 
-void updateValues(Boule *boule) {
+void updateValues(Boule *boule, Tuyau *tuyau) {
     boule->vy += GRAVITY;
     boule->y += boule->vy;
-    boule->x += boule->vx;
+    tuyau->x -= boule->vx;
 }

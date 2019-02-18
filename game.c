@@ -12,9 +12,14 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
     int continuer = 1;
     SDL_Event event;
 
-    Tuyau tuyau;
-    tuyau.x = 700;
-    tuyau.y = 200;
+    int nombreTuyaux = 3;
+    Tuyau tuyaux[3];
+    tuyaux[0].x = 700;
+    tuyaux[0].y = 200;
+    tuyaux[1].x = 1000;
+    tuyaux[1].y = 300;
+    tuyaux[2].x = 1300;
+    tuyaux[2].y = 250;
 
     while (continuer) {
         SDL_PollEvent(&event);
@@ -33,11 +38,11 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule) {
                 }
                 break;
         }
-        updateValues(boule, &tuyau);
+        updateValues(boule, tuyaux, nombreTuyaux);
         if (death(ecran, boule)) {
             continuer = 0;
         }
-        draw(ecran, background, boule, &tuyau);
+        draw(ecran, background, boule, tuyaux, nombreTuyaux);
         SDL_Delay(20);
     }
 }
@@ -47,8 +52,10 @@ int death(SDL_Surface *ecran, Boule *boule) {
             boule->y < 0;
 }
 
-void updateValues(Boule *boule, Tuyau *tuyau) {
+void updateValues(Boule *boule, Tuyau tuyaux[], int nombreTuyaux) {
     boule->vy += GRAVITY;
     boule->y += boule->vy;
-    tuyau->x -= boule->vx;
+    for (int i = 0; i < nombreTuyaux; i++) {
+        tuyaux[i].x -= boule->vx;
+    }
 }

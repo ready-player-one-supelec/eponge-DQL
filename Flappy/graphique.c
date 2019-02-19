@@ -27,7 +27,6 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     font->textSurface = TTF_RenderText_Blended(font->font, font->text, font->color);
     SDL_BlitSurface(font->textSurface, NULL, ecran, &position);
 
-    printf("%d %d\n", X_SIZE, Y_SIZE);
     char image[X_SIZE][Y_SIZE];
     treatingImage(ecran, image);
     showImage(ecran,image);

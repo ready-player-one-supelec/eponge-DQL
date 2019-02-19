@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <string.h>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -12,6 +16,9 @@ void initFont(Font *font);
 
 int main (int argc, char *argv[]) {
 
+    int imagesPipe = open("images", O_WRONLY);
+    int actionsPipe = open("actions", O_RDONLY);
+    char buff[6];
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
     Font font;
@@ -51,6 +58,12 @@ int main (int argc, char *argv[]) {
     SDL_FreeSurface(boule.image);
     TTF_CloseFont(font.font);
     TTF_Quit();
+    write(imagesPipe, "OK\n", sizeof("OK\n"));
+    close(imagesPipe);
+    do {
+        read(actionsPipe, buff, 6);
+    } while (!strstr(buff, "OK"));
+    close(actionsPipe);
     return EXIT_SUCCESS;
 }
 

@@ -14,8 +14,8 @@
 #define NOMBRE_TUYAUX (2+(LARGEUR_FENETRE/ESPACE_INTER_TUYAU))
 #define BOULE_XAXIS 100;
 
-#define SIZE_READING_BUFFER_PIPE 6 //only reading an integer
-#define SIZE_WRITING_BUFFER_PIPE 100 //will probably be a very large table (thousands of values)
+#define SIZE_READING_BUFFER_PIPE 2 //only reading an integer
+#define SIZE_WRITING_BUFFER_PIPE 3 //will probably be a very large table (thousands of values)
 
 typedef struct Boule Boule;
 struct Boule {

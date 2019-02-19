@@ -19,8 +19,15 @@ def setOfGames(player, isTraining, nbOfGames, display) :
     global imagesPipe, actionsPipe
 
     player.setBehaviour(isTraining)
-    imagesPipe = open("images",  "r", encoding="ISO-8859-1")
-    actionsPipe = open("actions",  "w", encoding="ISO-8859-1")
+    imagesPipe = os.open("images",  os.O_RDONLY)#, encoding="ISO-8859-1")
+    actionsPipe = open("actions",  "wb")# encoding="ISO-8859-1")
+
+    actionsPipe.write(b'01')
+    actionsPipe.write(b'00')
+    actionsPipe.write(b'10')
+    tmp = os.read(imagesPipe,2)
+    print(tmp.decode("utf-8"))
+
     with Game(display = display) as game :
         pass
         # currentStep = 0
@@ -50,11 +57,14 @@ def setOfGames(player, isTraining, nbOfGames, display) :
         #     player.resetStats()
         #     game.reset()
 
-    actionsPipe.write("OK");
+    actionsPipe.write(b'11');
     actionsPipe.close()
-    while "OK" not in imagesPipe.read() :
+    tmp = os.read(imagesPipe, 2)
+    while b'11' not in tmp :
         time.sleep(0.1)
-    imagesPipe.close()
+        print(tmp)
+        tmp += os.read(imagesPipe, 2)
+    os.close(imagesPipe)
 
 def testing(display = False) :
     network2restore = 7000

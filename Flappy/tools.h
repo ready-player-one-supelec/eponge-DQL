@@ -12,7 +12,7 @@
 #define TOLERANCE 2 //nombre de pixels de tolérance pour les collisions
 #define ESPACE_INTER_TUYAU (PAS_ENTRE_TUYAU+LARGEUR_TUYAU)
 #define NOMBRE_TUYAUX (2+(LARGEUR_FENETRE/ESPACE_INTER_TUYAU))
-#define BOULE_XAXIS 100;
+#define BOULE_XAXIS 100
 
 #define SIZE_READING_BUFFER_PIPE 2 //only reading an integer
 #define SIZE_WRITING_BUFFER_PIPE 3 //will probably be a very large table (thousands of values)

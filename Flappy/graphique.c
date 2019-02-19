@@ -126,7 +126,7 @@ void treatingImage(SDL_Surface *ecran, char image[X_SIZE][Y_SIZE]) {
     for (int i = 0; i < X_SIZE; i++) {
         for (int j = 0; j < Y_SIZE; j++) {
             SDL_GetRGB(getpixel(ecran, X_MIN + i * DOWNSAMPLING_FACTOR, j * DOWNSAMPLING_FACTOR), ecran->format, &r, &g, &b);
-            image[i][j] = (0,2126 * r + 0,7152 * g + 0,0722 * b) / 3;
+            image[i][j] = 0.2126 * r + 0.7152 * g + 0.0722 * b;
         }
     }
 }

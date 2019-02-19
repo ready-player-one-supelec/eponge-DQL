@@ -19,13 +19,10 @@ def setOfGames(player, isTraining, nbOfGames, display) :
     global imagesPipe, actionsPipe
 
     player.setBehaviour(isTraining)
-    imagesPipe = open("images",  "r")
-    actionsPipe = open("actions",  "w")
+    imagesPipe = open("images",  "r", encoding="ISO-8859-1")
+    actionsPipe = open("actions",  "w", encoding="ISO-8859-1")
     with Game(display = display) as game :
-        print("OK")
-        actionsPipe.write("1\n")
-        print("OK")
-
+        pass
         # currentStep = 0
         # for i in range(nbOfGames) :
         #     if isTraining :
@@ -52,9 +49,10 @@ def setOfGames(player, isTraining, nbOfGames, display) :
         #     player.displayStats()
         #     player.resetStats()
         #     game.reset()
-    actionsPipe.write("OK\n");
+
+    actionsPipe.write("OK");
     actionsPipe.close()
-    while  "OK" not in imagesPipe.read() :
+    while "OK" not in imagesPipe.read() :
         time.sleep(0.1)
     imagesPipe.close()
 

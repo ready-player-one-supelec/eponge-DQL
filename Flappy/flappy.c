@@ -16,9 +16,10 @@ void initFont(Font *font);
 
 int main (int argc, char *argv[]) {
 
-    int imagesPipe = open("images", O_WRONLY);
-    int actionsPipe = open("actions", O_RDONLY);
-    char buff[6];
+    Pipes pipes;
+    pipes.imagesPipe = open("images", O_WRONLY);
+    pipes.actionsPipe = open("actions", O_RDONLY);
+
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
     Font font;
@@ -58,12 +59,13 @@ int main (int argc, char *argv[]) {
     SDL_FreeSurface(boule.image);
     TTF_CloseFont(font.font);
     TTF_Quit();
-    write(imagesPipe, "OK\n", sizeof("OK\n"));
-    close(imagesPipe);
+    sprintf(pipes.writingBuffer, "OK");
+    write(pipes.imagesPipe, pipes.writingBuffer, SIZE_WRITING_BUFFER_PIPE);
+    close(pipes.imagesPipe);
     do {
-        read(actionsPipe, buff, 6);
-    } while (!strstr(buff, "OK"));
-    close(actionsPipe);
+        read(pipes.actionsPipe, pipes.readingBuffer, SIZE_READING_BUFFER_PIPE);
+    } while (!strstr(pipes.readingBuffer, "OK"));
+    close(pipes.actionsPipe);
     return EXIT_SUCCESS;
 }
 

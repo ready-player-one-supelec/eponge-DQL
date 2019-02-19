@@ -17,6 +17,13 @@
 #define SIZE_READING_BUFFER_PIPE 2 //only reading an integer
 #define SIZE_WRITING_BUFFER_PIPE 3 //will probably be a very large table (thousands of values)
 
+// IMAGE GIVEN TO THE AI
+#define DOWNSAMPLING_FACTOR 10
+#define X_MIN BOULE_XAXIS
+#define X_MAX (BOULE_XAXIS + PAS_ENTRE_TUYAU)
+#define X_SIZE ((X_MAX - X_MIN) / DOWNSAMPLING_FACTOR)
+#define Y_SIZE (HAUTEUR_FENETRE / DOWNSAMPLING_FACTOR)
+
 typedef struct Boule Boule;
 struct Boule {
     SDL_Surface *image;

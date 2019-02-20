@@ -20,8 +20,8 @@ class Player :
             self.defineKeyboardListener()
 
         self.initializeProperties()
-        self.QNetwork = DQN(self.imageSize, "QN", self.miniBatchSize)
-        self.TDTarget = DQN(self.imageSize, "TD", self.miniBatchSize)
+        self.QNetwork = DQN("QN", self.miniBatchSize)
+        self.TDTarget = DQN("TD", self.miniBatchSize)
         self.sess = tf.Session()
         self.QNetwork.setSess(self.sess)
         self.TDTarget.setSess(self.sess)
@@ -29,11 +29,7 @@ class Player :
         self.synchronise()
 
     def initializeProperties(self) :
-        # Q Network Constants
-        self.imageSize = 80
-        self.synchronisationPeriod = 10000
-
-        # Constants
+        self.synchronisationPeriod = 1000
         self.explorationRate = 0.999
 
         # Behaviour when playing & training
@@ -46,11 +42,11 @@ class Player :
 
         # Training
         self.trainingData = []
-        self.maxBatchSize = 1000000
+        self.maxBatchSize = 100000
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
         self.miniBatch = []
-        self.startTraining = 50000
+        self.startTraining = 10000
         # the training will happen iff we have more than startTraining data in trainingData
 
         print("Properties initialized")

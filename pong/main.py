@@ -20,7 +20,11 @@ def setOfGames(player, isTraining, nbOfGames, display) :
         currentStep = 0
         for i in range(nbOfGames) :
             if isTraining :
-                player.updateConstants(explorationRate= 1 - 0.9 * i / nbOfGames)
+                tmp = 1 - 0.98 * i / 100000
+                if tmp > 0.02 :
+                    player.updateConstants(explorationRate= tmp)
+                else :
+                    player.updateConstants(explorationRate= 0.02)
 
             done = False
             observations = [game.observation]

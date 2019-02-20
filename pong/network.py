@@ -6,13 +6,13 @@ import numpy as np
 
 class DQN :
 
-    def __init__(self, imageSize, scope, miniBatchSize) :
+    def __init__(self, scope, miniBatchSize) :
 
         self.scope = scope
         self.miniBatchSize = miniBatchSize
         with tf.variable_scope(self.scope):
             self.initializeProperties()
-            self.createQNetwork(imageSize)
+            self.createQNetwork()
             self.createOptimiser()
         self.saver = tf.train.Saver()
 
@@ -21,9 +21,9 @@ class DQN :
         self.learningRate = 0.00025
         self.discountFactor = 0.99
 
-    def createQNetwork(self, imageSize) :
+    def createQNetwork(self) :
         # input layer
-        self.x = tf.placeholder(tf.uint8, [None, imageSize, imageSize, 4])
+        self.x = tf.placeholder(tf.uint8, [None, 80, 80, 4])
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 

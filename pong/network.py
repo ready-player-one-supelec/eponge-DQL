@@ -4,36 +4,6 @@
 import tensorflow as tf
 import numpy as np
 
-class ImagePreprocessor :
-
-    def __init__(self, imageSize, sess) :
-        self.scope = "processor"
-        with tf.variable_scope(self.scope) :
-            # input layer
-            self.x = tf.placeholder(dtype = tf.uint8, shape = [4, 210, 160, 3])
-
-            self.cropped = tf.image.crop_to_bounding_box(self.x,
-                                                            offset_height=35,
-                                                            offset_width=0,
-                                                            target_height=160,
-                                                            target_width=160)
-            self.gray = tf.image.rgb_to_grayscale(self.cropped)
-            self.resized = tf.image.resize_images(
-                self.gray, [imageSize, imageSize], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
-
-            # output layer : image has been properly preprocessed
-            self.squeezed = tf.squeeze(self.resized)
-
-            # stacks images on top of each other like a convolutional filter,
-            # instead of putting them one after the other
-            self.transposed = tf.transpose(self.squeezed, [1, 2, 0])
-
-        self.sess = sess
-
-    def process(self, images) :
-        return self.transposed.eval(feed_dict = { self.x: images}, session = self.sess)
-
-
 class DQN :
 
     def __init__(self, imageSize, scope, miniBatchSize) :

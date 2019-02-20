@@ -28,7 +28,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 observation, reward, done = game.random_step()
                 observations.append(observation)
                 currentStep += 1
-            player.buffer = player.processor.process(observations)
+            player.buffer = player.process(observations)
             while not done:
                 action = player.play()
                 observation, reward, done = game.step(action)
@@ -51,7 +51,10 @@ def testing(display = False) :
     setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
 
 def training() :
+    nbOfGames = 10
     setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
     player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
     with open("./Saved_Networks/duration-test.ckpt-{}".format(nbOfGames), "w") as f :
         f.write("Duration for {} training games : {}".format(nbOfGames, time.time() - t))
+
+training()

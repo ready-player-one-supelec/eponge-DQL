@@ -4,9 +4,10 @@
 import tensorflow as tf
 import random
 import time
+import numpy as np
 from pynput import keyboard
 from pynput.keyboard import Key
-from network import DQN, ImagePreprocessor
+from network import DQN
 
 
 class Player :
@@ -24,7 +25,6 @@ class Player :
         self.sess = tf.Session()
         self.QNetwork.setSess(self.sess)
         self.TDTarget.setSess(self.sess)
-        self.processor = ImagePreprocessor(self.imageSize, self.sess)
         self.sess.run(tf.global_variables_initializer())
         self.synchronise()
 
@@ -87,6 +87,16 @@ class Player :
         output = self.TDTarget.computeTarget(nextStates, rewards)
         self.QNetwork.training(states, output, actions)
 
+    def process(self, images) :
+        # takes the role of the former preprocessor
+        images = np.array(images)
+        images = images[:,35:195,:,:]
+        images = images[:, ::2, ::2, 0]
+        images[images == 144] = 0
+        images[images == 109] = 0
+        images[images != 0] = 1
+        return np.stack(images, axis=2)
+
     def play(self) :
         if self.isBot :
             if self.exploiting or random.random() > self.explorationRate :
@@ -116,7 +126,7 @@ class Player :
         print(self.gamesWon, self.gamesLost)
 
     def addStateSequence(self, action, reward, nextState) :
-        nS = self.processor.process(nextState)
+        nS = self.process(nextState)
         if self.trainable :
             self.trainingData.append([self.buffer, action, reward, nS])
             while len(self.trainingData) > self.maxBatchSize :

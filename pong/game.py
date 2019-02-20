@@ -4,6 +4,7 @@
 import gym
 import time
 import random
+import numpy as np
 
 class Game :
 
@@ -31,10 +32,20 @@ class Game :
             # time.sleep(0.02)
         observation, reward, done, info = self.env.step(self.possibleActions[action])
         self.observation = observation
-        return observation, reward, done
+        return self.process(observation), reward, done
+
+    def process(self, image) :
+        # takes the role of the former preprocessor
+        image = np.array(image)
+        image = image[35:195,:,:]
+        image = image[::2, ::2, 0]
+        image[image == 144] = 0
+        image[image == 109] = 0
+        image[image != 0] = 1
+        return image
 
     def reset(self) :
-        self.observation = self.env.reset()
+        self.observation = self.process(self.env.reset())
 
     def random_step(self) :
         return self.step(random.randrange(0,3))

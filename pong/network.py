@@ -23,12 +23,13 @@ class DQN :
 
     def createQNetwork(self) :
         # input layer
-        self.x = tf.placeholder(tf.uint8, [None, 80, 80, 4])
+        self.x = tf.placeholder(tf.float32, [None, 80, 80])
+
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 
         # first convolutional layer
-        self.layer1_conv = tf.layers.conv2d(inputs=self.x / 255,
+        self.layer1_conv = tf.layers.conv2d(inputs=tf.reshape(self.x, [-1, 80, 80, 1]),
                                             filters=32,
                                             kernel_size=8,
                                             strides=4,

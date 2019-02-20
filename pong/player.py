@@ -83,16 +83,6 @@ class Player :
         output = self.TDTarget.computeTarget(nextStates, rewards)
         self.QNetwork.training(states, output, actions)
 
-    def process(self, images) :
-        # takes the role of the former preprocessor
-        images = np.array(images)
-        images = images[:,35:195,:,:]
-        images = images[:, ::2, ::2, 0]
-        images[images == 144] = 0
-        images[images == 109] = 0
-        images[images != 0] = 1
-        return np.stack(images, axis=2)
-
     def play(self) :
         if self.isBot :
             if self.exploiting or random.random() > self.explorationRate :
@@ -122,12 +112,11 @@ class Player :
         print(self.gamesWon, self.gamesLost)
 
     def addStateSequence(self, action, reward, nextState) :
-        nS = self.process(nextState)
         if self.trainable :
-            self.trainingData.append([self.buffer, action, reward, nS])
+            self.trainingData.append([self.buffer, action, reward, nextState])
             while len(self.trainingData) > self.maxBatchSize :
                 self.trainingData.pop(0)
-        self.buffer = nS
+        self.buffer = nextState
 
     def saveQNetwork(self, path, global_step = None) :
         self.QNetwork.saveQNetwork(path, global_step)

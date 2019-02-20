@@ -27,18 +27,19 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                     player.updateConstants(explorationRate= 0.02)
 
             done = False
-            observations = [game.observation]
-            for _ in range(3) :
-                observation, reward, done = game.random_step()
-                observations.append(observation)
-                currentStep += 1
-            player.buffer = player.process(observations)
+            observation = game.observation
+            nouvelleObservation, reward, done = game.random_step()
+            differenceObservation = nouvelleObservation - observation
+            observation = nouvelleObservation
+            currentStep += 1
+            player.buffer = differenceObservation
+
             while not done:
                 action = player.play()
-                observation, reward, done = game.step(action)
-                observations.pop(0)
-                observations.append(observation)
-                player.addStateSequence(action, reward, observations)
+                nouvelleObservation, reward, done = game.step(action)
+                differenceObservation = nouvelleObservation - observation
+                observation = nouvelleObservation
+                player.addStateSequence(action, reward, differenceObservation)
                 player.training(currentStep)
                 player.updateStats(reward)
                 currentStep += 1

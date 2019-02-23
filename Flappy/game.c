@@ -85,7 +85,7 @@ int collision(Boule boule, Tuyau tuyau) {
     if (boule.x - TOLERANCE < tuyau.x - boule.height || boule.x + TOLERANCE > tuyau.x + LARGEUR_TUYAU) {
         return 0;
     }
-    if (boule.x > tuyau.y - boule.height / 2 || boule.x < tuyau.y + LARGEUR_TUYAU - boule.height / 2) {
+    if (boule.x > tuyau.x - boule.height / 2 || boule.x < tuyau.x + LARGEUR_TUYAU - boule.height / 2) {
         if (boule.y + TOLERANCE < tuyau.y - HAUTEUR_TROU / 2) {
             return 1;
         } else if (boule.y + boule.height - TOLERANCE > tuyau.y + HAUTEUR_TROU / 2) {

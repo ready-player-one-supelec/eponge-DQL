@@ -81,11 +81,12 @@ int death(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[]) {
     return 0;
 }
 
+
 int collision(Boule boule, Tuyau tuyau) {
     if (boule.x - TOLERANCE < tuyau.x - boule.height || boule.x + TOLERANCE > tuyau.x + LARGEUR_TUYAU) {
         return 0;
     }
-    if (boule.x > tuyau.x - boule.height / 2 || boule.x < tuyau.x + LARGEUR_TUYAU - boule.height / 2) {
+    if (boule.x > tuyau.x - boule.height / 2 && boule.x < tuyau.x + LARGEUR_TUYAU - boule.height / 2) {
         if (boule.y + TOLERANCE < tuyau.y - HAUTEUR_TROU / 2) {
             return 1;
         } else if (boule.y + boule.height - TOLERANCE > tuyau.y + HAUTEUR_TROU / 2) {
@@ -96,6 +97,9 @@ int collision(Boule boule, Tuyau tuyau) {
     } else {
         int xCentre = boule.x + boule.height / 2;
         int yCentre = boule.y + boule.height / 2;
+        if (boule.y < tuyau.y - HAUTEUR_TROU / 2 || boule.y > tuyau.y + HAUTEUR_TROU / 2) {
+            return 1;
+        }
         int xCoin[2] = {tuyau.x, tuyau.x + LARGEUR_TUYAU};
         int yCoin[2] = {tuyau.y - HAUTEUR_TROU / 2, tuyau.y + HAUTEUR_TROU / 2};
         int dx, dy;
@@ -103,7 +107,7 @@ int collision(Boule boule, Tuyau tuyau) {
             for (int j = 0; j < 2; j++) {
                 dx = xCoin[i] - xCentre;
                 dy = yCoin[j] - yCentre;
-                if (dx * dx + dy * dy + TOLERANCE * TOLERANCE <= boule.height / 2) {
+                if (dx * dx + dy * dy + TOLERANCE * TOLERANCE <= boule.height * boule.height / 4) {
                     return 1;
                 }
             }

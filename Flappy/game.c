@@ -103,7 +103,7 @@ int collision(Boule boule, Tuyau tuyau) {
             for (int j = 0; j < 2; j++) {
                 dx = xCoin[i] - xCentre;
                 dy = yCoin[j] - yCentre;
-                if (dx * dx + dy * dy + TOLERANCE <= boule.height / 2) {
+                if (dx * dx + dy * dy + TOLERANCE * TOLERANCE <= boule.height / 2) {
                     return 1;
                 }
             }

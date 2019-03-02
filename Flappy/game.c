@@ -1,17 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
-
 #include "tools.h"
 #include "game.h"
 #include "graphique.h"
 
 Game game;
 
-void run_game() {
+void run_flappy(void) {
     int continuer = 1;
     SDL_Event event;
     initBoule(&game.boule);
@@ -131,9 +127,6 @@ void updateValues(Boule *boule, Tuyau tuyaux[]) {
     }
 }
 
-int randCenter() {
-    return random() % (TROU_CENTRE_YMAX - TROU_CENTRE_YMIN) + TROU_CENTRE_YMIN;
-}
 
 void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau) {
     tuyau->x = previousTuyau->x + PAS_ENTRE_TUYAU;

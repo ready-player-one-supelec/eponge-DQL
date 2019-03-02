@@ -5,18 +5,23 @@
 #include <sys/types.h>
 #include <string.h>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
-
 #include "tools.h"
 #include "game.h"
 
 void initFont(Font *font);
+void init_flappy(void);
+void exit_flappy(void);
 extern Game game;
 
 int main (int argc, char *argv[]) {
 
+    init_flappy();
+    run_flappy();
+    exit_flappy();
+    return EXIT_SUCCESS;
+}
+
+void init_flappy(void) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
     initFont(&game.font);
@@ -28,32 +33,13 @@ int main (int argc, char *argv[]) {
     SDL_FillRect(game.background, NULL, SDL_MapRGB(game.ecran->format, 135, 206, 235));
     game.boule.image = IMG_Load("Images/boule.png");
     game.boule.height = game.boule.image->w;
+}
 
-    int continuer = 1;
-    SDL_Event event;
-    run_game();
-    while(continuer) {
-        SDL_WaitEvent(&event);
-        switch (event.type) {
-            case SDL_QUIT :
-                continuer = 0;
-                break;
-            case SDL_KEYDOWN :
-                switch (event.key.keysym.sym) {
-                    case SDLK_ESCAPE :
-                        continuer = 0;
-                        break;
-                    case 13 :
-                        run_game();
-                        break;
-                }
-        }
-    }
+void exit_flappy(void) {
     SDL_FreeSurface(game.background);
     SDL_FreeSurface(game.boule.image);
     TTF_CloseFont(game.font.font);
     TTF_Quit();
-    return EXIT_SUCCESS;
 }
 
 void initFont(Font *font) {

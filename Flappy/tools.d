@@ -1,1 +1,1 @@
-tools.o: tools.c
+tools.o: tools.c tools.h

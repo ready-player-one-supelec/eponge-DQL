@@ -1,6 +1,10 @@
 #ifndef DEF_TOOLS
 #define DEF_TOOLS
 
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
+
 #define GRAVITY 0.4
 #define LARGEUR_FENETRE 720//1080 // Il faut de préférence une largeur supérieure à 720
 #define HAUTEUR_FENETRE 440//720 // Il faut de préférence une hauteur supérieure à 440
@@ -57,5 +61,6 @@ struct Game {
 
 int min(int v1, int v2);
 int max(int v1, int v2);
+int randCenter(void);
 
 #endif

@@ -8,5 +8,6 @@ int randCenter();
 void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau);
 int collision(Boule boule, Tuyau tuyau);
 void initBoule(Boule *boule);
+int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score);
 
 #endif

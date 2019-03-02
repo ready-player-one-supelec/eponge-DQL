@@ -14,9 +14,6 @@
 #define NOMBRE_TUYAUX (2+(LARGEUR_FENETRE/ESPACE_INTER_TUYAU))
 #define BOULE_XAXIS 100
 
-#define SIZE_READING_BUFFER_PIPE 2 //only reading an integer
-#define SIZE_WRITING_BUFFER_PIPE 3 //will probably be a very large table (thousands of values)
-
 // IMAGE GIVEN TO THE AI
 #define DOWNSAMPLING_FACTOR 10
 #define X_MIN BOULE_XAXIS
@@ -46,14 +43,6 @@ struct Font {
     TTF_Font *font;
     SDL_Surface *textSurface;
     char text[31];
-};
-
-typedef struct Pipes Pipes;
-struct Pipes {
-    int imagesPipe;
-    int actionsPipe;
-    char readingBuffer[SIZE_READING_BUFFER_PIPE];
-    char writingBuffer[SIZE_WRITING_BUFFER_PIPE];
 };
 
 int min(int v1, int v2);

@@ -16,9 +16,9 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Font *font)
     Tuyau tuyaux[NOMBRE_TUYAUX];
     tuyaux[0].x = 700 ;
     tuyaux[0].y = randCenter();
-    int i, tmp, score = 0;
+    int score = 0;
 
-    for (i = 1; i < NOMBRE_TUYAUX ; i++) {
+    for (int i = 1; i < NOMBRE_TUYAUX ; i++) {
         nextTuyau(&tuyaux[i], &tuyaux[(NOMBRE_TUYAUX + i-1) % NOMBRE_TUYAUX]);
     }
     while (continuer) {
@@ -38,25 +38,31 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Font *font)
                 }
                 break;
         }
-        updateValues(boule, tuyaux);
-        if (death(ecran, boule, tuyaux)) {
-            continuer = 0;
-        } else {
-            for (i = 0; i < NOMBRE_TUYAUX; i++) {
-                if (tuyaux[i].x < -LARGEUR_TUYAU) {
-                    nextTuyau(&tuyaux[i], &tuyaux[(NOMBRE_TUYAUX + i-1) % NOMBRE_TUYAUX]);
-                }
-            }
-            for (i = 0; i < NOMBRE_TUYAUX; i++) {
-                tmp = tuyaux[i].x + LARGEUR_TUYAU;
-                if (boule->x >= tmp && boule->x < tmp + boule->vx) {
-                    score++;
-                    break;
-                }
-            }
-        }
+        continuer = move(ecran, boule, tuyaux, &score);
         draw(ecran, background, boule, tuyaux, font, score);
         SDL_Delay(20);
+    }
+}
+
+int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score) {
+    updateValues(boule, tuyaux);
+    if (death(ecran, boule, tuyaux)) {
+        return 0;
+    } else {
+        int i, tmp;
+        for (i = 0; i < NOMBRE_TUYAUX; i++) {
+            if (tuyaux[i].x < -LARGEUR_TUYAU) {
+                nextTuyau(&tuyaux[i], &tuyaux[(NOMBRE_TUYAUX + i-1) % NOMBRE_TUYAUX]);
+            }
+        }
+        for (i = 0; i < NOMBRE_TUYAUX; i++) {
+            tmp = tuyaux[i].x + LARGEUR_TUYAU;
+            if (boule->x >= tmp && boule->x < tmp + boule->vx) {
+                *score++;
+                break;
+            }
+        }
+        return 1;
     }
 }
 

@@ -29,7 +29,7 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
 
     char image[X_SIZE][Y_SIZE];
     treatingImage(ecran, image);
-    showImage(ecran,image);
+    // showImage(ecran,image);
     SDL_Flip(ecran);
 }
 

@@ -8,22 +8,14 @@ OBJS=flappy.o graphique.o game.o tools.o
 
 all: $(EXEC)
 
+-include $(OBJS:.o=.d)
+
 flappy: $(OBJS)
 	$(CPP) $(CFLAGS) -o flappy $(OBJS) $(LDFLAGS)
 
-flappy.o: flappy.c tools.h game.h
-	$(CPP) $(CFLAGS) -c flappy.c
-
-graphique.o : graphique.c tools.h graphique.h
-	$(CPP) $(CFLAGS) -c graphique.c
-
-game.o : game.c tools.h game.h graphique.h
-	$(CPP) $(CFLAGS) -c game.c
-
-tools.o : tools.c tools.h
-	$(CPP) $(CFLAGS) -c tools.c
-
-
+%.o: %.c
+	$(CPP) $(CFLAGS) -c $*.c
+	$(CPP) -MM $*.c > $*.d
 
 clean:
 	rm -fr *.o

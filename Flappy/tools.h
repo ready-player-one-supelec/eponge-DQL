@@ -45,6 +45,16 @@ struct Font {
     char text[31];
 };
 
+typedef struct Game Game;
+struct Game {
+    SDL_Surface *ecran;
+    SDL_Surface *background;
+    Boule boule;
+    Font font;
+    int score;
+    Tuyau tuyaux[NOMBRE_TUYAUX];
+};
+
 int min(int v1, int v2);
 int max(int v1, int v2);
 

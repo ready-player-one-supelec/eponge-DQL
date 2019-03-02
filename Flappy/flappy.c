@@ -13,27 +13,25 @@
 #include "game.h"
 
 void initFont(Font *font);
+extern Game game;
 
 int main (int argc, char *argv[]) {
 
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
-    Font font;
-    initFont(&font);
-    SDL_Surface *ecran = NULL;
-    ecran = SDL_SetVideoMode(LARGEUR_FENETRE, HAUTEUR_FENETRE, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+    initFont(&game.font);
+    game.ecran = SDL_SetVideoMode(LARGEUR_FENETRE, HAUTEUR_FENETRE, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
     SDL_WM_SetCaption("Flappy Bird", NULL);
 
 
-    SDL_Surface *background = SDL_CreateRGBSurface(SDL_HWSURFACE, ecran->w, ecran->h, 32, 0, 0, 0, 0);
-    SDL_FillRect(background, NULL, SDL_MapRGB(ecran->format, 135, 206, 235));
-    Boule boule;
-    boule.image = IMG_Load("Images/boule.png");
-    boule.height = boule.image->w;
+    game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, game.ecran->w, game.ecran->h, 32, 0, 0, 0, 0);
+    SDL_FillRect(game.background, NULL, SDL_MapRGB(game.ecran->format, 135, 206, 235));
+    game.boule.image = IMG_Load("Images/boule.png");
+    game.boule.height = game.boule.image->w;
 
     int continuer = 1;
     SDL_Event event;
-    game(ecran, background, &boule, &font);
+    run_game();
     while(continuer) {
         SDL_WaitEvent(&event);
         switch (event.type) {
@@ -46,14 +44,14 @@ int main (int argc, char *argv[]) {
                         continuer = 0;
                         break;
                     case 13 :
-                        game(ecran, background, &boule, &font);
+                        run_game();
                         break;
                 }
         }
     }
-    SDL_FreeSurface(background);
-    SDL_FreeSurface(boule.image);
-    TTF_CloseFont(font.font);
+    SDL_FreeSurface(game.background);
+    SDL_FreeSurface(game.boule.image);
+    TTF_CloseFont(game.font.font);
     TTF_Quit();
     return EXIT_SUCCESS;
 }

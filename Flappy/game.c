@@ -9,17 +9,18 @@
 #include "game.h"
 #include "graphique.h"
 
-void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Font *font) {
+Game game;
+
+void run_game() {
     int continuer = 1;
     SDL_Event event;
-    initBoule(boule);
-    Tuyau tuyaux[NOMBRE_TUYAUX];
-    tuyaux[0].x = 700 ;
-    tuyaux[0].y = randCenter();
-    int score = 0;
+    initBoule(&game.boule);
+    game.tuyaux[0].x = 700 ;
+    game.tuyaux[0].y = randCenter();
+    game.score = 0;
 
     for (int i = 1; i < NOMBRE_TUYAUX ; i++) {
-        nextTuyau(&tuyaux[i], &tuyaux[(NOMBRE_TUYAUX + i-1) % NOMBRE_TUYAUX]);
+        nextTuyau(&game.tuyaux[i], &game.tuyaux[(i-1) % NOMBRE_TUYAUX]);
     }
     while (continuer) {
         SDL_PollEvent(&event);
@@ -33,13 +34,13 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Font *font)
                         continuer = 0;
                         break;
                     case SDLK_SPACE :
-                        boule->vy = -7.5;
+                        game.boule.vy = -7.5;
                         break;
                 }
                 break;
         }
-        continuer = move(ecran, boule, tuyaux, &score);
-        draw(ecran, background, boule, tuyaux, font, score);
+        continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score);
+        draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score);
         SDL_Delay(20);
     }
 }

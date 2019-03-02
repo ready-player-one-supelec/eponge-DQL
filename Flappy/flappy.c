@@ -24,6 +24,7 @@ void init_flappy(void) {
     game.ecran = SDL_SetVideoMode(LARGEUR_FENETRE, HAUTEUR_FENETRE, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
     SDL_WM_SetCaption("Flappy Bird", NULL);
 
+    game.display = 0;
 
     game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, game.ecran->w, game.ecran->h, 32, 0, 0, 0, 0);
     SDL_FillRect(game.background, NULL, SDL_MapRGB(game.ecran->format, 135, 206, 235));
@@ -50,6 +51,9 @@ void reset_flappy(void) {
     }
 }
 
+void changeDisplay(int display) {
+    game.display = display;
+}
 
 void exit_flappy(void) {
     SDL_FreeSurface(game.background);

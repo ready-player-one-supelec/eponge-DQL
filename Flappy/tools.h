@@ -56,6 +56,7 @@ struct Game {
     Font font;
     int score;
     Tuyau tuyaux[NOMBRE_TUYAUX];
+    int display;
 };
 
 int min(int v1, int v2);

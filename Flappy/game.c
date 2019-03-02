@@ -29,8 +29,10 @@ void run_flappy(void) {
                 break;
         }
         continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score);
-        draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score);
-        SDL_Delay(20);
+        draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display);
+        if (game.display){
+            SDL_Delay(20);
+        }
     }
 }
 

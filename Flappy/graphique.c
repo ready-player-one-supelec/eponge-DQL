@@ -4,7 +4,7 @@
 #include "tools.h"
 #include "graphique.h"
 
-void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score) {
+void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score, int display) {
     SDL_Rect position;
     position.x = 0;
     position.y = 0;
@@ -27,7 +27,9 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     char image[X_SIZE][Y_SIZE];
     treatingImage(ecran, image);
     // showImage(ecran,image);
-    SDL_Flip(ecran);
+    if (display) {
+        SDL_Flip(ecran);
+    }
 }
 
 void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau) {

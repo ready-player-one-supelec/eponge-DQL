@@ -1,5 +1,4 @@
-#ifndef DEF_GRAPHIQUE
-#define DEF_GRAPHIQUE
+#pragma once
 
 void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score);
 void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau);
@@ -8,5 +7,3 @@ Uint32 getpixel(SDL_Surface *surface, int x, int y);
 void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
 void treatingImage(SDL_Surface *ecran, char image[X_SIZE][Y_SIZE]);
 void showImage(SDL_Surface *ecran, char image[X_SIZE][Y_SIZE]);
-
-#endif

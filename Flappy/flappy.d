@@ -1,1 +1,1 @@
-flappy.o: flappy.c tools.h game.h
+flappy.o: flappy.c tools.h flappy.h game.h

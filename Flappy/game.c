@@ -10,14 +10,7 @@ Game game;
 void run_flappy(void) {
     int continuer = 1;
     SDL_Event event;
-    initBoule(&game.boule);
-    game.tuyaux[0].x = 700 ;
-    game.tuyaux[0].y = randCenter();
-    game.score = 0;
 
-    for (int i = 1; i < NOMBRE_TUYAUX ; i++) {
-        nextTuyau(&game.tuyaux[i], &game.tuyaux[(i-1) % NOMBRE_TUYAUX]);
-    }
     while (continuer) {
         SDL_PollEvent(&event);
         switch (event.type) {
@@ -55,19 +48,12 @@ int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score) {
         for (i = 0; i < NOMBRE_TUYAUX; i++) {
             tmp = tuyaux[i].x + LARGEUR_TUYAU;
             if (boule->x >= tmp && boule->x < tmp + boule->vx) {
-                *score++;
+                (*score)++;
                 break;
             }
         }
         return 1;
     }
-}
-
-void initBoule(Boule *boule) {
-    boule->y = 70;
-    boule->vy = 0;
-    boule->x = BOULE_XAXIS;
-    boule->vx = 3;
 }
 
 int death(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[]) {

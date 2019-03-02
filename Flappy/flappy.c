@@ -6,12 +6,8 @@
 #include <string.h>
 
 #include "tools.h"
+#include "flappy.h"
 #include "game.h"
-
-void initFont(Font *font);
-void init_flappy(void);
-void exit_flappy(void);
-extern Game game;
 
 int main (int argc, char *argv[]) {
 
@@ -33,7 +29,27 @@ void init_flappy(void) {
     SDL_FillRect(game.background, NULL, SDL_MapRGB(game.ecran->format, 135, 206, 235));
     game.boule.image = IMG_Load("Images/boule.png");
     game.boule.height = game.boule.image->w;
+    reset_flappy();
 }
+
+void initBoule(Boule *boule) {
+    boule->y = 70;
+    boule->vy = 0;
+    boule->x = BOULE_XAXIS;
+    boule->vx = 3;
+}
+
+void reset_flappy(void) {
+    initBoule(&game.boule);
+    game.tuyaux[0].x = 700 ;
+    game.tuyaux[0].y = randCenter();
+    game.score = 0;
+
+    for (int i = 1; i < NOMBRE_TUYAUX ; i++) {
+        nextTuyau(&game.tuyaux[i], &game.tuyaux[(i-1) % NOMBRE_TUYAUX]);
+    }
+}
+
 
 void exit_flappy(void) {
     SDL_FreeSurface(game.background);

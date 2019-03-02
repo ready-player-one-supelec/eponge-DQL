@@ -1,5 +1,4 @@
-#ifndef DEF_TOOLS
-#define DEF_TOOLS
+#pragma once
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -62,5 +61,3 @@ struct Game {
 int min(int v1, int v2);
 int max(int v1, int v2);
 int randCenter(void);
-
-#endif

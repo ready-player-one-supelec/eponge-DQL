@@ -12,7 +12,7 @@ int main (int argc, char *argv) {
     // keypad(w, 1);
     int continuer;
     do {
-        continuer = step(random() % 2);
+        continuer = step_flappy(random() % 2);
     } while (continuer);
     // endwin();
     // int continuer = 1;

@@ -30,11 +30,12 @@ void run_flappy(void) {
                 }
                 break;
         }
-        continuer = step(movement);
+        continuer = step_flappy(movement);
     }
 }
 
-int step(int movement) {
+
+int step_flappy(int movement) {
     if (movement == JUMP) {
         game.boule.vy = -7.5;
     }

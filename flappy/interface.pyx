@@ -2,38 +2,36 @@
 # -*- coding:utf-8 -*-
 
 cimport cython
+cimport numpy as np
+import numpy as np
+import time
 
 cdef extern from "flappy.h":
     void reset_flappy()
-    unsigned char* init_flappy(int display)
+    char* init_flappy(int display)
     void exit_flappy()
     void run_flappy()
     int step_flappy(int movement, int *reward)
-    void treatingImage(unsigned char *image)
+    void treatingImage(char *image)
     void getSize(int *x_size, int *y_size)
 
-cdef unsigned char* image = NULL;
-cdef int X_SIZE = 0;
-cdef int Y_SIZE = 0;
-
-import time
+cdef char* image = NULL
+cdef int X_SIZE = 0
+cdef int Y_SIZE = 0
+getSize(&X_SIZE, &Y_SIZE)
 
 def init(display) :
     global image
     cdef int c_display = display
     image = init_flappy(c_display)
-    getSize(&X_SIZE, &Y_SIZE)
     print(X_SIZE, Y_SIZE)
 
-def exit() :
+def exit_game() :
     exit_flappy()
 
 def convertImage() :
-    py_image = [[0 for j in range(X_SIZE)] for i in range(Y_SIZE)]
-    for i in range(X_SIZE) :
-        for j in range(Y_SIZE) :
-            py_image[j][i] = image[j * X_SIZE + i]
-    return py_image
+    image[X_SIZE * Y_SIZE - 1] = 0
+    return np.fromstring(image, np.uint8)
 
 def game_step(movement) :
     cdef int reward;
@@ -41,7 +39,4 @@ def game_step(movement) :
     cdef int c_continuer
     c_continuer = step_flappy(c_movement, &reward)
     treatingImage(image)
-    t = time.time()
-    convertImage()
-    print(time.time() - t)
     return c_continuer, convertImage(), reward

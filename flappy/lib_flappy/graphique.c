@@ -117,20 +117,20 @@ void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel) {
     }
 }
 
-void treatingImage(unsigned char *image) {
+void treatingImage(char *image) {
     Uint8 r,g,b;
     // char *image_backup = image;
     for (int j = 0; j < Y_SIZE; j++) {
         for (int i = 0; i < X_SIZE; i++, image++) {
             SDL_GetRGB(getpixel(game.ecran, X_MIN + i * DOWNSAMPLING_FACTOR, j * DOWNSAMPLING_FACTOR), game.ecran->format, &r, &g, &b);
-            *image = (unsigned char)(0.2126 * r + 0.7152 * g + 0.0722 * b);
+            *image = (char)(0.2126 * r + 0.7152 * g + 0.0722 * b);
         }
     }
     // showImage(game.ecran, image_backup);
 }
 
 
-void showImage(SDL_Surface *ecran, unsigned char *image) {
+void showImage(SDL_Surface *ecran, char *image) {
     SDL_Surface *fond = NULL;
     fond = SDL_CreateRGBSurface(SDL_HWSURFACE, LARGEUR_FENETRE, HAUTEUR_FENETRE, 32, 0, 0, 0, 0);
     SDL_FillRect(fond, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));

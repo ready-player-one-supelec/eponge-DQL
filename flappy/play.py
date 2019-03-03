@@ -16,9 +16,12 @@ while continuer :
     m = random.randint(0, 100)
     m = int(m >= 97)
     continuer, image, reward = game_step(m)
+    # print(list(image))
+    exit_game()
+    exit()
     plt.imshow(image, cmap="gray", aspect="equal")
     print(len(image), len(image[0]))
     plt.draw()
     input()
 
-exit()
+exit_game()

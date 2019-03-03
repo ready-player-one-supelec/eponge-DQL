@@ -24,7 +24,7 @@
 #define X_SIZE ((X_MAX - X_MIN) / DOWNSAMPLING_FACTOR)
 #define Y_SIZE (HAUTEUR_FENETRE / DOWNSAMPLING_FACTOR)
 
-enum {JUMP, WAIT};
+enum {WAIT, JUMP};
 
 typedef struct Boule Boule;
 struct Boule {

@@ -5,26 +5,19 @@
 #include <sys/types.h>
 #include <string.h>
 
+#define _LIB_FLAPPY
 #include "tools.h"
 #include "flappy.h"
 #include "game.h"
 
-int main (int argc, char *argv[]) {
-
-    init_flappy();
-    run_flappy();
-    exit_flappy();
-    return EXIT_SUCCESS;
-}
-
-void init_flappy(void) {
+void init_flappy(int display) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
     initFont(&game.font);
     game.ecran = SDL_SetVideoMode(LARGEUR_FENETRE, HAUTEUR_FENETRE, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
     SDL_WM_SetCaption("Flappy Bird", NULL);
 
-    game.display = 0;
+    game.display = display;
 
     game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, game.ecran->w, game.ecran->h, 32, 0, 0, 0, 0);
     SDL_FillRect(game.background, NULL, SDL_MapRGB(game.ecran->format, 135, 206, 235));

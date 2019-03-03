@@ -3,7 +3,7 @@
 
 from interface import *
 import random
-init(1)
+init(0)
 
 continuer = True
 while continuer :

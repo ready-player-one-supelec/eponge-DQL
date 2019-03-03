@@ -34,7 +34,7 @@ void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau) {
     SDL_Surface *lowerPart = NULL;
     SDL_Rect position;
     int largeur;
-    if (tuyau->x < LARGEUR_FENETRE) {
+    if (tuyau->x < X_MAX || (game.display && tuyau->x < LARGEUR_FENETRE)) {
         if (tuyau->x >= 0 && tuyau->x < LARGEUR_FENETRE - LARGEUR_TUYAU) {
             largeur = LARGEUR_TUYAU;;
             position.x = tuyau->x;
@@ -66,6 +66,10 @@ Uint32 getpixel(SDL_Surface *surface, int x, int y) {
     Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
 
     switch(bpp) {
+    case 4:
+        return *(Uint32 *)p;
+        break;
+
     case 1:
         return *p;
         break;
@@ -79,10 +83,6 @@ Uint32 getpixel(SDL_Surface *surface, int x, int y) {
             return p[0] << 16 | p[1] << 8 | p[2];
         else
             return p[0] | p[1] << 8 | p[2] << 16;
-        break;
-
-    case 4:
-        return *(Uint32 *)p;
         break;
 
     default:

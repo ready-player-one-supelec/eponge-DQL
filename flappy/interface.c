@@ -1023,6 +1023,9 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'cython' */
 
 /* Module declarations from 'interface' */
+static char *__pyx_v_9interface_image;
+static int __pyx_v_9interface_X_SIZE;
+static int __pyx_v_9interface_Y_SIZE;
 #define __Pyx_MODULE_NAME "interface"
 extern int __pyx_module_is_main_interface;
 int __pyx_module_is_main_interface = 0;
@@ -1066,12 +1069,12 @@ static PyObject *__pyx_codeobj__3;
 static PyObject *__pyx_codeobj__5;
 /* Late includes */
 
-/* "interface.pyx":13
- *     int step_flappy(int movement)
+/* "interface.pyx":19
+ * cdef int Y_SIZE = 0;
  * 
  * def init(display) :             # <<<<<<<<<<<<<<
- *     cdef int c_display = display;
- *     init_flappy(c_display)
+ *     global image
+ *     cdef int c_display = display
  */
 
 /* Python wrapper */
@@ -1095,31 +1098,40 @@ static PyObject *__pyx_pf_9interface_init(CYTHON_UNUSED PyObject *__pyx_self, Py
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("init", 0);
 
-  /* "interface.pyx":14
- * 
+  /* "interface.pyx":21
  * def init(display) :
- *     cdef int c_display = display;             # <<<<<<<<<<<<<<
- *     init_flappy(c_display)
- * 
+ *     global image
+ *     cdef int c_display = display             # <<<<<<<<<<<<<<
+ *     image = init_flappy(c_display)
+ *     getSize(&X_SIZE, &Y_SIZE)
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_display); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_display); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 21, __pyx_L1_error)
   __pyx_v_c_display = __pyx_t_1;
 
-  /* "interface.pyx":15
- * def init(display) :
- *     cdef int c_display = display;
- *     init_flappy(c_display)             # <<<<<<<<<<<<<<
+  /* "interface.pyx":22
+ *     global image
+ *     cdef int c_display = display
+ *     image = init_flappy(c_display)             # <<<<<<<<<<<<<<
+ *     getSize(&X_SIZE, &Y_SIZE)
+ * 
+ */
+  __pyx_v_9interface_image = init_flappy(__pyx_v_c_display);
+
+  /* "interface.pyx":23
+ *     cdef int c_display = display
+ *     image = init_flappy(c_display)
+ *     getSize(&X_SIZE, &Y_SIZE)             # <<<<<<<<<<<<<<
  * 
  * def exit() :
  */
-  init_flappy(__pyx_v_c_display);
+  getSize((&__pyx_v_9interface_X_SIZE), (&__pyx_v_9interface_Y_SIZE));
 
-  /* "interface.pyx":13
- *     int step_flappy(int movement)
+  /* "interface.pyx":19
+ * cdef int Y_SIZE = 0;
  * 
  * def init(display) :             # <<<<<<<<<<<<<<
- *     cdef int c_display = display;
- *     init_flappy(c_display)
+ *     global image
+ *     cdef int c_display = display
  */
 
   /* function exit code */
@@ -1134,8 +1146,8 @@ static PyObject *__pyx_pf_9interface_init(CYTHON_UNUSED PyObject *__pyx_self, Py
   return __pyx_r;
 }
 
-/* "interface.pyx":17
- *     init_flappy(c_display)
+/* "interface.pyx":25
+ *     getSize(&X_SIZE, &Y_SIZE)
  * 
  * def exit() :             # <<<<<<<<<<<<<<
  *     exit_flappy()
@@ -1161,7 +1173,7 @@ static PyObject *__pyx_pf_9interface_2exit(CYTHON_UNUSED PyObject *__pyx_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("exit", 0);
 
-  /* "interface.pyx":18
+  /* "interface.pyx":26
  * 
  * def exit() :
  *     exit_flappy()             # <<<<<<<<<<<<<<
@@ -1170,8 +1182,8 @@ static PyObject *__pyx_pf_9interface_2exit(CYTHON_UNUSED PyObject *__pyx_self) {
  */
   exit_flappy();
 
-  /* "interface.pyx":17
- *     init_flappy(c_display)
+  /* "interface.pyx":25
+ *     getSize(&X_SIZE, &Y_SIZE)
  * 
  * def exit() :             # <<<<<<<<<<<<<<
  *     exit_flappy()
@@ -1185,7 +1197,7 @@ static PyObject *__pyx_pf_9interface_2exit(CYTHON_UNUSED PyObject *__pyx_self) {
   return __pyx_r;
 }
 
-/* "interface.pyx":20
+/* "interface.pyx":28
  *     exit_flappy()
  * 
  * def game_step(movement) :             # <<<<<<<<<<<<<<
@@ -1216,37 +1228,46 @@ static PyObject *__pyx_pf_9interface_4game_step(CYTHON_UNUSED PyObject *__pyx_se
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("game_step", 0);
 
-  /* "interface.pyx":21
+  /* "interface.pyx":29
  * 
  * def game_step(movement) :
  *     cdef int c_movement = movement             # <<<<<<<<<<<<<<
  *     cdef int c_continuer
  *     c_continuer = step_flappy(c_movement)
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_movement); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_movement); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 29, __pyx_L1_error)
   __pyx_v_c_movement = __pyx_t_1;
 
-  /* "interface.pyx":23
+  /* "interface.pyx":31
  *     cdef int c_movement = movement
  *     cdef int c_continuer
  *     c_continuer = step_flappy(c_movement)             # <<<<<<<<<<<<<<
+ *     treatingImage(image)
  *     return c_continuer
  */
   __pyx_v_c_continuer = step_flappy(__pyx_v_c_movement);
 
-  /* "interface.pyx":24
+  /* "interface.pyx":32
  *     cdef int c_continuer
  *     c_continuer = step_flappy(c_movement)
+ *     treatingImage(image)             # <<<<<<<<<<<<<<
+ *     return c_continuer
+ */
+  treatingImage(__pyx_v_9interface_image);
+
+  /* "interface.pyx":33
+ *     c_continuer = step_flappy(c_movement)
+ *     treatingImage(image)
  *     return c_continuer             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_c_continuer); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_c_continuer); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "interface.pyx":20
+  /* "interface.pyx":28
  *     exit_flappy()
  * 
  * def game_step(movement) :             # <<<<<<<<<<<<<<
@@ -1335,38 +1356,38 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "interface.pyx":13
- *     int step_flappy(int movement)
+  /* "interface.pyx":19
+ * cdef int Y_SIZE = 0;
  * 
  * def init(display) :             # <<<<<<<<<<<<<<
- *     cdef int c_display = display;
- *     init_flappy(c_display)
+ *     global image
+ *     cdef int c_display = display
  */
-  __pyx_tuple_ = PyTuple_Pack(2, __pyx_n_s_display, __pyx_n_s_c_display); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(2, __pyx_n_s_display, __pyx_n_s_c_display); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_interface_pyx, __pyx_n_s_init, 13, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_interface_pyx, __pyx_n_s_init, 19, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 19, __pyx_L1_error)
 
-  /* "interface.pyx":17
- *     init_flappy(c_display)
+  /* "interface.pyx":25
+ *     getSize(&X_SIZE, &Y_SIZE)
  * 
  * def exit() :             # <<<<<<<<<<<<<<
  *     exit_flappy()
  * 
  */
-  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_interface_pyx, __pyx_n_s_exit, 17, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_interface_pyx, __pyx_n_s_exit, 25, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 25, __pyx_L1_error)
 
-  /* "interface.pyx":20
+  /* "interface.pyx":28
  *     exit_flappy()
  * 
  * def game_step(movement) :             # <<<<<<<<<<<<<<
  *     cdef int c_movement = movement
  *     cdef int c_continuer
  */
-  __pyx_tuple__4 = PyTuple_Pack(3, __pyx_n_s_movement, __pyx_n_s_c_movement, __pyx_n_s_c_continuer); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(3, __pyx_n_s_movement, __pyx_n_s_c_movement, __pyx_n_s_c_continuer); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
-  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_interface_pyx, __pyx_n_s_game_step, 20, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_interface_pyx, __pyx_n_s_game_step, 28, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -1643,40 +1664,67 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "interface.pyx":13
- *     int step_flappy(int movement)
+  /* "interface.pyx":15
+ *     void getSize(int *x_size, int *y_size)
  * 
- * def init(display) :             # <<<<<<<<<<<<<<
- *     cdef int c_display = display;
- *     init_flappy(c_display)
+ * cdef char* image = NULL;             # <<<<<<<<<<<<<<
+ * cdef int X_SIZE = 0;
+ * cdef int Y_SIZE = 0;
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_9interface_1init, NULL, __pyx_n_s_interface); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_init, __pyx_t_1) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_9interface_image = NULL;
+
+  /* "interface.pyx":16
+ * 
+ * cdef char* image = NULL;
+ * cdef int X_SIZE = 0;             # <<<<<<<<<<<<<<
+ * cdef int Y_SIZE = 0;
+ * 
+ */
+  __pyx_v_9interface_X_SIZE = 0;
 
   /* "interface.pyx":17
- *     init_flappy(c_display)
+ * cdef char* image = NULL;
+ * cdef int X_SIZE = 0;
+ * cdef int Y_SIZE = 0;             # <<<<<<<<<<<<<<
+ * 
+ * def init(display) :
+ */
+  __pyx_v_9interface_Y_SIZE = 0;
+
+  /* "interface.pyx":19
+ * cdef int Y_SIZE = 0;
+ * 
+ * def init(display) :             # <<<<<<<<<<<<<<
+ *     global image
+ *     cdef int c_display = display
+ */
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_9interface_1init, NULL, __pyx_n_s_interface); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_init, __pyx_t_1) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "interface.pyx":25
+ *     getSize(&X_SIZE, &Y_SIZE)
  * 
  * def exit() :             # <<<<<<<<<<<<<<
  *     exit_flappy()
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_9interface_3exit, NULL, __pyx_n_s_interface); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_9interface_3exit, NULL, __pyx_n_s_interface); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_exit, __pyx_t_1) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_exit, __pyx_t_1) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "interface.pyx":20
+  /* "interface.pyx":28
  *     exit_flappy()
  * 
  * def game_step(movement) :             # <<<<<<<<<<<<<<
  *     cdef int c_movement = movement
  *     cdef int c_continuer
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_9interface_5game_step, NULL, __pyx_n_s_interface); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_9interface_5game_step, NULL, __pyx_n_s_interface); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_game_step, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_game_step, __pyx_t_1) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "interface.pyx":1

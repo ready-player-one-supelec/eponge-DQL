@@ -24,9 +24,6 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     font->textSurface = TTF_RenderText_Blended(font->font, font->text, font->color);
     SDL_BlitSurface(font->textSurface, NULL, ecran, &position);
 
-    char image[X_SIZE][Y_SIZE];
-    treatingImage(ecran, image);
-    // showImage(ecran,image);
     if (display) {
         SDL_Flip(ecran);
     }
@@ -120,17 +117,20 @@ void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel) {
     }
 }
 
-void treatingImage(SDL_Surface *ecran, char image[X_SIZE][Y_SIZE]) {
+void treatingImage(char *image) {
     Uint8 r,g,b;
+    // char *image_backup = image;
     for (int i = 0; i < X_SIZE; i++) {
-        for (int j = 0; j < Y_SIZE; j++) {
-            SDL_GetRGB(getpixel(ecran, X_MIN + i * DOWNSAMPLING_FACTOR, j * DOWNSAMPLING_FACTOR), ecran->format, &r, &g, &b);
-            image[i][j] = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        for (int j = 0; j < Y_SIZE; j++, image++) {
+            SDL_GetRGB(getpixel(game.ecran, X_MIN + i * DOWNSAMPLING_FACTOR, j * DOWNSAMPLING_FACTOR), game.ecran->format, &r, &g, &b);
+            *image = 0.2126 * r + 0.7152 * g + 0.0722 * b;
         }
     }
+    // showImage(game.ecran, image_backup);
 }
 
-void showImage(SDL_Surface *ecran, char image[X_SIZE][Y_SIZE]) {
+
+void showImage(SDL_Surface *ecran, char *image) {
     SDL_Surface *fond = NULL;
     fond = SDL_CreateRGBSurface(SDL_HWSURFACE, LARGEUR_FENETRE, HAUTEUR_FENETRE, 32, 0, 0, 0, 0);
     SDL_FillRect(fond, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
@@ -141,10 +141,11 @@ void showImage(SDL_Surface *ecran, char image[X_SIZE][Y_SIZE]) {
     SDL_LockSurface(ecran);
     char tmp;
     for (int i = 0; i < X_SIZE; i++) {
-        for (int j = 0; j < Y_SIZE; j++) {
-            tmp = image[i][j];
-            setPixel(ecran, i+10, j, SDL_MapRGB(ecran->format, tmp, tmp, tmp));
+        for (int j = 0; j < Y_SIZE; j++, image++) {
+            tmp = *image;
+            setPixel(ecran, i, j, SDL_MapRGB(ecran->format, tmp, tmp, tmp));
         }
     }
     SDL_UnlockSurface(ecran);
+    SDL_Flip(ecran);
 }

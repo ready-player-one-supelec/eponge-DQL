@@ -18,7 +18,7 @@ char* init_flappy(int display) {
     SDL_WM_SetCaption("Flappy Bird", NULL);
 
     game.display = display;
-
+    game.pipeColor = SDL_MapRGB(game.ecran->format, 120, 255, 120);
     game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, game.ecran->w, game.ecran->h, 32, 0, 0, 0, 0);
     SDL_FillRect(game.background, NULL, SDL_MapRGB(game.ecran->format, 135, 206, 235));
     game.boule.image = IMG_Load("Images/boule.png");

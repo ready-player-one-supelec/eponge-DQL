@@ -59,6 +59,7 @@ struct Game {
     int score;
     Tuyau tuyaux[NOMBRE_TUYAUX];
     int display;
+    Uint32 pipeColor;
 };
 
 int min(int v1, int v2);

@@ -56,8 +56,8 @@ void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau) {
 void remplissage(SDL_Surface *ecran, SDL_Surface **upperPart, SDL_Surface **lowerPart, int largeur, int centre) {
     *upperPart = SDL_CreateRGBSurface(SDL_HWSURFACE, largeur, centre - HAUTEUR_TROU / 2, 32, 0, 0, 0, 0);
     *lowerPart = SDL_CreateRGBSurface(SDL_HWSURFACE, largeur, HAUTEUR_FENETRE - centre - HAUTEUR_TROU / 2, 32, 0, 0, 0, 0);
-    SDL_FillRect(*upperPart, NULL, SDL_MapRGB(ecran->format, 120, 255, 120));
-    SDL_FillRect(*lowerPart, NULL, SDL_MapRGB(ecran->format, 120, 255, 120));
+    SDL_FillRect(*upperPart, NULL, game.pipeColor);
+    SDL_FillRect(*lowerPart, NULL, game.pipeColor);
 }
 
 Uint32 getpixel(SDL_Surface *surface, int x, int y) {

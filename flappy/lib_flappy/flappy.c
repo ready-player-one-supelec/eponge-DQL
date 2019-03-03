@@ -26,9 +26,7 @@ char* init_flappy(int display) {
     reset_flappy();
 
     char *pointeur = NULL;
-    pointeur = (char *)malloc(X_SIZE * Y_SIZE * sizeof(char));
-    // treatingImage(ecran, image);
-    printf("pointeur = %ld\n", (long int) pointeur);
+    pointeur = (char *)malloc((X_SIZE * Y_SIZE + 1)* sizeof(char));
     return pointeur;
 }
 

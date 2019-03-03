@@ -24,14 +24,15 @@ def init(display) :
     global image
     cdef int c_display = display
     image = init_flappy(c_display)
-    print(X_SIZE, Y_SIZE)
+    image[X_SIZE * Y_SIZE] = 0
 
 def exit_game() :
     exit_flappy()
 
 def convertImage() :
-    image[X_SIZE * Y_SIZE - 1] = 0
-    return np.fromstring(image, np.uint8)
+    tmp = np.fromstring(image, np.uint8)
+    tmp = np.reshape(tmp, [Y_SIZE, X_SIZE])
+    return tmp
 
 def game_step(movement) :
     cdef int reward;

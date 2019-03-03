@@ -6,11 +6,13 @@ EXEC=play  #Nom du programme � modifier
 
 OBJS=play.o
 
-all: $(EXEC)
+all:
+	cd lib_flappy; make; cd ..;
+	make $(EXEC)
 
 -include $(OBJS:.o=.d)
 
-play: $(OBJS)
+play: $(OBJS) lib_flappy/lib_flappy.a
 	$(CPP) $(CFLAGS) -o play $(OBJS) lib_flappy/lib_flappy.a $(LDFLAGS)
 
 %.o: %.c

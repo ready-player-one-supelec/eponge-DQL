@@ -10,8 +10,10 @@ Game game;
 void run_flappy(void) {
     int continuer = 1;
     SDL_Event event;
+    int movement;
 
     while (continuer) {
+        movement = WAIT;
         SDL_PollEvent(&event);
         switch (event.type) {
             case SDL_QUIT :
@@ -23,17 +25,25 @@ void run_flappy(void) {
                         continuer = 0;
                         break;
                     case SDLK_SPACE :
-                        game.boule.vy = -7.5;
+                        movement = JUMP;
                         break;
                 }
                 break;
         }
-        continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score);
-        draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display);
-        if (game.display){
-            SDL_Delay(20);
-        }
+        continuer = step(movement);
     }
+}
+
+int step(int movement) {
+    if (movement == JUMP) {
+        game.boule.vy = -7.5;
+    }
+    int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score);
+    draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display);
+    if (game.display){
+        SDL_Delay(20);
+    }
+    return continuer;
 }
 
 int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score) {

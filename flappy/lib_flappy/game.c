@@ -11,6 +11,7 @@ void run_flappy(void) {
     int continuer = 1;
     SDL_Event event;
     int movement;
+    int garbage;
 
     while (continuer) {
         movement = WAIT;
@@ -30,16 +31,17 @@ void run_flappy(void) {
                 }
                 break;
         }
-        continuer = step_flappy(movement);
+
+        continuer = step_flappy(movement, &garbage);
     }
 }
 
 
-int step_flappy(int movement) {
+int step_flappy(int movement, int *reward) {
     if (movement == JUMP) {
         game.boule.vy = -7.5;
     }
-    int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score);
+    int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score, reward);
     draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display);
     if (game.display){
         SDL_Delay(20);
@@ -47,9 +49,11 @@ int step_flappy(int movement) {
     return continuer;
 }
 
-int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score) {
+int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, int *reward) {
     updateValues(boule, tuyaux);
+    *reward = 0;
     if (death(ecran, boule, tuyaux)) {
+        *reward = -1;
         return 0;
     } else {
         int i, tmp;
@@ -62,6 +66,7 @@ int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score) {
             tmp = tuyaux[i].x + LARGEUR_TUYAU;
             if (boule->x >= tmp && boule->x < tmp + boule->vx) {
                 (*score)++;
+                *reward = 1;
                 break;
             }
         }

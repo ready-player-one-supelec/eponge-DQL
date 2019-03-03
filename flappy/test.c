@@ -10,9 +10,9 @@ int main (int argc, char *argv) {
     // WINDOW *w = initscr();
     // nodelay(w, 1);
     // keypad(w, 1);
-    int continuer;
+    int continuer, garbage;
     do {
-        continuer = step_flappy(random() % 2);
+        continuer = step_flappy(random() % 2, &garbage);
     } while (continuer);
     // endwin();
     // int continuer = 1;

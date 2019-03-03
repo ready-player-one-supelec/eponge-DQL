@@ -10,7 +10,7 @@
 #include "flappy.h"
 #include "game.h"
 
-char* init_flappy(int display) {
+unsigned char* init_flappy(int display) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
     initFont(&game.font);
@@ -25,8 +25,8 @@ char* init_flappy(int display) {
     game.boule.height = game.boule.image->w;
     reset_flappy();
 
-    char *pointeur = NULL;
-    pointeur = (char *)malloc(X_SIZE * Y_SIZE);
+    unsigned char *pointeur = NULL;
+    pointeur = (unsigned char *)malloc(X_SIZE * Y_SIZE);
     // treatingImage(ecran, image);
     printf("pointeur = %ld\n", (long int) pointeur);
     return pointeur;

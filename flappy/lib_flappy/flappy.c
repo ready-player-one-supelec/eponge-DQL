@@ -19,8 +19,14 @@ char* init_flappy(int display) {
 
     game.display = display;
     game.pipeColor = SDL_MapRGB(game.ecran->format, 120, 255, 120);
-    game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, game.ecran->w, game.ecran->h, 32, 0, 0, 0, 0);
-    SDL_FillRect(game.background, NULL, SDL_MapRGB(game.ecran->format, 135, 206, 235));
+    game.skyColor = SDL_MapRGB(game.ecran->format, SKY_RED, SKY_GREEN, SKY_BLUE);
+    game.skyColorGrayScale = (char)(0.2126 * SKY_RED + 0.7152 * SKY_GREEN + 0.0722 * SKY_BLUE);
+    if (game.display) {
+        game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, game.ecran->w, game.ecran->h, 32, 0, 0, 0, 0);
+    } else {
+        game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, game.ecran->w / DOWNSAMPLING_FACTOR, game.ecran->h / DOWNSAMPLING_FACTOR, 32, 0, 0, 0, 0);
+    }
+    SDL_FillRect(game.background, NULL, game.skyColor);
     game.boule.image = IMG_Load("Images/boule.png");
     game.boule.height = game.boule.image->w;
     reset_flappy();

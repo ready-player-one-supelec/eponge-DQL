@@ -124,6 +124,9 @@ void treatingImage(char *image) {
         for (int i = 0; i < X_SIZE; i++, image++) {
             SDL_GetRGB(getpixel(game.ecran, X_MIN + i * DOWNSAMPLING_FACTOR, j * DOWNSAMPLING_FACTOR), game.ecran->format, &r, &g, &b);
             *image = (char)(0.2126 * r + 0.7152 * g + 0.0722 * b);
+            if (*image == 0) {
+                *image = game.skyColorGrayScale;
+            }
         }
     }
     // showImage(game.ecran, image_backup);

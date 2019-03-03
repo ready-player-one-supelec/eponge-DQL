@@ -24,6 +24,10 @@
 #define X_SIZE ((X_MAX - X_MIN) / DOWNSAMPLING_FACTOR)
 #define Y_SIZE (HAUTEUR_FENETRE / DOWNSAMPLING_FACTOR)
 
+#define SKY_RED 135
+#define SKY_GREEN 206
+#define SKY_BLUE 235
+
 enum {WAIT, JUMP};
 
 typedef struct Boule Boule;
@@ -60,6 +64,8 @@ struct Game {
     Tuyau tuyaux[NOMBRE_TUYAUX];
     int display;
     Uint32 pipeColor;
+    Uint32 skyColor;
+    char skyColorGrayScale;
 };
 
 int min(int v1, int v2);

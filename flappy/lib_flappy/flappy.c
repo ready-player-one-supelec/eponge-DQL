@@ -24,7 +24,7 @@ char* init_flappy(int display) {
     if (game.display) {
         game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, game.ecran->w, game.ecran->h, 32, 0, 0, 0, 0);
     } else {
-        game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, game.ecran->w / DOWNSAMPLING_FACTOR, game.ecran->h / DOWNSAMPLING_FACTOR, 32, 0, 0, 0, 0);
+        game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, (X_MAX - X_MIN), game.ecran->h, 32, 0, 0, 0, 0);
     }
     SDL_FillRect(game.background, NULL, game.skyColor);
     game.boule.image = IMG_Load("Images/boule.png");

@@ -9,12 +9,8 @@ from network import DQN
 
 class Player :
 
-    def __init__(self, name, isBot) :
+    def __init__(self, name) :
         self.name = name
-        self.isBot = isBot
-        if not self.isBot :
-            self.chosenAction = 0
-            self.defineKeyboardListener()
 
         self.initializeProperties()
         self.QNetwork = DQN(self.imageSize, "QN", self.miniBatchSize)
@@ -62,13 +58,10 @@ class Player :
         self.QNetwork.training(states, output, actions)
 
     def play(self) :
-        if self.isBot :
-            if self.exploiting or random.random() > self.explorationRate :
-                return self.QNetwork.evaluate(self.buffer)
-            else :
-                return random.randrange(0,2)
+        if self.exploiting or random.random() > self.explorationRate :
+            return self.QNetwork.evaluate(self.buffer)
         else :
-            return self.chosenAction
+            return random.randrange(0,2)
 
     def updateConstants(self, learningRate = None, explorationRate = None) :
         self.QNetwork.updateConstants(learningRate)

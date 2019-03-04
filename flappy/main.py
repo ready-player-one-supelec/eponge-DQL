@@ -8,7 +8,7 @@ import math
 import time
 
 t = time.time()
-player = Player(name = "Toto", isBot = True)
+player = Player(name = "Toto")
 
 
 def setOfGames(player, isTraining, nbOfGames, display) :

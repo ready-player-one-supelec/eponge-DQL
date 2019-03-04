@@ -117,7 +117,8 @@ class DQN :
         # is this loss ?
         self.cost = tf.losses.softmax_cross_entropy(self.y, self.y_masked)
         # Gradient Descent Optimiser definition
-        self.optimiser = tf.train.RMSPropOptimizer(self.learningRate, 0.99, 0.0, 1e-6)
+        # self.optimiser = tf.train.RMSPropOptimizer(self.learningRate, 0.99, 0.0, 1e-6)
+        self.optimiser = tf.train.AdamOptimizer() # self.learningRate, 0.99, 0.0, 1e-6)
         self.train = self.optimiser.minimize(self.cost)
         print("Optimiser created")
 

@@ -13,6 +13,7 @@ cdef extern from "flappy.h":
     int step_flappy(int movement, int *reward)
     void treatingImage(char *image)
     void getSize(int *x_size, int *y_size)
+    void updateFeatures(int *xToPipe, float *yToUpperPipe, float *yToLowerPipe, float *vy, float *yToTop, float *yToBottom)
 
 cdef char* image = NULL
 cdef int X_SIZE = 0
@@ -33,10 +34,16 @@ def convertImage() :
     tmp = np.reshape(tmp, [Y_SIZE, X_SIZE])
     return tmp
 
-def game_step(movement) :
-    cdef int reward;
+def game_step(movement, returnFeatures) :
+    # return features is a boolean
+    cdef int reward, xToPipe
+    cdef float yToUpperPipe, yToLowerPipe, vy, yToTop, yToBottom
     cdef int c_movement = movement
     cdef int c_continuer
     c_continuer = step_flappy(c_movement, &reward)
-    treatingImage(image)
-    return c_continuer, convertImage(), reward
+    if returnFeatures :
+        updateFeatures(&xToPipe, &yToUpperPipe, &yToLowerPipe, &vy, &yToTop, &yToBottom)
+        return c_continuer, np.array([xToPipe, yToUpperPipe, yToLowerPipe, vy, yToTop, yToBottom]), reward
+    else :
+        treatingImage(image)
+        return c_continuer, convertImage(), reward

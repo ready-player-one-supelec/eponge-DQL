@@ -78,3 +78,19 @@ void getSize(int *x_size, int *y_size) {
     *x_size = X_SIZE;
     *y_size = Y_SIZE;
 }
+
+void updateFeatures(int *xToPipe, float *yToUpperPipe, float *yToLowerPipe, float *vy, float *yToTop, float *yToBottom) {
+    Tuyau nextPipe = game.tuyaux[0];
+    for (int i = 1; i < NOMBRE_TUYAUX; i++) {
+        if (game.boule.x >= game.tuyaux[i].x - PAS_ENTRE_TUYAU + LARGEUR_TUYAU && game.boule.x < game.tuyaux[i].x + LARGEUR_TUYAU) {
+            nextPipe = game.tuyaux[i];
+            break;
+        }
+    }
+    *xToPipe = max(0, (int) (nextPipe.x - game.boule.x - game.boule.height));
+    *yToUpperPipe = game.boule.y + HAUTEUR_TROU / 2 - nextPipe.y;
+    *yToLowerPipe = nextPipe.y + HAUTEUR_TROU / 2 - game.boule.y - game.boule.height;
+    *vy = game.boule.vy;
+    *yToTop = game.boule.y;
+    *yToBottom = HAUTEUR_FENETRE - game.boule.y - game.boule.height;
+}

@@ -7,6 +7,7 @@ void run_flappy(void);
 int step_flappy(int movement, int *reward);
 void treatingImage(char *image);
 void getSize(int *x_size, int *y_size);
+void updateFeatures(int *xToPipe, float *yToUpperPipe, float *yToLowerPipe, float *vy, float *yToTop, float *yToBottom);
 
 #ifdef _LIB_FLAPPY
 void initFont(Font *font);

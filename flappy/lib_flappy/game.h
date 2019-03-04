@@ -1,12 +1,10 @@
-#ifndef DEF_GAME
-#define DEF_GAME
+#pragma once
 
-void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Font *font);
+void run_flappy(void);
 void updateValues(Boule *boule, Tuyau tuyaux[]);
 int death(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[]);
-int randCenter();
 void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau);
 int collision(Boule boule, Tuyau tuyau);
 void initBoule(Boule *boule);
-
-#endif
+int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, int *reward);
+int step_flappy(int movement, int *reward);

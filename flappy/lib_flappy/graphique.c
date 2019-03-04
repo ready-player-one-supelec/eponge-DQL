@@ -1,15 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
 
 #include "tools.h"
 #include "graphique.h"
 
-void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score) {
+void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score, int display) {
     SDL_Rect position;
-    position.x = 0;
+    position.x = game.display ? 0 : X_MIN;
     position.y = 0;
     SDL_BlitSurface(background, NULL, ecran, &position);
 
@@ -27,10 +24,9 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     font->textSurface = TTF_RenderText_Blended(font->font, font->text, font->color);
     SDL_BlitSurface(font->textSurface, NULL, ecran, &position);
 
-    char image[X_SIZE][Y_SIZE];
-    treatingImage(ecran, image);
-    showImage(ecran,image);
-    SDL_Flip(ecran);
+    if (display) {
+        SDL_Flip(ecran);
+    }
 }
 
 void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau) {
@@ -38,7 +34,7 @@ void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau) {
     SDL_Surface *lowerPart = NULL;
     SDL_Rect position;
     int largeur;
-    if (tuyau->x < LARGEUR_FENETRE) {
+    if (tuyau->x < X_MAX || (game.display && tuyau->x < LARGEUR_FENETRE)) {
         if (tuyau->x >= 0 && tuyau->x < LARGEUR_FENETRE - LARGEUR_TUYAU) {
             largeur = LARGEUR_TUYAU;;
             position.x = tuyau->x;
@@ -60,8 +56,8 @@ void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau) {
 void remplissage(SDL_Surface *ecran, SDL_Surface **upperPart, SDL_Surface **lowerPart, int largeur, int centre) {
     *upperPart = SDL_CreateRGBSurface(SDL_HWSURFACE, largeur, centre - HAUTEUR_TROU / 2, 32, 0, 0, 0, 0);
     *lowerPart = SDL_CreateRGBSurface(SDL_HWSURFACE, largeur, HAUTEUR_FENETRE - centre - HAUTEUR_TROU / 2, 32, 0, 0, 0, 0);
-    SDL_FillRect(*upperPart, NULL, SDL_MapRGB(ecran->format, 120, 255, 120));
-    SDL_FillRect(*lowerPart, NULL, SDL_MapRGB(ecran->format, 120, 255, 120));
+    SDL_FillRect(*upperPart, NULL, game.pipeColor);
+    SDL_FillRect(*lowerPart, NULL, game.pipeColor);
 }
 
 Uint32 getpixel(SDL_Surface *surface, int x, int y) {
@@ -70,6 +66,10 @@ Uint32 getpixel(SDL_Surface *surface, int x, int y) {
     Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
 
     switch(bpp) {
+    case 4:
+        return *(Uint32 *)p;
+        break;
+
     case 1:
         return *p;
         break;
@@ -83,10 +83,6 @@ Uint32 getpixel(SDL_Surface *surface, int x, int y) {
             return p[0] << 16 | p[1] << 8 | p[2];
         else
             return p[0] | p[1] << 8 | p[2] << 16;
-        break;
-
-    case 4:
-        return *(Uint32 *)p;
         break;
 
     default:
@@ -121,17 +117,23 @@ void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel) {
     }
 }
 
-void treatingImage(SDL_Surface *ecran, char image[X_SIZE][Y_SIZE]) {
+void treatingImage(char *image) {
     Uint8 r,g,b;
-    for (int i = 0; i < X_SIZE; i++) {
-        for (int j = 0; j < Y_SIZE; j++) {
-            SDL_GetRGB(getpixel(ecran, X_MIN + i * DOWNSAMPLING_FACTOR, j * DOWNSAMPLING_FACTOR), ecran->format, &r, &g, &b);
-            image[i][j] = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    // char *image_backup = image;
+    for (int j = 0; j < Y_SIZE; j++) {
+        for (int i = 0; i < X_SIZE; i++, image++) {
+            SDL_GetRGB(getpixel(game.ecran, X_MIN + i * DOWNSAMPLING_FACTOR, j * DOWNSAMPLING_FACTOR), game.ecran->format, &r, &g, &b);
+            *image = (char)(0.2126 * r + 0.7152 * g + 0.0722 * b);
+            if (*image == 0) {
+                *image = game.skyColorGrayScale;
+            }
         }
     }
+    // showImage(game.ecran, image_backup);
 }
 
-void showImage(SDL_Surface *ecran, char image[X_SIZE][Y_SIZE]) {
+
+void showImage(SDL_Surface *ecran, char *image) {
     SDL_Surface *fond = NULL;
     fond = SDL_CreateRGBSurface(SDL_HWSURFACE, LARGEUR_FENETRE, HAUTEUR_FENETRE, 32, 0, 0, 0, 0);
     SDL_FillRect(fond, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
@@ -141,11 +143,12 @@ void showImage(SDL_Surface *ecran, char image[X_SIZE][Y_SIZE]) {
     SDL_BlitSurface(fond, NULL, ecran, &position);
     SDL_LockSurface(ecran);
     char tmp;
-    for (int i = 0; i < X_SIZE; i++) {
-        for (int j = 0; j < Y_SIZE; j++) {
-            tmp = image[i][j];
-            setPixel(ecran, i+10, j, SDL_MapRGB(ecran->format, tmp, tmp, tmp));
+    for (int j = 0; j < Y_SIZE; j++) {
+        for (int i = 0; i < X_SIZE; i++, image++) {
+            tmp = *image;
+            setPixel(ecran, i, j, SDL_MapRGB(ecran->format, tmp, tmp, tmp));
         }
     }
     SDL_UnlockSurface(ecran);
+    SDL_Flip(ecran);
 }

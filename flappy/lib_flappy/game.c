@@ -1,27 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
-
 #include "tools.h"
 #include "game.h"
 #include "graphique.h"
 
-void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Font *font) {
+Game game;
+
+void run_flappy(void) {
     int continuer = 1;
     SDL_Event event;
-    initBoule(boule);
-    Tuyau tuyaux[NOMBRE_TUYAUX];
-    tuyaux[0].x = 700 ;
-    tuyaux[0].y = randCenter();
-    int i, tmp, score = 0;
+    int movement;
+    int garbage;
 
-    for (i = 1; i < NOMBRE_TUYAUX ; i++) {
-        nextTuyau(&tuyaux[i], &tuyaux[(NOMBRE_TUYAUX + i-1) % NOMBRE_TUYAUX]);
-    }
     while (continuer) {
+        movement = WAIT;
         SDL_PollEvent(&event);
         switch (event.type) {
             case SDL_QUIT :
@@ -33,38 +26,52 @@ void game(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Font *font)
                         continuer = 0;
                         break;
                     case SDLK_SPACE :
-                        boule->vy = -7.5;
+                        movement = JUMP;
                         break;
                 }
                 break;
         }
-        updateValues(boule, tuyaux);
-        if (death(ecran, boule, tuyaux)) {
-            continuer = 0;
-        } else {
-            for (i = 0; i < NOMBRE_TUYAUX; i++) {
-                if (tuyaux[i].x < -LARGEUR_TUYAU) {
-                    nextTuyau(&tuyaux[i], &tuyaux[(NOMBRE_TUYAUX + i-1) % NOMBRE_TUYAUX]);
-                }
-            }
-            for (i = 0; i < NOMBRE_TUYAUX; i++) {
-                tmp = tuyaux[i].x + LARGEUR_TUYAU;
-                if (boule->x >= tmp && boule->x < tmp + boule->vx) {
-                    score++;
-                    break;
-                }
-            }
-        }
-        draw(ecran, background, boule, tuyaux, font, score);
-        SDL_Delay(20);
+
+        continuer = step_flappy(movement, &garbage);
     }
 }
 
-void initBoule(Boule *boule) {
-    boule->y = 70;
-    boule->vy = 0;
-    boule->x = BOULE_XAXIS;
-    boule->vx = 3;
+
+int step_flappy(int movement, int *reward) {
+    if (movement == JUMP) {
+        game.boule.vy = -7.5;
+    }
+    int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score, reward);
+    draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display);
+    if (game.display){
+        SDL_Delay(20);
+    }
+    return continuer;
+}
+
+int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, int *reward) {
+    updateValues(boule, tuyaux);
+    *reward = 0;
+    if (death(ecran, boule, tuyaux)) {
+        *reward = -1;
+        return 0;
+    } else {
+        int i, tmp;
+        for (i = 0; i < NOMBRE_TUYAUX; i++) {
+            if (tuyaux[i].x < -LARGEUR_TUYAU) {
+                nextTuyau(&tuyaux[i], &tuyaux[(NOMBRE_TUYAUX + i-1) % NOMBRE_TUYAUX]);
+            }
+        }
+        for (i = 0; i < NOMBRE_TUYAUX; i++) {
+            tmp = tuyaux[i].x + LARGEUR_TUYAU;
+            if (boule->x >= tmp && boule->x < tmp + boule->vx) {
+                (*score)++;
+                *reward = 1;
+                break;
+            }
+        }
+        return 1;
+    }
 }
 
 int death(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[]) {
@@ -124,9 +131,6 @@ void updateValues(Boule *boule, Tuyau tuyaux[]) {
     }
 }
 
-int randCenter() {
-    return random() % (TROU_CENTRE_YMAX - TROU_CENTRE_YMIN) + TROU_CENTRE_YMIN;
-}
 
 void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau) {
     tuyau->x = previousTuyau->x + PAS_ENTRE_TUYAU;

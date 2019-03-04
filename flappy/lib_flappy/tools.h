@@ -1,5 +1,8 @@
-#ifndef DEF_TOOLS
-#define DEF_TOOLS
+#pragma once
+
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 
 #define GRAVITY 0.4
 #define LARGEUR_FENETRE 720//1080 // Il faut de préférence une largeur supérieure à 720
@@ -14,15 +17,18 @@
 #define NOMBRE_TUYAUX (2+(LARGEUR_FENETRE/ESPACE_INTER_TUYAU))
 #define BOULE_XAXIS 100
 
-#define SIZE_READING_BUFFER_PIPE 2 //only reading an integer
-#define SIZE_WRITING_BUFFER_PIPE 3 //will probably be a very large table (thousands of values)
-
 // IMAGE GIVEN TO THE AI
 #define DOWNSAMPLING_FACTOR 10
 #define X_MIN BOULE_XAXIS
 #define X_MAX (BOULE_XAXIS + PAS_ENTRE_TUYAU)
 #define X_SIZE ((X_MAX - X_MIN) / DOWNSAMPLING_FACTOR)
 #define Y_SIZE (HAUTEUR_FENETRE / DOWNSAMPLING_FACTOR)
+
+#define SKY_RED 135
+#define SKY_GREEN 206
+#define SKY_BLUE 235
+
+enum {WAIT, JUMP};
 
 typedef struct Boule Boule;
 struct Boule {
@@ -48,15 +54,20 @@ struct Font {
     char text[31];
 };
 
-typedef struct Pipes Pipes;
-struct Pipes {
-    int imagesPipe;
-    int actionsPipe;
-    char readingBuffer[SIZE_READING_BUFFER_PIPE];
-    char writingBuffer[SIZE_WRITING_BUFFER_PIPE];
+typedef struct Game Game;
+struct Game {
+    SDL_Surface *ecran;
+    SDL_Surface *background;
+    Boule boule;
+    Font font;
+    int score;
+    Tuyau tuyaux[NOMBRE_TUYAUX];
+    int display;
+    Uint32 pipeColor;
+    Uint32 skyColor;
+    char skyColorGrayScale;
 };
 
 int min(int v1, int v2);
 int max(int v1, int v2);
-
-#endif
+int randCenter(void);

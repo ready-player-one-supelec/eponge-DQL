@@ -46,13 +46,16 @@ cdef class Game :
         tmp = np.reshape(tmp, [self.Y_SIZE, self.X_SIZE])
         return tmp
 
+    def reset(self) :
+        reset_flappy()
+
     def game_step(self, movement) :
         # return features is a boolean
         self.c_movement = movement
         self.c_continuer = step_flappy(self.c_movement, &self.reward)
         if self.returnFeatures :
             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)
-            return self.c_continuer, np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom]), self.reward
+            return np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom], dtype = np.float32), self.reward, 1 - self.c_continuer
         else :
             treatingImage(self.image)
-            return self.c_continuer, self.convertImage(), self.reward
+            return self.convertImage(), self.reward, 1 - self.c_continuer

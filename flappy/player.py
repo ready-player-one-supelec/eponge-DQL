@@ -4,9 +4,7 @@
 import tensorflow as tf
 import random
 import time
-from pynput import keyboard
-from pynput.keyboard import Key
-from network import DQN, ImagePreprocessor
+from network import DQN
 
 
 class Player :
@@ -24,14 +22,13 @@ class Player :
         self.sess = tf.Session()
         self.QNetwork.setSess(self.sess)
         self.TDTarget.setSess(self.sess)
-        self.processor = ImagePreprocessor(self.imageSize, self.sess)
         self.sess.run(tf.global_variables_initializer())
         self.synchronise()
 
     def initializeProperties(self) :
         # Q Network Constants
         self.imageSize = 80
-        self.synchronisationPeriod = 10000
+        self.synchronisationPeriod = 100
 
         # Constants
         self.explorationRate = 0.999
@@ -41,44 +38,21 @@ class Player :
         self.exploiting = False
 
         # Statistics
-        self.gamesWon = 0
-        self.gamesLost = 0
+        self.score = 0
 
         # Training
         self.trainingData = []
-        self.maxBatchSize = 1000000
+        self.maxBatchSize = 1000
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
         self.miniBatch = []
-        self.startTraining = 50000
+        self.startTraining = 500
         # the training will happen iff we have more than startTraining data in trainingData
 
         print("Properties initialized")
 
-    def defineKeyboardListener(self) :
-
-        def on_press(key):
-            try:
-                if key == Key.up :
-                    self.chosenAction = 1
-                elif key == Key.down :
-                    self.chosenAction = 2
-                else :
-                    self.chosenAction = 0
-            except AttributeError:
-                self.chosenAction = 0
-
-        def on_release(key):
-            self.chosenAction = 0
-            if key == keyboard.Key.esc:
-                # Stop listener
-                return False
-
-        self.listener = keyboard.Listener(on_press = on_press, on_release = on_release)
-        self.listener.start()
-
     def training(self, step) :
-        if not self.trainable or len(self.trainingData) < self.startTraining:
+        if not self.trainable or len(self.trainingData) < self.startTraining or step % 5 == 0:
             return
         if step % self.synchronisationPeriod == 0 :
             self.synchronise()
@@ -92,7 +66,7 @@ class Player :
             if self.exploiting or random.random() > self.explorationRate :
                 return self.QNetwork.evaluate(self.buffer)
             else :
-                return random.randrange(0,3)
+                return random.randrange(0,2)
         else :
             return self.chosenAction
 
@@ -102,21 +76,17 @@ class Player :
             self.explorationRate = explorationRate
 
     def resetStats(self) :
-        self.gamesWon = 0
-        self.gamesLost = 0
+        self.score = 0
 
     def updateStats(self, reward) :
         if reward == 1 :
-            self.gamesWon += 1
-        elif reward == -1 :
-            self.gamesLost += 1
+            self.score += 1
 
     def displayStats(self) :
         # print("{} victories & {} defeats".format(self.gamesWon, self.gamesLost))
-        print(self.gamesWon, self.gamesLost)
+        print(self.score)
 
-    def addStateSequence(self, action, reward, nextState) :
-        nS = self.processor.process(nextState)
+    def addStateSequence(self, action, reward, nS) :
         if self.trainable :
             self.trainingData.append([self.buffer, action, reward, nS])
             while len(self.trainingData) > self.maxBatchSize :

@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from game import Game
+from interface import *
 from player import Player
 import random
 import math
@@ -17,25 +17,19 @@ def setOfGames(player, isTraining, nbOfGames, display) :
 
     player.setBehaviour(isTraining)
 
-    with Game(display = display) as game :
+    with Game(display = display, returnFeatures = 1) as game :
         currentStep = 0
         for i in range(nbOfGames) :
             if isTraining :
-                player.updateConstants(explorationRate= 1 - 0.9 * i / nbOfGames)
+                player.updateConstants(explorationRate= 0.6 *( 1 - currentStep / 1000))
 
             done = False
-            observations = [game.observation]
-            for _ in range(3) :
-                observation, reward, done = game.random_step()
-                observations.append(observation)
-                currentStep += 1
-            player.buffer = player.processor.process(observations)
+            observation, reward, done = game.game_step(0)
+            player.buffer = observation
             while not done:
                 action = player.play()
-                observation, reward, done = game.step(action)
-                observations.pop(0)
-                observations.append(observation)
-                player.addStateSequence(action, reward, observations)
+                observation, reward, done = game.game_step(action)
+                player.addStateSequence(action, reward, observation)
                 player.training(currentStep)
                 player.updateStats(reward)
                 currentStep += 1
@@ -46,16 +40,17 @@ def setOfGames(player, isTraining, nbOfGames, display) :
             game.reset()
 
 
-def testing(display = False) :
-    network2restore = 7000
-    nbOfGames = 1000
+def testing(display = 0) :
+    network2restore = 10000
+    nbOfGames = 10
     player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = network2restore)
     setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
 
 def training() :
-    nbOfGames = 10
-    setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
+    nbOfGames = 10000
+    setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = 0)
     player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
     print("\n{}\n".format(time.time() - t))
 
 training()
+# testing(1)

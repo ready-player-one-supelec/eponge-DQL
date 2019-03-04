@@ -4,36 +4,6 @@
 import tensorflow as tf
 import numpy as np
 
-class ImagePreprocessor :
-
-    def __init__(self, imageSize, sess) :
-        self.scope = "processor"
-        with tf.variable_scope(self.scope) :
-            # input layer
-            self.x = tf.placeholder(dtype = tf.uint8, shape = [4, 210, 160, 3])
-
-            self.cropped = tf.image.crop_to_bounding_box(self.x,
-                                                            offset_height=35,
-                                                            offset_width=0,
-                                                            target_height=160,
-                                                            target_width=160)
-            self.gray = tf.image.rgb_to_grayscale(self.cropped)
-            self.resized = tf.image.resize_images(
-                self.gray, [imageSize, imageSize], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
-
-            # output layer : image has been properly preprocessed
-            self.squeezed = tf.squeeze(self.resized)
-
-            # stacks images on top of each other like a convolutional filter,
-            # instead of putting them one after the other
-            self.transposed = tf.transpose(self.squeezed, [1, 2, 0])
-
-        self.sess = sess
-
-    def process(self, images) :
-        return self.transposed.eval(feed_dict = { self.x: images}, session = self.sess)
-
-
 class DQN :
 
     def __init__(self, imageSize, scope, miniBatchSize) :
@@ -48,46 +18,24 @@ class DQN :
 
     def initializeProperties(self) :
 
-        self.learningRate = 0.00025
-        self.discountFactor = 0.99
+        self.learningRate = 0.0001
+        self.discountFactor = 0.9
 
     def createQNetwork(self, imageSize) :
         # input layer
-        self.x = tf.placeholder(tf.uint8, [None, imageSize, imageSize, 4])
+        self.x = tf.placeholder(tf.float32, [None, 6])
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 
-        # first convolutional layer
-        self.layer1_conv = tf.layers.conv2d(inputs=self.x / 255,
-                                            filters=32,
-                                            kernel_size=8,
-                                            strides=4,
-                                            activation=tf.nn.relu)
-
-        # second convolutional layer
-        self.layer2_conv = tf.layers.conv2d(inputs=self.layer1_conv,
-                                            filters=64,
-                                            kernel_size=4,
-                                            strides=2,
-                                            activation=tf.nn.relu)
-
-        # third convolutional layer
-        self.layer3_conv = tf.layers.conv2d(inputs=self.layer2_conv,
-                                            filters=64,
-                                            kernel_size=3,
-                                            strides=1,
-                                            activation=tf.nn.relu)
-        self.flattened = tf.layers.flatten(self.layer3_conv)
-
-        # first dense layer
-        self.layer1_dense = tf.layers.dense(self.flattened, 512, activation=tf.nn.relu)
+        self.layer1_dense = tf.layers.dense(self.x, 32)
+        self.layer1_dense = tf.nn.relu(self.layer1_dense)
 
         # output layer
-        self.y_ = tf.layers.dense(self.layer1_dense, 3)
+        self.y_ = tf.layers.dense(self.layer1_dense, 2)
 
         # masked output
         self.actions = tf.placeholder(tf.int32)
-        indices = tf.range(self.miniBatchSize) * 3 + self.actions
+        indices = tf.range(self.miniBatchSize) * 2 + self.actions
         self.y_masked = tf.gather(tf.reshape(self.y_, [-1]), indices)
 
         # used to compute the expected output
@@ -103,7 +51,7 @@ class DQN :
         # is this loss ?
         self.cost = tf.losses.mean_squared_error(self.y, self.y_masked)
         # Gradient Descent Optimiser definition
-        self.optimiser = tf.train.RMSPropOptimizer(self.learningRate, 0.99, 0.0, 1e-6)
+        self.optimiser = tf.train.AdamOptimizer(self.learningRate, 0.9, 0.999)
         self.train = self.optimiser.minimize(self.cost)
         print("Optimiser created")
 

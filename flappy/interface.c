@@ -1307,16 +1307,10 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 #define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
 #endif
 
-/* PyObjectCall2Args.proto */
-static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
-
 /* PyObjectCallMethO.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
 #endif
-
-/* PyObjectCallOneArg.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
 
 /* PyObjectCallNoArg.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -1324,6 +1318,9 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
 #else
 #define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
 #endif
+
+/* PyObjectCallOneArg.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
 
 /* PyErrExceptionMatches.proto */
 #if CYTHON_FAST_THREAD_STATE
@@ -1380,6 +1377,9 @@ static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
 
 /* ImportFrom.proto */
 static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
+
+/* PyObjectCall2Args.proto */
+static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
 
 /* RaiseException.proto */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
@@ -1695,6 +1695,7 @@ static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_type[] = "type";
 static const char __pyx_k_array[] = "array";
+static const char __pyx_k_dtype[] = "dtype";
 static const char __pyx_k_numpy[] = "numpy";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_uint8[] = "uint8";
@@ -1704,6 +1705,7 @@ static const char __pyx_k_pickle[] = "pickle";
 static const char __pyx_k_reduce[] = "__reduce__";
 static const char __pyx_k_update[] = "update";
 static const char __pyx_k_display[] = "display";
+static const char __pyx_k_float32[] = "float32";
 static const char __pyx_k_reshape[] = "reshape";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_pyx_type[] = "__pyx_type";
@@ -1750,6 +1752,8 @@ static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_convertImage;
 static PyObject *__pyx_n_s_dict;
 static PyObject *__pyx_n_s_display;
+static PyObject *__pyx_n_s_dtype;
+static PyObject *__pyx_n_s_float32;
 static PyObject *__pyx_n_s_fromstring;
 static PyObject *__pyx_n_s_getstate;
 static PyObject *__pyx_n_s_import;
@@ -1790,7 +1794,8 @@ static int __pyx_pf_9interface_4Game___init__(struct __pyx_obj_9interface_Game *
 static PyObject *__pyx_pf_9interface_4Game_2__enter__(struct __pyx_obj_9interface_Game *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9interface_4Game_4__exit__(CYTHON_UNUSED struct __pyx_obj_9interface_Game *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_type, CYTHON_UNUSED PyObject *__pyx_v_value, CYTHON_UNUSED PyObject *__pyx_v_traceback); /* proto */
 static PyObject *__pyx_pf_9interface_4Game_6convertImage(struct __pyx_obj_9interface_Game *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9interface_4Game_8game_step(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v_movement); /* proto */
+static PyObject *__pyx_pf_9interface_4Game_8reset(CYTHON_UNUSED struct __pyx_obj_9interface_Game *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9interface_4Game_10game_step(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v_movement); /* proto */
 static PyObject *__pyx_pf_9interface_4Game_5image___get__(struct __pyx_obj_9interface_Game *__pyx_v_self); /* proto */
 static int __pyx_pf_9interface_4Game_5image_2__set__(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_9interface_4Game_6X_SIZE___get__(struct __pyx_obj_9interface_Game *__pyx_v_self); /* proto */
@@ -1819,8 +1824,8 @@ static PyObject *__pyx_pf_9interface_4Game_11c_continuer___get__(struct __pyx_ob
 static int __pyx_pf_9interface_4Game_11c_continuer_2__set__(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_9interface_4Game_14returnFeatures___get__(struct __pyx_obj_9interface_Game *__pyx_v_self); /* proto */
 static int __pyx_pf_9interface_4Game_14returnFeatures_2__set__(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_pf_9interface_4Game_10__reduce_cython__(struct __pyx_obj_9interface_Game *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9interface_4Game_12__setstate_cython__(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_9interface_4Game_12__reduce_cython__(struct __pyx_obj_9interface_Game *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9interface_4Game_14__setstate_cython__(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_9interface___pyx_unpickle_Game(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
@@ -2324,7 +2329,7 @@ static PyObject *__pyx_pf_9interface_4Game_6convertImage(struct __pyx_obj_9inter
  *         tmp = np.reshape(tmp, [self.Y_SIZE, self.X_SIZE])
  *         return tmp             # <<<<<<<<<<<<<<
  * 
- *     def game_step(self, movement) :
+ *     def reset(self) :
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_tmp);
@@ -2359,25 +2364,75 @@ static PyObject *__pyx_pf_9interface_4Game_6convertImage(struct __pyx_obj_9inter
 /* "interface.pyx":49
  *         return tmp
  * 
- *     def game_step(self, movement) :             # <<<<<<<<<<<<<<
- *         # return features is a boolean
- *         self.c_movement = movement
+ *     def reset(self) :             # <<<<<<<<<<<<<<
+ *         reset_flappy()
+ * 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9interface_4Game_9game_step(PyObject *__pyx_v_self, PyObject *__pyx_v_movement); /*proto*/
-static PyObject *__pyx_pw_9interface_4Game_9game_step(PyObject *__pyx_v_self, PyObject *__pyx_v_movement) {
+static PyObject *__pyx_pw_9interface_4Game_9reset(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_9interface_4Game_9reset(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("game_step (wrapper)", 0);
-  __pyx_r = __pyx_pf_9interface_4Game_8game_step(((struct __pyx_obj_9interface_Game *)__pyx_v_self), ((PyObject *)__pyx_v_movement));
+  __Pyx_RefNannySetupContext("reset (wrapper)", 0);
+  __pyx_r = __pyx_pf_9interface_4Game_8reset(((struct __pyx_obj_9interface_Game *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9interface_4Game_8game_step(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v_movement) {
+static PyObject *__pyx_pf_9interface_4Game_8reset(CYTHON_UNUSED struct __pyx_obj_9interface_Game *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("reset", 0);
+
+  /* "interface.pyx":50
+ * 
+ *     def reset(self) :
+ *         reset_flappy()             # <<<<<<<<<<<<<<
+ * 
+ *     def game_step(self, movement) :
+ */
+  reset_flappy();
+
+  /* "interface.pyx":49
+ *         return tmp
+ * 
+ *     def reset(self) :             # <<<<<<<<<<<<<<
+ *         reset_flappy()
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "interface.pyx":52
+ *         reset_flappy()
+ * 
+ *     def game_step(self, movement) :             # <<<<<<<<<<<<<<
+ *         # return features is a boolean
+ *         self.c_movement = movement
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9interface_4Game_11game_step(PyObject *__pyx_v_self, PyObject *__pyx_v_movement); /*proto*/
+static PyObject *__pyx_pw_9interface_4Game_11game_step(PyObject *__pyx_v_self, PyObject *__pyx_v_movement) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("game_step (wrapper)", 0);
+  __pyx_r = __pyx_pf_9interface_4Game_10game_step(((struct __pyx_obj_9interface_Game *)__pyx_v_self), ((PyObject *)__pyx_v_movement));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9interface_4Game_10game_step(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v_movement) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -2390,21 +2445,19 @@ static PyObject *__pyx_pf_9interface_4Game_8game_step(struct __pyx_obj_9interfac
   PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
   PyObject *__pyx_t_10 = NULL;
-  PyObject *__pyx_t_11 = NULL;
-  PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("game_step", 0);
 
-  /* "interface.pyx":51
+  /* "interface.pyx":54
  *     def game_step(self, movement) :
  *         # return features is a boolean
  *         self.c_movement = movement             # <<<<<<<<<<<<<<
  *         self.c_continuer = step_flappy(self.c_movement, &self.reward)
  *         if self.returnFeatures :
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_movement); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_movement); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 54, __pyx_L1_error)
   __pyx_v_self->c_movement = __pyx_t_1;
 
-  /* "interface.pyx":52
+  /* "interface.pyx":55
  *         # return features is a boolean
  *         self.c_movement = movement
  *         self.c_continuer = step_flappy(self.c_movement, &self.reward)             # <<<<<<<<<<<<<<
@@ -2413,168 +2466,171 @@ static PyObject *__pyx_pf_9interface_4Game_8game_step(struct __pyx_obj_9interfac
  */
   __pyx_v_self->c_continuer = step_flappy(__pyx_v_self->c_movement, (&__pyx_v_self->reward));
 
-  /* "interface.pyx":53
+  /* "interface.pyx":56
  *         self.c_movement = movement
  *         self.c_continuer = step_flappy(self.c_movement, &self.reward)
  *         if self.returnFeatures :             # <<<<<<<<<<<<<<
  *             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)
- *             return self.c_continuer, np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom]), self.reward
+ *             return np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom], dtype = np.float32), self.reward, 1 - self.c_continuer
  */
   __pyx_t_2 = (__pyx_v_self->returnFeatures != 0);
   if (__pyx_t_2) {
 
-    /* "interface.pyx":54
+    /* "interface.pyx":57
  *         self.c_continuer = step_flappy(self.c_movement, &self.reward)
  *         if self.returnFeatures :
  *             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)             # <<<<<<<<<<<<<<
- *             return self.c_continuer, np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom]), self.reward
+ *             return np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom], dtype = np.float32), self.reward, 1 - self.c_continuer
  *         else :
  */
     updateFeatures((&__pyx_v_self->xToPipe), (&__pyx_v_self->yToUpperPipe), (&__pyx_v_self->yToLowerPipe), (&__pyx_v_self->vy), (&__pyx_v_self->yToTop), (&__pyx_v_self->yToBottom));
 
-    /* "interface.pyx":55
+    /* "interface.pyx":58
  *         if self.returnFeatures :
  *             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)
- *             return self.c_continuer, np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom]), self.reward             # <<<<<<<<<<<<<<
+ *             return np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom], dtype = np.float32), self.reward, 1 - self.c_continuer             # <<<<<<<<<<<<<<
  *         else :
  *             treatingImage(self.image)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->c_continuer); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->xToPipe); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->yToUpperPipe); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_array); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_6 = PyFloat_FromDouble(__pyx_v_self->yToLowerPipe); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_self->xToPipe); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 55, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_7 = PyFloat_FromDouble(__pyx_v_self->yToUpperPipe); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_7 = PyFloat_FromDouble(__pyx_v_self->vy); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = PyFloat_FromDouble(__pyx_v_self->yToLowerPipe); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_8 = PyFloat_FromDouble(__pyx_v_self->yToTop); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = PyFloat_FromDouble(__pyx_v_self->vy); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_9 = PyFloat_FromDouble(__pyx_v_self->yToBottom); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_10 = PyFloat_FromDouble(__pyx_v_self->yToTop); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_10 = PyList_New(6); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_11 = PyFloat_FromDouble(__pyx_v_self->yToBottom); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 55, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_12 = PyList_New(6); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 55, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyList_SET_ITEM(__pyx_t_10, 0, __pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_5);
-    PyList_SET_ITEM(__pyx_t_12, 0, __pyx_t_5);
+    PyList_SET_ITEM(__pyx_t_10, 1, __pyx_t_5);
+    __Pyx_GIVEREF(__pyx_t_6);
+    PyList_SET_ITEM(__pyx_t_10, 2, __pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_7);
-    PyList_SET_ITEM(__pyx_t_12, 1, __pyx_t_7);
+    PyList_SET_ITEM(__pyx_t_10, 3, __pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyList_SET_ITEM(__pyx_t_12, 2, __pyx_t_8);
+    PyList_SET_ITEM(__pyx_t_10, 4, __pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_9);
-    PyList_SET_ITEM(__pyx_t_12, 3, __pyx_t_9);
-    __Pyx_GIVEREF(__pyx_t_10);
-    PyList_SET_ITEM(__pyx_t_12, 4, __pyx_t_10);
-    __Pyx_GIVEREF(__pyx_t_11);
-    PyList_SET_ITEM(__pyx_t_12, 5, __pyx_t_11);
+    PyList_SET_ITEM(__pyx_t_10, 5, __pyx_t_9);
+    __pyx_t_3 = 0;
     __pyx_t_5 = 0;
+    __pyx_t_6 = 0;
     __pyx_t_7 = 0;
     __pyx_t_8 = 0;
     __pyx_t_9 = 0;
+    __pyx_t_9 = PyTuple_New(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_GIVEREF(__pyx_t_10);
+    PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_10);
     __pyx_t_10 = 0;
-    __pyx_t_11 = 0;
-    __pyx_t_11 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
-      __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_6);
-      if (likely(__pyx_t_11)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-        __Pyx_INCREF(__pyx_t_11);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_6, function);
-      }
-    }
-    __pyx_t_4 = (__pyx_t_11) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_11, __pyx_t_12) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_12);
-    __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_np); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_float32); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    if (PyDict_SetItem(__pyx_t_10, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_9, __pyx_t_10); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_self->reward); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_9 = __Pyx_PyInt_From_long((1 - __pyx_v_self->c_continuer)); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_self->reward); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 55, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_12 = PyTuple_New(3); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 55, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
-    __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_t_4);
-    __Pyx_GIVEREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_12, 2, __pyx_t_6);
-    __pyx_t_3 = 0;
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_10);
+    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_10);
+    __Pyx_GIVEREF(__pyx_t_9);
+    PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_9);
+    __pyx_t_7 = 0;
+    __pyx_t_10 = 0;
+    __pyx_t_9 = 0;
+    __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
-    __pyx_t_6 = 0;
-    __pyx_r = __pyx_t_12;
-    __pyx_t_12 = 0;
     goto __pyx_L0;
 
-    /* "interface.pyx":53
+    /* "interface.pyx":56
  *         self.c_movement = movement
  *         self.c_continuer = step_flappy(self.c_movement, &self.reward)
  *         if self.returnFeatures :             # <<<<<<<<<<<<<<
  *             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)
- *             return self.c_continuer, np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom]), self.reward
+ *             return np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom], dtype = np.float32), self.reward, 1 - self.c_continuer
  */
   }
 
-  /* "interface.pyx":57
- *             return self.c_continuer, np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom]), self.reward
+  /* "interface.pyx":60
+ *             return np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom], dtype = np.float32), self.reward, 1 - self.c_continuer
  *         else :
  *             treatingImage(self.image)             # <<<<<<<<<<<<<<
- *             return self.c_continuer, self.convertImage(), self.reward
+ *             return self.convertImage(), self.reward, 1 - self.c_continuer
  */
   /*else*/ {
     treatingImage(__pyx_v_self->image);
 
-    /* "interface.pyx":58
+    /* "interface.pyx":61
  *         else :
  *             treatingImage(self.image)
- *             return self.c_continuer, self.convertImage(), self.reward             # <<<<<<<<<<<<<<
+ *             return self.convertImage(), self.reward, 1 - self.c_continuer             # <<<<<<<<<<<<<<
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_self->c_continuer); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 58, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_convertImage); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
-      if (likely(__pyx_t_3)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-        __Pyx_INCREF(__pyx_t_3);
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_convertImage); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 61, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_10 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_9))) {
+      __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_9);
+      if (likely(__pyx_t_10)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
+        __Pyx_INCREF(__pyx_t_10);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_4, function);
+        __Pyx_DECREF_SET(__pyx_t_9, function);
       }
     }
-    __pyx_t_6 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 58, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->reward); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __pyx_t_4 = (__pyx_t_10) ? __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_10) : __Pyx_PyObject_CallNoArg(__pyx_t_9);
+    __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 61, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_12);
-    PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_12);
-    __Pyx_GIVEREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_6);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_self->reward); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 61, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_10 = __Pyx_PyInt_From_long((1 - __pyx_v_self->c_continuer)); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 61, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_7 = PyTuple_New(3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 61, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_t_4);
-    __pyx_t_12 = 0;
-    __pyx_t_6 = 0;
+    PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_9);
+    PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_9);
+    __Pyx_GIVEREF(__pyx_t_10);
+    PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_t_10);
     __pyx_t_4 = 0;
-    __pyx_r = __pyx_t_3;
-    __pyx_t_3 = 0;
+    __pyx_t_9 = 0;
+    __pyx_t_10 = 0;
+    __pyx_r = __pyx_t_7;
+    __pyx_t_7 = 0;
     goto __pyx_L0;
   }
 
-  /* "interface.pyx":49
- *         return tmp
+  /* "interface.pyx":52
+ *         reset_flappy()
  * 
  *     def game_step(self, movement) :             # <<<<<<<<<<<<<<
  *         # return features is a boolean
@@ -2591,8 +2647,6 @@ static PyObject *__pyx_pf_9interface_4Game_8game_step(struct __pyx_obj_9interfac
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_12);
   __Pyx_AddTraceback("interface.Game.game_step", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -3632,19 +3686,19 @@ static int __pyx_pf_9interface_4Game_14returnFeatures_2__set__(struct __pyx_obj_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9interface_4Game_11__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_9interface_4Game_11__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_9interface_4Game_13__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_9interface_4Game_13__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9interface_4Game_10__reduce_cython__(((struct __pyx_obj_9interface_Game *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9interface_4Game_12__reduce_cython__(((struct __pyx_obj_9interface_Game *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9interface_4Game_10__reduce_cython__(struct __pyx_obj_9interface_Game *__pyx_v_self) {
+static PyObject *__pyx_pf_9interface_4Game_12__reduce_cython__(struct __pyx_obj_9interface_Game *__pyx_v_self) {
   PyObject *__pyx_v_state = 0;
   PyObject *__pyx_v__dict = 0;
   int __pyx_v_use_setstate;
@@ -3954,19 +4008,19 @@ static PyObject *__pyx_pf_9interface_4Game_10__reduce_cython__(struct __pyx_obj_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9interface_4Game_13__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_9interface_4Game_13__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_9interface_4Game_15__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_9interface_4Game_15__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9interface_4Game_12__setstate_cython__(((struct __pyx_obj_9interface_Game *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_9interface_4Game_14__setstate_cython__(((struct __pyx_obj_9interface_Game *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9interface_4Game_12__setstate_cython__(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_9interface_4Game_14__setstate_cython__(struct __pyx_obj_9interface_Game *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7146,9 +7200,10 @@ static PyMethodDef __pyx_methods_9interface_Game[] = {
   {"__enter__", (PyCFunction)__pyx_pw_9interface_4Game_3__enter__, METH_NOARGS, 0},
   {"__exit__", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_9interface_4Game_5__exit__, METH_VARARGS|METH_KEYWORDS, 0},
   {"convertImage", (PyCFunction)__pyx_pw_9interface_4Game_7convertImage, METH_NOARGS, 0},
-  {"game_step", (PyCFunction)__pyx_pw_9interface_4Game_9game_step, METH_O, 0},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_9interface_4Game_11__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_9interface_4Game_13__setstate_cython__, METH_O, 0},
+  {"reset", (PyCFunction)__pyx_pw_9interface_4Game_9reset, METH_NOARGS, 0},
+  {"game_step", (PyCFunction)__pyx_pw_9interface_4Game_11game_step, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_9interface_4Game_13__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_9interface_4Game_15__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -7288,6 +7343,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_convertImage, __pyx_k_convertImage, sizeof(__pyx_k_convertImage), 0, 0, 1, 1},
   {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
   {&__pyx_n_s_display, __pyx_k_display, sizeof(__pyx_k_display), 0, 0, 1, 1},
+  {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
+  {&__pyx_n_s_float32, __pyx_k_float32, sizeof(__pyx_k_float32), 0, 0, 1, 1},
   {&__pyx_n_s_fromstring, __pyx_k_fromstring, sizeof(__pyx_k_fromstring), 0, 0, 1, 1},
   {&__pyx_n_s_getstate, __pyx_k_getstate, sizeof(__pyx_k_getstate), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
@@ -8214,35 +8271,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg
 }
 #endif
 
-/* PyObjectCall2Args */
-static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2) {
-    PyObject *args, *result = NULL;
-    #if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(function)) {
-        PyObject *args[2] = {arg1, arg2};
-        return __Pyx_PyFunction_FastCall(function, args, 2);
-    }
-    #endif
-    #if CYTHON_FAST_PYCCALL
-    if (__Pyx_PyFastCFunction_Check(function)) {
-        PyObject *args[2] = {arg1, arg2};
-        return __Pyx_PyCFunction_FastCall(function, args, 2);
-    }
-    #endif
-    args = PyTuple_New(2);
-    if (unlikely(!args)) goto done;
-    Py_INCREF(arg1);
-    PyTuple_SET_ITEM(args, 0, arg1);
-    Py_INCREF(arg2);
-    PyTuple_SET_ITEM(args, 1, arg2);
-    Py_INCREF(function);
-    result = __Pyx_PyObject_Call(function, args, NULL);
-    Py_DECREF(args);
-    Py_DECREF(function);
-done:
-    return result;
-}
-
 /* PyObjectCallMethO */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
@@ -8260,6 +8288,28 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject
             "NULL result without error in PyObject_Call");
     }
     return result;
+}
+#endif
+
+/* PyObjectCallNoArg */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
+#if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(func)) {
+        return __Pyx_PyFunction_FastCall(func, NULL, 0);
+    }
+#endif
+#ifdef __Pyx_CyFunction_USED
+    if (likely(PyCFunction_Check(func) || __Pyx_CyFunction_Check(func)))
+#else
+    if (likely(PyCFunction_Check(func)))
+#endif
+    {
+        if (likely(PyCFunction_GET_FLAGS(func) & METH_NOARGS)) {
+            return __Pyx_PyObject_CallMethO(func, NULL);
+        }
+    }
+    return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
 }
 #endif
 
@@ -8300,28 +8350,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
     result = __Pyx_PyObject_Call(func, args, NULL);
     Py_DECREF(args);
     return result;
-}
-#endif
-
-/* PyObjectCallNoArg */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
-#if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(func)) {
-        return __Pyx_PyFunction_FastCall(func, NULL, 0);
-    }
-#endif
-#ifdef __Pyx_CyFunction_USED
-    if (likely(PyCFunction_Check(func) || __Pyx_CyFunction_Check(func)))
-#else
-    if (likely(PyCFunction_Check(func)))
-#endif
-    {
-        if (likely(PyCFunction_GET_FLAGS(func) & METH_NOARGS)) {
-            return __Pyx_PyObject_CallMethO(func, NULL);
-        }
-    }
-    return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
 }
 #endif
 
@@ -8479,6 +8507,35 @@ static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
         #endif
     }
     return value;
+}
+
+/* PyObjectCall2Args */
+static CYTHON_UNUSED PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2) {
+    PyObject *args, *result = NULL;
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(function)) {
+        PyObject *args[2] = {arg1, arg2};
+        return __Pyx_PyFunction_FastCall(function, args, 2);
+    }
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(function)) {
+        PyObject *args[2] = {arg1, arg2};
+        return __Pyx_PyCFunction_FastCall(function, args, 2);
+    }
+    #endif
+    args = PyTuple_New(2);
+    if (unlikely(!args)) goto done;
+    Py_INCREF(arg1);
+    PyTuple_SET_ITEM(args, 0, arg1);
+    Py_INCREF(arg2);
+    PyTuple_SET_ITEM(args, 1, arg2);
+    Py_INCREF(function);
+    result = __Pyx_PyObject_Call(function, args, NULL);
+    Py_DECREF(args);
+    Py_DECREF(function);
+done:
+    return result;
 }
 
 /* RaiseException */

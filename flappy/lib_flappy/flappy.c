@@ -37,7 +37,7 @@ char* init_flappy(int display) {
 }
 
 void initBoule(Boule *boule) {
-    boule->y = 70;
+    boule->y = 170;
     boule->vy = 0;
     boule->x = BOULE_XAXIS;
     boule->vx = 3;
@@ -48,6 +48,7 @@ void reset_flappy(void) {
     game.tuyaux[0].x = 700 ;
     game.tuyaux[0].y = randCenter();
     game.score = 0;
+    game.stepSurvived = 0;
 
     for (int i = 1; i < NOMBRE_TUYAUX ; i++) {
         nextTuyau(&game.tuyaux[i], &game.tuyaux[(i-1) % NOMBRE_TUYAUX]);

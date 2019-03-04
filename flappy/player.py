@@ -61,7 +61,7 @@ class Player :
         if self.exploiting or random.random() > self.explorationRate :
             return self.QNetwork.evaluate(self.buffer)
         else :
-            return random.randrange(0,2)
+            return int(random.random() > 0.9)
 
     def updateConstants(self, learningRate = None, explorationRate = None) :
         self.QNetwork.updateConstants(learningRate)

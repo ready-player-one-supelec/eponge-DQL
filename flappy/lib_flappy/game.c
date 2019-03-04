@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "tools.h"
 #include "game.h"
@@ -11,7 +12,7 @@ void run_flappy(void) {
     int continuer = 1;
     SDL_Event event;
     int movement;
-    int garbage;
+    float garbage;
 
     while (continuer) {
         movement = WAIT;
@@ -37,7 +38,7 @@ void run_flappy(void) {
 }
 
 
-int step_flappy(int movement, int *reward) {
+int step_flappy(int movement, float *reward) {
     if (movement == JUMP) {
         game.boule.vy = -7.5;
     }
@@ -49,13 +50,14 @@ int step_flappy(int movement, int *reward) {
     return continuer;
 }
 
-int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, int *reward) {
+int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *reward) {
     updateValues(boule, tuyaux);
     *reward = 0;
     if (death(ecran, boule, tuyaux)) {
-        *reward = -1;
+        *reward = -3 / (log(game.stepSurvived) + game.score);
         return 0;
     } else {
+        game.stepSurvived++;
         int i, tmp;
         for (i = 0; i < NOMBRE_TUYAUX; i++) {
             if (tuyaux[i].x < -LARGEUR_TUYAU) {

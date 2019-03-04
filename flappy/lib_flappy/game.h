@@ -6,5 +6,5 @@ int death(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[]);
 void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau);
 int collision(Boule boule, Tuyau tuyau);
 void initBoule(Boule *boule);
-int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, int *reward);
-int step_flappy(int movement, int *reward);
+int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *reward);
+int step_flappy(int movement, float *reward);

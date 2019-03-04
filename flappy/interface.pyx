@@ -10,7 +10,7 @@ cdef extern from "flappy.h":
     char* init_flappy(int display)
     void exit_flappy()
     void run_flappy()
-    int step_flappy(int movement, int *reward)
+    int step_flappy(int movement, float *reward)
     void treatingImage(char *image)
     void getSize(int *x_size, int *y_size)
     void updateFeatures(int *xToPipe, float *yToUpperPipe, float *yToLowerPipe, float *vy, float *yToTop, float *yToBottom)
@@ -19,14 +19,10 @@ cdef extern from "flappy.h":
 cdef class Game :
 
     cdef public char* image
-    cdef public int X_SIZE
-    cdef public int Y_SIZE
-    cdef public int c_display
-    cdef public int reward, xToPipe
-    cdef public float yToUpperPipe, yToLowerPipe, vy, yToTop, yToBottom
-    cdef public int c_movement
-    cdef public int c_continuer
-    cdef public int returnFeatures
+    cdef public int X_SIZE, Y_SIZE
+    cdef public int c_display, xToPipe
+    cdef public float yToUpperPipe, yToLowerPipe, vy, yToTop, yToBottom, reward
+    cdef public int c_movement, c_continuer, returnFeatures
 
     def __init__(self, display, returnFeatures) :
         self.c_display = display

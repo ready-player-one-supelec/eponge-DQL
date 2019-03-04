@@ -66,6 +66,7 @@ struct Game {
     Uint32 pipeColor;
     Uint32 skyColor;
     char skyColorGrayScale;
+    int stepSurvived;
 };
 
 int min(int v1, int v2);

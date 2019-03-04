@@ -4,6 +4,7 @@
 cimport cython
 cimport numpy as np
 import numpy as np
+from libc.stdlib cimport malloc, free
 
 cdef extern from "flappy.h":
     void reset_flappy()
@@ -35,6 +36,7 @@ cdef class Game :
         return self
 
     def __exit__(self,  type, value, traceback) :
+        free(self.image)
         exit_flappy()
 
     def convertImage(self) :
@@ -46,12 +48,18 @@ cdef class Game :
         reset_flappy()
 
     def game_step(self, movement) :
-        # return features is a boolean
         self.c_movement = movement
         self.c_continuer = step_flappy(self.c_movement, &self.reward)
+        retour = np.zeros(6)
         if self.returnFeatures :
             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)
-            return np.array([self.xToPipe, self.yToUpperPipe, self.yToLowerPipe, self.vy, self.yToTop, self.yToBottom], dtype = np.float32), self.reward, 1 - self.c_continuer
+            retour[0] = self.xToPipe
+            retour[1] = self.yToUpperPipe
+            retour[2] = self.yToLowerPipe
+            retour[3] = self.vy
+            retour[4] = self.yToTop
+            retour[5] = self.yToBottom
+            return retour, self.reward, 1 - self.c_continuer
         else :
             treatingImage(self.image)
             return self.convertImage(), self.reward, 1 - self.c_continuer

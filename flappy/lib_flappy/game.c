@@ -40,8 +40,9 @@ void run_flappy(void) {
 
 int step_flappy(int movement, float *reward) {
     if (movement == JUMP) {
-        game.boule.vy = -7.5;
+        game.boule.vy = -4;
     }
+
     int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score, reward);
     draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display);
     if (game.display){

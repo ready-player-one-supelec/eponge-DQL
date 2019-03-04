@@ -23,6 +23,7 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     sprintf(font->text, "Score : %d", score);
     font->textSurface = TTF_RenderText_Blended(font->font, font->text, font->color);
     SDL_BlitSurface(font->textSurface, NULL, ecran, &position);
+    SDL_FreeSurface(font->textSurface);
 
     if (display) {
         SDL_Flip(ecran);
@@ -48,8 +49,10 @@ void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau) {
         remplissage(ecran, &upperPart, &lowerPart, largeur, tuyau->y);
         position.y = 0;
         SDL_BlitSurface(upperPart, NULL, ecran, &position);
+        SDL_FreeSurface(upperPart);
         position.y = tuyau->y + HAUTEUR_TROU / 2;
         SDL_BlitSurface(lowerPart, NULL, ecran, &position);
+        SDL_FreeSurface(lowerPart);
     }
 }
 

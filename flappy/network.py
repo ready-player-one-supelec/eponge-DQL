@@ -18,7 +18,7 @@ class DQN :
 
     def initializeProperties(self) :
 
-        self.learningRate = 0.0001
+        self.learningRate = 0.001
         self.discountFactor = 0.9
 
     def createQNetwork(self, imageSize) :
@@ -27,7 +27,7 @@ class DQN :
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 
-        self.layer1_dense = tf.layers.dense(self.x, 32)
+        self.layer1_dense = tf.layers.dense(self.x, 256)
         self.layer1_dense = tf.nn.relu(self.layer1_dense)
 
         # output layer

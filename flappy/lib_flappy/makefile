@@ -14,8 +14,8 @@ lib_flappy.a: $(OBJS)
 	ar rcs lib_flappy.a $(OBJS)
 
 %.o: %.c
-	$(CPP) $(CFLAGS) -c $*.c
-	$(CPP) -MM $*.c > $*.d
+	$(CPP) -g $(CFLAGS) -c $*.c
+	$(CPP) -g -MM $*.c > $*.d
 
 clean:
 	rm -fr *.o *.a *.d

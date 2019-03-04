@@ -24,7 +24,7 @@ class Player :
     def initializeProperties(self) :
         # Q Network Constants
         self.imageSize = 80
-        self.synchronisationPeriod = 100
+        self.synchronisationPeriod = 1000
 
         # Constants
         self.explorationRate = 0.999
@@ -61,7 +61,7 @@ class Player :
         if self.exploiting or random.random() > self.explorationRate :
             return self.QNetwork.evaluate(self.buffer)
         else :
-            return int(random.random() > 0.9)
+            return random.randrange(2)
 
     def updateConstants(self, learningRate = None, explorationRate = None) :
         self.QNetwork.updateConstants(learningRate)
@@ -83,7 +83,7 @@ class Player :
         if self.trainable :
             self.trainingData.append([self.buffer, action, reward, nS])
             while len(self.trainingData) > self.maxBatchSize :
-                self.trainingData.pop(0)
+                del self.trainingData[0]
         self.buffer = nS
 
     def saveQNetwork(self, path, global_step = None) :

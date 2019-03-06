@@ -3,11 +3,11 @@ CFLAGS=-O3 #Option d'optimisation du programme
 # LDFLAGS=-lSDL2 -lSDL2_mixer #Linker
 LDFLAGS=-lSDL -lSDL_mixer -lSDL_image -lSDL_ttf -lm#Linker
 
-OBJS=play.o test.o
+OBJS=play.o
 
 all:
 	cd lib_flappy; make; cd ..;
-	make play test
+	make play
 
 -include $(OBJS:.o=.d)
 

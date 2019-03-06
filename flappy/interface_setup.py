@@ -14,7 +14,7 @@ flappy_extension = Extension(
     sources=["interface.pyx"],
     libraries=["_flappy", "SDL", "SDL_image", "SDL_mixer", "SDL_ttf"],
     library_dirs=["lib_flappy"],
-    include_dirs=["lib_flappy", '/home/nathan/miniconda3/lib/python3.6/site-packages/numpy/core/include']
+    include_dirs=["lib_flappy"]
 )
 
 setup(

@@ -18,7 +18,9 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     SDL_BlitSurface(boule->image, NULL, ecran, &position);
 
     for (int i = 0; i < NOMBRE_TUYAUX; i++) {
-        drawTuyau(ecran, &tuyaux[i], &position, &pipePart);
+        if (tuyaux[i].x < X_MAX || (game.display && tuyaux[i].x < LARGEUR_FENETRE)) {
+            drawTuyau(ecran, &tuyaux[i], &position, &pipePart);
+        }
     }
 
     position.x = 10;
@@ -34,25 +36,23 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
 }
 
 void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau, SDL_Rect *position, SDL_Rect *pipePart) {
-    if (tuyau->x < X_MAX || (game.display && tuyau->x < LARGEUR_FENETRE)) {
-        if (tuyau->x >= 0 && tuyau->x < LARGEUR_FENETRE - LARGEUR_TUYAU) {
-            pipePart->w = LARGEUR_TUYAU;
-        } else if (tuyau->x < 0) {
-            pipePart->w = LARGEUR_TUYAU + tuyau->x;
-        } else {
-            pipePart->w = LARGEUR_FENETRE - tuyau->x;
-        }
-
-        position->x = tuyau->x < 0 ? 0 : tuyau->x;
-
-        pipePart->h = tuyau->y - HAUTEUR_TROU / 2;
-        position->y = 0;
-        SDL_BlitSurface(game.pipe, pipePart, ecran, position);
-
-        pipePart->h = HAUTEUR_FENETRE - tuyau->y - HAUTEUR_TROU / 2;
-        position->y = tuyau->y + HAUTEUR_TROU / 2;
-        SDL_BlitSurface(game.pipe, pipePart, ecran, position);
+    if (tuyau->x >= 0 && tuyau->x < LARGEUR_FENETRE - LARGEUR_TUYAU) {
+        pipePart->w = LARGEUR_TUYAU;
+    } else if (tuyau->x < 0) {
+        pipePart->w = LARGEUR_TUYAU + tuyau->x;
+    } else {
+        pipePart->w = LARGEUR_FENETRE - tuyau->x;
     }
+
+    position->x = tuyau->x < 0 ? 0 : tuyau->x;
+
+    pipePart->h = tuyau->y - HAUTEUR_TROU / 2;
+    position->y = 0;
+    SDL_BlitSurface(game.pipe, pipePart, ecran, position);
+
+    pipePart->h = HAUTEUR_FENETRE - tuyau->y - HAUTEUR_TROU / 2;
+    position->y = tuyau->y + HAUTEUR_TROU / 2;
+    SDL_BlitSurface(game.pipe, pipePart, ecran, position);
 }
 
 Uint32 getpixel(SDL_Surface *surface, int x, int y) {

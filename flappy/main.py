@@ -20,31 +20,35 @@ def setOfGames(player, isTraining, nbOfGames, display) :
     with Game(display = display, returnFeatures = 1) as game :
         currentStep = 0
         i = 0
+        observation, reward, done = game.game_step(0)
+        player.buffer = observation
+
         while currentStep < 3000000 :
-            i+=1
             if isTraining :
                 player.updateConstants(explorationRate= 0.1 - 0.0999 * currentStep / 3000000) #max(0,0.6 - 0.55 * currentStep / 10000))
 
-            done = False
-            observation, reward, done = game.game_step(0)
-            player.buffer = observation
-            while not done:
-                action = player.play()
-                observation, reward, done = game.game_step(action)
-                player.addStateSequence(action, reward, observation)
-                player.training(currentStep)
-                player.updateStats(reward)
-                currentStep += 1
-                # if player.score >= 50 :
-                #     break;
-            # if i % 100 == 0 :
-            #     player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = i)
-            print(text + "Game : {} ; Step : {} ; Reward : {}".format(i, currentStep, reward))
-            player.displayStats()
-            # if player.score >= 50 :
-            #     player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = i)
-            #     break
-            player.resetStats()
+            action = player.play()
+            observation, reward, done = game.game_step(action)
+
+            if player.score >= 50 :
+                game.reset()
+                done = True
+
+            player.addStateSequence(action, reward, observation)
+            player.updateStats(reward)
+            currentStep += 1
+
+            if done :
+                i += 1
+                print(text + "Game : {} ; Step : {} ; Reward : {}".format(i, currentStep, reward))
+                player.displayStats()
+                player.resetStats()
+                if i % 100 == 0 or player.score >= 50 :
+                    player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = i)
+                observation, reward, done = game.game_step(0)
+                player.buffer = observation
+
+            player.training(currentStep)
 
 
 def testing(display = 0) :

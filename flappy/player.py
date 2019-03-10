@@ -38,7 +38,7 @@ class Player :
 
         # Training
         self.trainingData = []
-        self.maxBatchSize = 1000
+        self.maxBatchSize = 10000
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
         self.miniBatch = []

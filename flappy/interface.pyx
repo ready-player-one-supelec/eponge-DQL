@@ -49,16 +49,18 @@ cdef class Game :
     def game_step(self, movement) :
         self.c_movement = movement
         self.c_continuer = step_flappy(self.c_movement, &self.reward)
-        retour = np.zeros(6)
         if self.returnFeatures :
             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)
+            retour = np.zeros(6)
             retour[0] = self.xToPipe
             retour[1] = self.yToUpperPipe
             retour[2] = self.yToLowerPipe
             retour[3] = self.vy
             retour[4] = self.yToTop
             retour[5] = self.yToBottom
-            return retour, self.reward, 1 - self.c_continuer
         else :
             treatingImage(self.image)
-            return self.convertImage(), self.reward, 1 - self.c_continuer
+            retour = self.convertImage()
+        if self.c_continuer == 0 :
+            self.reset()
+        return retour, self.reward, 1 - self.c_continuer

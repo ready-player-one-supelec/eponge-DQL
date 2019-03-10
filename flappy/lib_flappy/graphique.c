@@ -5,7 +5,10 @@
 #include "graphique.h"
 
 void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score, int display) {
-    SDL_Rect position;
+    SDL_Rect position, pipePart;
+    pipePart.x = 0;
+    pipePart.y = 0;
+
     position.x = game.display ? 0 : X_MIN;
     position.y = 0;
     SDL_BlitSurface(background, NULL, ecran, &position);
@@ -15,7 +18,7 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     SDL_BlitSurface(boule->image, NULL, ecran, &position);
 
     for (int i = 0; i < NOMBRE_TUYAUX; i++) {
-        drawTuyau(ecran, &tuyaux[i]);
+        drawTuyau(ecran, &tuyaux[i], &position, &pipePart);
     }
 
     position.x = 10;
@@ -30,37 +33,26 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     }
 }
 
-void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau) {
-    SDL_Surface *upperPart = NULL;
-    SDL_Surface *lowerPart = NULL;
-    SDL_Rect position;
-    int largeur;
+void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau, SDL_Rect *position, SDL_Rect *pipePart) {
     if (tuyau->x < X_MAX || (game.display && tuyau->x < LARGEUR_FENETRE)) {
         if (tuyau->x >= 0 && tuyau->x < LARGEUR_FENETRE - LARGEUR_TUYAU) {
-            largeur = LARGEUR_TUYAU;;
-            position.x = tuyau->x;
+            pipePart->w = LARGEUR_TUYAU;
         } else if (tuyau->x < 0) {
-            largeur = LARGEUR_TUYAU + tuyau->x;
-            position.x = 0;
+            pipePart->w = LARGEUR_TUYAU + tuyau->x;
         } else {
-            largeur = LARGEUR_FENETRE - tuyau->x;
-            position.x = LARGEUR_FENETRE - largeur;
+            pipePart->w = LARGEUR_FENETRE - tuyau->x;
         }
-        remplissage(ecran, &upperPart, &lowerPart, largeur, tuyau->y);
-        position.y = 0;
-        SDL_BlitSurface(upperPart, NULL, ecran, &position);
-        SDL_FreeSurface(upperPart);
-        position.y = tuyau->y + HAUTEUR_TROU / 2;
-        SDL_BlitSurface(lowerPart, NULL, ecran, &position);
-        SDL_FreeSurface(lowerPart);
-    }
-}
 
-void remplissage(SDL_Surface *ecran, SDL_Surface **upperPart, SDL_Surface **lowerPart, int largeur, int centre) {
-    *upperPart = SDL_CreateRGBSurface(SDL_HWSURFACE, largeur, centre - HAUTEUR_TROU / 2, 32, 0, 0, 0, 0);
-    *lowerPart = SDL_CreateRGBSurface(SDL_HWSURFACE, largeur, HAUTEUR_FENETRE - centre - HAUTEUR_TROU / 2, 32, 0, 0, 0, 0);
-    SDL_FillRect(*upperPart, NULL, game.pipeColor);
-    SDL_FillRect(*lowerPart, NULL, game.pipeColor);
+        position->x = tuyau->x < 0 ? 0 : tuyau->x;
+
+        pipePart->h = tuyau->y - HAUTEUR_TROU / 2;
+        position->y = 0;
+        SDL_BlitSurface(game.pipe, pipePart, ecran, position);
+
+        pipePart->h = HAUTEUR_FENETRE - tuyau->y - HAUTEUR_TROU / 2;
+        position->y = tuyau->y + HAUTEUR_TROU / 2;
+        SDL_BlitSurface(game.pipe, pipePart, ecran, position);
+    }
 }
 
 Uint32 getpixel(SDL_Surface *surface, int x, int y) {
@@ -154,4 +146,5 @@ void showImage(SDL_Surface *ecran, char *image) {
     }
     SDL_UnlockSurface(ecran);
     SDL_Flip(ecran);
+    SDL_FreeSurface(fond);
 }

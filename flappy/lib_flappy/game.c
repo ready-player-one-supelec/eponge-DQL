@@ -40,7 +40,7 @@ void run_flappy(void) {
 
 int step_flappy(int movement, float *reward) {
     if (movement == JUMP) {
-        game.boule.vy = -4;
+        game.boule.vy = IMPULSE;
     }
 
     int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score, reward);
@@ -55,10 +55,10 @@ int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *re
     updateValues(boule, tuyaux);
     *reward = 0;
     if (death(ecran, boule, tuyaux)) {
-        *reward = -3 / (log(game.stepSurvived) + game.score);
+        *reward = -3 / (log(game.stepsSurvived) + game.score);
         return 0;
     } else {
-        game.stepSurvived++;
+        game.stepsSurvived++;
         int i, tmp;
         for (i = 0; i < NOMBRE_TUYAUX; i++) {
             if (tuyaux[i].x < -LARGEUR_TUYAU) {

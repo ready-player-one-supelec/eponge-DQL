@@ -18,15 +18,17 @@ char* init_flappy(int display) {
     SDL_WM_SetCaption("Flappy Bird", NULL);
 
     game.display = display;
-    game.pipeColor = SDL_MapRGB(game.ecran->format, 120, 255, 120);
-    game.skyColor = SDL_MapRGB(game.ecran->format, SKY_RED, SKY_GREEN, SKY_BLUE);
+    Uint32 pipeColor = SDL_MapRGB(game.ecran->format, 120, 255, 120);
+    Uint32 skyColor = SDL_MapRGB(game.ecran->format, SKY_RED, SKY_GREEN, SKY_BLUE);
     game.skyColorGrayScale = (char)(0.2126 * SKY_RED + 0.7152 * SKY_GREEN + 0.0722 * SKY_BLUE);
     if (game.display) {
         game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, game.ecran->w, game.ecran->h, 32, 0, 0, 0, 0);
     } else {
         game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, (X_MAX - X_MIN), game.ecran->h, 32, 0, 0, 0, 0);
     }
-    SDL_FillRect(game.background, NULL, game.skyColor);
+    SDL_FillRect(game.background, NULL, skyColor);
+    game.pipe = SDL_CreateRGBSurface(SDL_HWSURFACE, LARGEUR_TUYAU, HAUTEUR_FENETRE, 32, 0, 0, 0, 0);
+    SDL_FillRect(game.pipe, NULL, pipeColor);
     game.boule.image = IMG_Load("Images/boule.png");
     game.boule.height = game.boule.image->w;
     reset_flappy();
@@ -48,7 +50,7 @@ void reset_flappy(void) {
     game.tuyaux[0].x = 700 ;
     game.tuyaux[0].y = randCenter();
     game.score = 0;
-    game.stepSurvived = 0;
+    game.stepsSurvived = 0;
 
     for (int i = 1; i < NOMBRE_TUYAUX ; i++) {
         nextTuyau(&game.tuyaux[i], &game.tuyaux[(i-1) % NOMBRE_TUYAUX]);
@@ -62,6 +64,7 @@ void changeDisplay(int display) {
 void exit_flappy(void) {
     SDL_FreeSurface(game.background);
     SDL_FreeSurface(game.boule.image);
+    SDL_FreeSurface(game.pipe);
     TTF_CloseFont(game.font.font);
     TTF_Quit();
 }

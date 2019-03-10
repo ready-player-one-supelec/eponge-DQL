@@ -45,7 +45,6 @@ def setOfGames(player, isTraining, nbOfGames, display) :
             #     player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = i)
             #     break
             player.resetStats()
-            game.reset()
 
 
 def testing(display = 0) :

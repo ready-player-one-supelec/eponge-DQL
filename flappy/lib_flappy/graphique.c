@@ -25,10 +25,16 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
 
     position.x = 10;
     position.y = 10;
-    sprintf(font->text, "Score : %d", score);
-    font->textSurface = TTF_RenderText_Blended(font->font, font->text, font->color);
+    if (game.updatedScore) {
+        if (font->textSurface != NULL) {
+            SDL_FreeSurface(font->textSurface);
+        }
+        sprintf(font->text, "Score : %d", score);
+        font->textSurface = TTF_RenderText_Blended(font->font, font->text, font->color);
+        game.updatedScore = 0;
+    }
+
     SDL_BlitSurface(font->textSurface, NULL, ecran, &position);
-    SDL_FreeSurface(font->textSurface);
 
     if (display) {
         SDL_Flip(ecran);

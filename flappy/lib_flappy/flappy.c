@@ -51,6 +51,7 @@ void reset_flappy(void) {
     game.tuyaux[0].y = randCenter();
     game.score = 0;
     game.stepsSurvived = 0;
+    game.updatedScore = 1;
 
     for (int i = 1; i < NOMBRE_TUYAUX ; i++) {
         nextTuyau(&game.tuyaux[i], &game.tuyaux[(i-1) % NOMBRE_TUYAUX]);

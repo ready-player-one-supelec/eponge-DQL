@@ -69,6 +69,7 @@ int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *re
             tmp = tuyaux[i].x + LARGEUR_TUYAU;
             if (boule->x >= tmp && boule->x < tmp + boule->vx) {
                 (*score)++;
+                game.updatedScore = 1;
                 *reward = 1;
                 break;
             }

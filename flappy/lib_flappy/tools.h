@@ -67,6 +67,7 @@ struct Game {
     int display;
     char skyColorGrayScale;
     int stepsSurvived;
+    int updatedScore;
 };
 
 int min(int v1, int v2);

@@ -55,7 +55,7 @@ int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *re
     updateValues(boule, tuyaux);
     *reward = 0;
     if (death(ecran, boule, tuyaux)) {
-        *reward = -3 / (log(game.stepsSurvived) + game.score);
+        *reward = -100.0 / game.stepsSurvived;
         return 0;
     } else {
         game.stepsSurvived++;

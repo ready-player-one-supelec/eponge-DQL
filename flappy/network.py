@@ -14,7 +14,7 @@ class DQN :
             self.initializeProperties()
             self.createQNetwork(imageSize)
             self.createOptimiser()
-        self.saver = tf.train.Saver()
+        self.saver = tf.train.Saver(max_to_keep=0)
 
     def initializeProperties(self) :
 

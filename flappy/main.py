@@ -25,7 +25,8 @@ def setOfGames(player, isTraining, nbOfGames, display) :
 
         while currentStep < 3000000 and i < nbOfGames:
             if isTraining :
-                player.updateConstants(explorationRate= 0.1 - 0.0999 * currentStep / 3000000) #max(0,0.6 - 0.55 * currentStep / 10000))
+                if currentStep < 10000 :
+                    player.updateConstants(explorationRate= 0.1 - 0.0999 * currentStep / 10000)
 
             action = player.play()
             observation, reward, done = game.game_step(action)
@@ -52,13 +53,13 @@ def setOfGames(player, isTraining, nbOfGames, display) :
 
 
 def testing(display = 0) :
-    network2restore = 500
+    network2restore = 4000
     nbOfGames = 10
     player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = network2restore)
     setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
 
 def training() :
-    nbOfGames = 10000
+    nbOfGames = 1000000
     setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = 0)
     # player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
     print("\n{}\n".format(time.time() - t))

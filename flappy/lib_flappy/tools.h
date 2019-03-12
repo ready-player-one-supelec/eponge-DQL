@@ -5,11 +5,11 @@
 #include <SDL/SDL_ttf.h>
 
 #define GRAVITY 0.4
-#define IMPULSE -4
+#define IMPULSE -7
 #define LARGEUR_FENETRE 720//1080 // Il faut de préférence une largeur supérieure à 720
 #define HAUTEUR_FENETRE 440//720 // Il faut de préférence une hauteur supérieure à 440
 #define LARGEUR_TUYAU 100
-#define HAUTEUR_TROU 300
+#define HAUTEUR_TROU 160
 #define TROU_CENTRE_YMIN (25+(HAUTEUR_TROU/2))
 #define TROU_CENTRE_YMAX (HAUTEUR_FENETRE - (HAUTEUR_TROU/2) - 100)
 #define PAS_ENTRE_TUYAU 300

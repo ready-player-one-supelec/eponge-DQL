@@ -6,20 +6,21 @@ from player import Player
 import random
 import math
 import time
-import sys
 import dill as pickle
+from multiprocessing import Pool
+
+# Number of processors
+processors = 4
 
 # Number of runs (for the average)
-runs = 2
+runs = 4
 
 t = time.time()
-player = Player(name = "Toto", isBot = True)
-prefix = ""
+# player = Player(name = "Toto", isBot = True)
 
-def setOfGames(player, isTraining, nbOfGames, display) :
-    global prefix
+def setOfGames(run, player, isTraining, nbOfGames, display) :
     # isTraining = True for a training session, False for a test session
-    text = prefix
+    text = "Run {} ; ".format(run) if run != 0 else ""
     text += "TRAINING ; " if isTraining else "PLAYING ; "
 
     player.setBehaviour(isTraining)
@@ -67,7 +68,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
             if isTraining and i % 10 == 0 :
                 history_of_results.append({
                     'Epoch' : i,
-                    'Results' : testing(player, False)
+                    'Results' : testing(run, player, False)
                 })
     if not isTraining :
         return results
@@ -75,27 +76,36 @@ def setOfGames(player, isTraining, nbOfGames, display) :
         return history_of_results
 
 
-def testing(player, display = False) :
+def testing(run, player, display = False) :
     network2restore = 1000
     nbOfGames = 10
     # player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = network2restore)
-    return setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
+    return setOfGames(run = run, player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
 
-def training(player) :
+def training(run, player) :
     nbOfGames = 100
-    results = setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
+    results = setOfGames(run = run, player = player, isTraining = True, nbOfGames = nbOfGames, display = False)
     # player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
     # with open("./Saved_Networks/duration-test.ckpt-{}".format(nbOfGames), "w") as f :
     #     f.write("Duration for {} training games : {}".format(nbOfGames, time.time() - t))
     return results
 
+def doUrStuff(run) :
+    player = Player(name = str(run), isBot = True)
+    res = training(run, player)
+    del player
+    return res
 
 # testing(player)
 # training(player)
-X = []
-for run in range(1, runs + 1) :
-    prefix = "Run : {} ; ".format(run)
-    player = Player(name = str(run), isBot = True)
-    X.append(training(player))
-    del player
-pickle.dump(X, open("results{}".format(sys.argv[1]), "wb"))
+
+pool = Pool(processes = processors)
+
+times = [(i,) for i in range(1, runs + 1)]
+X = pool.starmap(doUrStuff, tuple(times))
+t2 = time.time() - t
+print(t2)
+pickle.dump({
+    "Results" : X,
+    "Time" : t2
+    }, open("results", "wb"))

@@ -10,14 +10,17 @@ import sys
 import dill as pickle
 
 # Number of runs (for the average)
-runs = 1
+runs = 2
 
 t = time.time()
 player = Player(name = "Toto", isBot = True)
+prefix = ""
 
 def setOfGames(player, isTraining, nbOfGames, display) :
+    global prefix
     # isTraining = True for a training session, False for a test session
-    text = "TRAINING ; " if isTraining else "PLAYING ; "
+    text = prefix
+    text += "TRAINING ; " if isTraining else "PLAYING ; "
 
     player.setBehaviour(isTraining)
 
@@ -28,8 +31,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
     with Game(display = display) as game :
         currentStep = 0
         results = []
-        for i in range(nbOfGames) :
-            result = {'Game number' : i+1}
+        for i in range(1, nbOfGames + 1) :
             if isTraining :
                 tmp = 1 - 0.95 * i / nbOfGames
                 if tmp > 0.1 :
@@ -47,22 +49,24 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 player.updateStats(reward)
                 currentStep += 1
 
-            print(text + "Game : {} ; Step : {}".format(i+1, currentStep))
-            player.displayStats()
+            print(text + "Game : {} ; Step : {}".format(i, currentStep))
+            # player.displayStats()
             if player.gamesWon >= 195 :
                 victoryCounter += 1
             else :
                 victoryCounter = 0
-            result['Steps survived'] = player.gamesWon + 1
-            result['Victory strike'] = victoryCounter
-            results.append(result)
+            results.append({
+                'Game number' : i,
+                'Steps survived' : player.gamesWon + 1,
+                'Victory strike' : victoryCounter
+            })
             player.resetStats()
             game.reset()
             # if victoryCounter >= 100 :
             #     break
-            if isTraining and (i+1) % 10 == 0 :
+            if isTraining and i % 10 == 0 :
                 history_of_results.append({
-                    'Epoch' : i + 1,
+                    'Epoch' : i,
                     'Results' : testing(player, False)
                 })
     if not isTraining :
@@ -88,5 +92,10 @@ def training(player) :
 
 # testing(player)
 # training(player)
-X = [training(Player(name = str(i), isBot = True)) for i in range(1, runs + 1)]
+X = []
+for run in range(1, runs + 1) :
+    prefix = "Run : {} ; ".format(run)
+    player = Player(name = str(run), isBot = True)
+    X.append(training(player))
+    del player
 pickle.dump(X, open("results{}".format(sys.argv[1]), "wb"))

@@ -65,6 +65,7 @@ def setOfGames(run, player, isTraining, nbOfGames, display) :
                     'Epoch' : i,
                     'Results' : testing(run, player, False)
                 })
+                player.setBehaviour(isTraining)
     if not isTraining :
         return results
     else :
@@ -73,7 +74,7 @@ def setOfGames(run, player, isTraining, nbOfGames, display) :
 
 def testing(run, player, display = False) :
     network2restore = 1000
-    nbOfGames = 150
+    nbOfGames = 10
     # player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = network2restore)
     return setOfGames(run = run, player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
 
@@ -108,6 +109,6 @@ def multicoreCartPole() :
         "Time" : t2
         }, open("results", "wb"))
 
-# testing(player)
-# training(player)
+# testing(0, player)
+# training(0, player)
 multicoreCartPole()

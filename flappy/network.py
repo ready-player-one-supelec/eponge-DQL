@@ -23,11 +23,25 @@ class DQN :
 
     def createQNetwork(self, imageSize) :
         # input layer
-        self.x = tf.placeholder(tf.float32, [None, 6])
+        self.x = tf.placeholder(tf.float32, [None, 44, 30, 2])
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 
-        self.layer1_dense = tf.layers.dense(self.x, 256)
+        # first convolutional layer
+        self.layer1_conv = tf.layers.conv2d(inputs=self.x / 255,
+                                            filters=64,
+                                            kernel_size=2,
+                                            strides=2,
+                                            activation=tf.nn.relu)
+
+        # second convolutional layer
+        self.layer2_conv = tf.layers.conv2d(inputs=self.layer1_conv,
+                                            filters=64,
+                                            kernel_size=3,
+                                            strides=1,
+                                            activation=tf.nn.relu)
+
+        self.layer1_dense = tf.layers.dense(tf.layers.flatten(self.layer2_conv), 256)
         self.layer1_dense = tf.nn.relu(self.layer1_dense)
 
         # output layer

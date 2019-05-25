@@ -22,7 +22,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
 
         for i in range(nbOfGames) :
             if isTraining :
-                tmp = 1 - 0.98 * i / nbOfGames
+                tmp = 0.2- 0.18 * i / (nbOfGames / 2)
                 if tmp > 0.02 :
                     player.updateConstants(explorationRate= tmp)
                 else :
@@ -67,7 +67,7 @@ def testing(display = 0) :
 
 def training() :
     nbOfGames = 1000
-    setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = 1)
+    setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = 0)
     # player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
     print("\n{}\n".format(time.time() - t))
 

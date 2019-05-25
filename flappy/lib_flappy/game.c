@@ -55,10 +55,11 @@ int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *re
     updateValues(boule, tuyaux);
     *reward = 0;
     if (death(ecran, boule, tuyaux, difficulty)) {
-        *reward = -10.0 / log(game.stepsSurvived);
+        *reward = -1000.0;
         return 0;
     } else {
         game.stepsSurvived++;
+        *reward = 1;
         int i, tmp;
         for (i = 0; i < NOMBRE_TUYAUX; i++) {
             if (tuyaux[i].x < -LARGEUR_TUYAU) {
@@ -70,7 +71,6 @@ int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *re
             if (boule->x >= tmp && boule->x < tmp + boule->vx) {
                 (*score)++;
                 game.updatedScore = 1;
-                *reward = 1;
                 break;
             }
         }

@@ -25,7 +25,7 @@ class Player :
     def initializeProperties(self) :
         # Q Network Constants
         self.imageSize = 80
-        self.synchronisationPeriod = 1000
+        self.synchronisationPeriod = 5000
 
         # Constants
         self.explorationRate = 0.999
@@ -39,11 +39,11 @@ class Player :
 
         # Training
         self.trainingData = []
-        self.maxBatchSize = 10000
+        self.maxBatchSize = 50000
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
         self.miniBatch = []
-        self.startTraining = 500
+        self.startTraining = 3000
         # the training will happen iff we have more than startTraining data in trainingData
 
         print("Properties initialized")

@@ -19,7 +19,7 @@ class DQN :
     def initializeProperties(self) :
 
         self.learningRate = 0.001
-        self.discountFactor = 0.9
+        self.discountFactor = 0.99
 
     def createQNetwork(self, imageSize) :
         # input layer

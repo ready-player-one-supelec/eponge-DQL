@@ -43,7 +43,7 @@ int step_flappy(int movement, float *reward) {
         game.boule.vy = IMPULSE;
     }
 
-    int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score, reward);
+    int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score, reward, game.difficulty);
     draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display, game.difficulty);
     if (game.display){
         SDL_Delay(20);
@@ -51,10 +51,10 @@ int step_flappy(int movement, float *reward) {
     return continuer;
 }
 
-int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *reward) {
+int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *reward, int difficulty) {
     updateValues(boule, tuyaux);
     *reward = 0;
-    if (death(ecran, boule, tuyaux)) {
+    if (death(ecran, boule, tuyaux, difficulty)) {
         *reward = -100.0 / game.stepsSurvived;
         return 0;
     } else {
@@ -78,14 +78,17 @@ int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *re
     }
 }
 
-int death(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[]) {
+int death(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int difficulty) {
     if (boule->y < 0) {
         return 1;
     } else if (boule->y > ecran->h - boule->height) {
         return 1;
     }
+    if (difficulty == NO_PIPE) {
+        return 0;
+    }
     for (int i = 0; i < NOMBRE_TUYAUX; i ++) {
-        if (collision(*boule, tuyaux[i])) {
+        if (collision(*boule, tuyaux[i], difficulty)) {
             return 1;
         }
     }
@@ -93,13 +96,13 @@ int death(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[]) {
 }
 
 
-int collision(Boule boule, Tuyau tuyau) {
+int collision(Boule boule, Tuyau tuyau, int difficulty) {
     if (boule.x - TOLERANCE < tuyau.x - boule.height || boule.x + TOLERANCE > tuyau.x + LARGEUR_TUYAU) {
         return 0;
     }
     if (boule.x > tuyau.x - boule.height / 2 && boule.x < tuyau.x + LARGEUR_TUYAU - boule.height / 2) {
         if (boule.y + TOLERANCE < tuyau.y - HAUTEUR_TROU / 2) {
-            return 1;
+            return difficulty == WHOLE_PIPE ? 1 : 0;
         } else if (boule.y + boule.height - TOLERANCE > tuyau.y + HAUTEUR_TROU / 2) {
             return 1;
         } else {
@@ -108,14 +111,14 @@ int collision(Boule boule, Tuyau tuyau) {
     } else {
         int xCentre = boule.x + boule.height / 2;
         int yCentre = boule.y + boule.height / 2;
-        if (boule.y < tuyau.y - HAUTEUR_TROU / 2 || boule.y > tuyau.y + HAUTEUR_TROU / 2) {
+        if (((boule.y < tuyau.y - HAUTEUR_TROU / 2) && (difficulty == WHOLE_PIPE)) || boule.y > tuyau.y + HAUTEUR_TROU / 2) {
             return 1;
         }
         int xCoin[2] = {tuyau.x, tuyau.x + LARGEUR_TUYAU};
         int yCoin[2] = {tuyau.y - HAUTEUR_TROU / 2, tuyau.y + HAUTEUR_TROU / 2};
         int dx, dy;
         for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 2; j++) {
+            for (int j = (difficulty == WHOLE_PIPE ? 0 : 1); j < 2; j++) {
                 dx = xCoin[i] - xCentre;
                 dy = yCoin[j] - yCentre;
                 if (dx * dx + dy * dy + TOLERANCE * TOLERANCE <= boule.height * boule.height / 4) {

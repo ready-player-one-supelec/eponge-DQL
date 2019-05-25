@@ -4,6 +4,7 @@
 import tensorflow as tf
 import random
 import time
+import numpy as np
 from network import DQN
 
 
@@ -61,7 +62,7 @@ class Player :
         if self.exploiting or random.random() > self.explorationRate :
             return self.QNetwork.evaluate(self.buffer)
         else :
-            return random.randrange(2)
+            return int(random.random() < 0.9)
 
     def updateConstants(self, learningRate = None, explorationRate = None) :
         self.QNetwork.updateConstants(learningRate)
@@ -80,6 +81,7 @@ class Player :
         print(self.score)
 
     def addStateSequence(self, action, reward, nS) :
+        nS = np.transpose(nS, [1, 2, 0])
         if self.trainable :
             self.trainingData.append([self.buffer, action, reward, nS])
             while len(self.trainingData) > self.maxBatchSize :

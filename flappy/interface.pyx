@@ -6,8 +6,8 @@ import numpy as np
 from libc.stdlib cimport malloc, free
 
 cdef extern from "flappy.h":
-    void reset_flappy()
-    char* init_flappy(int display)
+    void reset_flappy(int difficulty)
+    char* init_flappy(int display, int difficulty)
     void exit_flappy()
     void run_flappy()
     int step_flappy(int movement, float *reward)
@@ -23,14 +23,16 @@ cdef class Game :
     cdef public int c_display, xToPipe
     cdef public float yToUpperPipe, yToLowerPipe, vy, yToTop, yToBottom, reward
     cdef public int c_movement, c_continuer, returnFeatures
+    cdef public int difficulty
 
-    def __init__(self, display, returnFeatures) :
+    def __init__(self, display, returnFeatures, difficulty) :
         self.c_display = display
         self.returnFeatures = returnFeatures
+        self.difficulty = difficulty
         getSize(&self.X_SIZE, &self.Y_SIZE)
 
     def __enter__(self) :
-        self.image = init_flappy(self.c_display)
+        self.image = init_flappy(self.c_display, self.difficulty)
         self.image[self.X_SIZE * self.Y_SIZE] = 0
         return self
 
@@ -44,7 +46,7 @@ cdef class Game :
         return tmp
 
     def reset(self) :
-        reset_flappy()
+        reset_flappy(self.difficulty)
 
     def game_step(self, movement) :
         self.c_movement = movement

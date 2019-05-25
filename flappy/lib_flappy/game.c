@@ -44,7 +44,7 @@ int step_flappy(int movement, float *reward) {
     }
 
     int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score, reward);
-    draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display);
+    draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display, game.difficulty);
     if (game.display){
         SDL_Delay(20);
     }

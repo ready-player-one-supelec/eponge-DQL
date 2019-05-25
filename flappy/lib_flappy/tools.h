@@ -30,6 +30,7 @@
 #define SKY_BLUE 235
 
 enum {WAIT, JUMP};
+enum {NO_PIPE, LOWER_PIPE, WHOLE_PIPE};
 
 typedef struct Boule Boule;
 struct Boule {
@@ -68,6 +69,7 @@ struct Game {
     char skyColorGrayScale;
     int stepsSurvived;
     int updatedScore;
+    int difficulty;
 };
 
 int min(int v1, int v2);

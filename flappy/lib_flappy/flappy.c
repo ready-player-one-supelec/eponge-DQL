@@ -10,7 +10,7 @@
 #include "flappy.h"
 #include "game.h"
 
-char* init_flappy(int display) {
+char* init_flappy(int display, int difficulty) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
     initFont(&game.font);
@@ -31,7 +31,7 @@ char* init_flappy(int display) {
     SDL_FillRect(game.pipe, NULL, pipeColor);
     game.boule.image = IMG_Load("Images/boule.png");
     game.boule.height = game.boule.image->w;
-    reset_flappy();
+    reset_flappy(difficulty);
 
     char *pointeur = NULL;
     pointeur = (char *)malloc((X_SIZE * Y_SIZE + 1)* sizeof(char));
@@ -45,13 +45,14 @@ void initBoule(Boule *boule) {
     boule->vx = 3;
 }
 
-void reset_flappy(void) {
+void reset_flappy(int difficulty) {
     initBoule(&game.boule);
     game.tuyaux[0].x = 700 ;
     game.tuyaux[0].y = randCenter();
     game.score = 0;
     game.stepsSurvived = 0;
     game.updatedScore = 1;
+    game.difficulty = difficulty;
 
     for (int i = 1; i < NOMBRE_TUYAUX ; i++) {
         nextTuyau(&game.tuyaux[i], &game.tuyaux[(i-1) % NOMBRE_TUYAUX]);

@@ -66,7 +66,7 @@ def testing(display = 0) :
     setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
 
 def training() :
-    nbOfGames = 1000
+    nbOfGames = 5000
     setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = 0)
     # player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
     print("\n{}\n".format(time.time() - t))

@@ -35,7 +35,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 observations.append(observation)
 
             player.buffer = np.transpose(observations, [1, 2, 0])
-
+            tmp = currentStep
             while not done :
                 player.training(currentStep)
                 action = player.play()
@@ -51,7 +51,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 player.updateStats(reward)
                 currentStep += 1
 
-            print(text + "Game : {} ; Step : {} ; Reward : {}".format(i+1, currentStep, reward))
+            print(text + "Game : {} ; Steps survived : {}".format(i+1, currentStep - tmp))
             player.displayStats()
             player.resetStats()
             if player.score >= 200 :

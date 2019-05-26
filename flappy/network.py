@@ -18,19 +18,19 @@ class DQN :
 
     def initializeProperties(self) :
 
-        self.learningRate = 0.001
+        self.learningRate = 0.0001
         self.discountFactor = 0.99
 
     def createQNetwork(self, imageSize) :
         # input layer
-        self.x = tf.placeholder(tf.float32, [None, 44, 30, 2])
+        self.x = tf.placeholder(tf.float32, [None, 88, 60, 2])
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 
         # first convolutional layer
         self.layer1_conv = tf.layers.conv2d(inputs=self.x / 255,
                                             filters=64,
-                                            kernel_size=2,
+                                            kernel_size=4,
                                             strides=2,
                                             activation=tf.nn.relu)
 
@@ -41,7 +41,7 @@ class DQN :
                                             strides=1,
                                             activation=tf.nn.relu)
 
-        self.layer1_dense = tf.layers.dense(tf.layers.flatten(self.layer2_conv), 256)
+        self.layer1_dense = tf.layers.dense(tf.layers.flatten(self.layer2_conv), 512)
         self.layer1_dense = tf.nn.relu(self.layer1_dense)
 
         # output layer

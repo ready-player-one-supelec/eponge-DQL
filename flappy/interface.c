@@ -2022,7 +2022,7 @@ static PyObject *__pyx_pf_9interface_4Game_10game_step(struct __pyx_obj_9interfa
  *         if self.returnFeatures :
  *             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)             # <<<<<<<<<<<<<<
  *             retour = np.zeros(6)
- *             retour[0] = self.xToPipe
+ *             retour[0] = self.xToPipe / 300.0
  */
     updateFeatures((&__pyx_v_self->xToPipe), (&__pyx_v_self->yToUpperPipe), (&__pyx_v_self->yToLowerPipe), (&__pyx_v_self->vy), (&__pyx_v_self->yToTop), (&__pyx_v_self->yToBottom));
 
@@ -2030,8 +2030,8 @@ static PyObject *__pyx_pf_9interface_4Game_10game_step(struct __pyx_obj_9interfa
  *         if self.returnFeatures :
  *             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)
  *             retour = np.zeros(6)             # <<<<<<<<<<<<<<
- *             retour[0] = self.xToPipe
- *             retour[1] = self.yToUpperPipe
+ *             retour[0] = self.xToPipe / 300.0
+ *             retour[1] = self.yToUpperPipe / 200.0
  */
     __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 56, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
@@ -2059,71 +2059,71 @@ static PyObject *__pyx_pf_9interface_4Game_10game_step(struct __pyx_obj_9interfa
     /* "interface.pyx":57
  *             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)
  *             retour = np.zeros(6)
- *             retour[0] = self.xToPipe             # <<<<<<<<<<<<<<
- *             retour[1] = self.yToUpperPipe
- *             retour[2] = self.yToLowerPipe
+ *             retour[0] = self.xToPipe / 300.0             # <<<<<<<<<<<<<<
+ *             retour[1] = self.yToUpperPipe / 200.0
+ *             retour[2] = self.yToLowerPipe / 200.0
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->xToPipe); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble((__pyx_v_self->xToPipe / 300.0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (unlikely(__Pyx_SetItemInt(__pyx_v_retour, 0, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 57, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "interface.pyx":58
  *             retour = np.zeros(6)
- *             retour[0] = self.xToPipe
- *             retour[1] = self.yToUpperPipe             # <<<<<<<<<<<<<<
- *             retour[2] = self.yToLowerPipe
- *             retour[3] = self.vy
+ *             retour[0] = self.xToPipe / 300.0
+ *             retour[1] = self.yToUpperPipe / 200.0             # <<<<<<<<<<<<<<
+ *             retour[2] = self.yToLowerPipe / 200.0
+ *             retour[3] = self.vy / 5.0
  */
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->yToUpperPipe); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble((__pyx_v_self->yToUpperPipe / 200.0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (unlikely(__Pyx_SetItemInt(__pyx_v_retour, 1, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "interface.pyx":59
- *             retour[0] = self.xToPipe
- *             retour[1] = self.yToUpperPipe
- *             retour[2] = self.yToLowerPipe             # <<<<<<<<<<<<<<
- *             retour[3] = self.vy
- *             retour[4] = self.yToTop
+ *             retour[0] = self.xToPipe / 300.0
+ *             retour[1] = self.yToUpperPipe / 200.0
+ *             retour[2] = self.yToLowerPipe / 200.0             # <<<<<<<<<<<<<<
+ *             retour[3] = self.vy / 5.0
+ *             retour[4] = self.yToTop / 200.0
  */
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->yToLowerPipe); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble((__pyx_v_self->yToLowerPipe / 200.0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (unlikely(__Pyx_SetItemInt(__pyx_v_retour, 2, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "interface.pyx":60
- *             retour[1] = self.yToUpperPipe
- *             retour[2] = self.yToLowerPipe
- *             retour[3] = self.vy             # <<<<<<<<<<<<<<
- *             retour[4] = self.yToTop
- *             retour[5] = self.yToBottom
+ *             retour[1] = self.yToUpperPipe / 200.0
+ *             retour[2] = self.yToLowerPipe / 200.0
+ *             retour[3] = self.vy / 5.0             # <<<<<<<<<<<<<<
+ *             retour[4] = self.yToTop / 200.0
+ *             retour[5] = self.yToBottom / 200.0
  */
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->vy); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble((__pyx_v_self->vy / 5.0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (unlikely(__Pyx_SetItemInt(__pyx_v_retour, 3, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "interface.pyx":61
- *             retour[2] = self.yToLowerPipe
- *             retour[3] = self.vy
- *             retour[4] = self.yToTop             # <<<<<<<<<<<<<<
- *             retour[5] = self.yToBottom
+ *             retour[2] = self.yToLowerPipe / 200.0
+ *             retour[3] = self.vy / 5.0
+ *             retour[4] = self.yToTop / 200.0             # <<<<<<<<<<<<<<
+ *             retour[5] = self.yToBottom / 200.0
  *         else :
  */
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->yToTop); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble((__pyx_v_self->yToTop / 200.0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (unlikely(__Pyx_SetItemInt(__pyx_v_retour, 4, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "interface.pyx":62
- *             retour[3] = self.vy
- *             retour[4] = self.yToTop
- *             retour[5] = self.yToBottom             # <<<<<<<<<<<<<<
+ *             retour[3] = self.vy / 5.0
+ *             retour[4] = self.yToTop / 200.0
+ *             retour[5] = self.yToBottom / 200.0             # <<<<<<<<<<<<<<
  *         else :
  *             treatingImage(self.image)
  */
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->yToBottom); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble((__pyx_v_self->yToBottom / 200.0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (unlikely(__Pyx_SetItemInt(__pyx_v_retour, 5, __pyx_t_3, long, 1, __Pyx_PyInt_From_long, 0, 0, 1) < 0)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -2139,7 +2139,7 @@ static PyObject *__pyx_pf_9interface_4Game_10game_step(struct __pyx_obj_9interfa
   }
 
   /* "interface.pyx":64
- *             retour[5] = self.yToBottom
+ *             retour[5] = self.yToBottom / 200.0
  *         else :
  *             treatingImage(self.image)             # <<<<<<<<<<<<<<
  *             retour = self.convertImage()

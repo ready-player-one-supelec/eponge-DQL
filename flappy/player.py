@@ -25,7 +25,7 @@ class Player :
     def initializeProperties(self) :
         # Q Network Constants
         self.imageSize = 80
-        self.synchronisationPeriod = 5000
+        self.synchronisationPeriod = 500
 
         # Constants
         self.explorationRate = 0.999
@@ -39,17 +39,17 @@ class Player :
 
         # Training
         self.trainingData = []
-        self.maxBatchSize = 50000
+        self.maxBatchSize = 10000
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
         self.miniBatch = []
-        self.startTraining = 3000
+        self.startTraining = 1000
         # the training will happen iff we have more than startTraining data in trainingData
 
         print("Properties initialized")
 
     def training(self, step) :
-        if not self.trainable or len(self.trainingData) < self.startTraining or step % 5 == 0:
+        if not self.trainable or len(self.trainingData) < self.startTraining:
             return
         if step % self.synchronisationPeriod == 0 :
             self.synchronise()
@@ -81,7 +81,7 @@ class Player :
         print(self.score)
 
     def addStateSequence(self, action, reward, nS) :
-        nS = np.transpose(nS, [1, 2, 0])
+        # nS = np.transpose(nS, [1, 2, 0])
         if self.trainable :
             self.trainingData.append([self.buffer, action, reward, nS])
             while len(self.trainingData) > self.maxBatchSize :

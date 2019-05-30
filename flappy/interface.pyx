@@ -54,12 +54,12 @@ cdef class Game :
         if self.returnFeatures :
             updateFeatures(&self.xToPipe, &self.yToUpperPipe, &self.yToLowerPipe, &self.vy, &self.yToTop, &self.yToBottom)
             retour = np.zeros(6)
-            retour[0] = self.xToPipe
-            retour[1] = self.yToUpperPipe
-            retour[2] = self.yToLowerPipe
-            retour[3] = self.vy
-            retour[4] = self.yToTop
-            retour[5] = self.yToBottom
+            retour[0] = self.xToPipe / 300.0
+            retour[1] = self.yToUpperPipe / 200.0
+            retour[2] = self.yToLowerPipe / 200.0
+            retour[3] = self.vy / 5.0
+            retour[4] = self.yToTop / 200.0
+            retour[5] = self.yToBottom / 200.0
         else :
             treatingImage(self.image)
             retour = self.convertImage()

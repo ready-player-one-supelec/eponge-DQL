@@ -47,7 +47,7 @@ void initBoule(Boule *boule) {
 
 void reset_flappy(int difficulty) {
     initBoule(&game.boule);
-    game.tuyaux[0].x = 700 ;
+    game.tuyaux[0].x = 300 ;
     game.tuyaux[0].y = randCenter();
     game.score = 0;
     game.stepsSurvived = 0;

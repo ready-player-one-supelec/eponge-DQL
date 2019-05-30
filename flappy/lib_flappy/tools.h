@@ -19,21 +19,26 @@
 #define BOULE_XAXIS 100
 
 // IMAGE GIVEN TO THE AI
-#define DOWNSAMPLING_FACTOR 10
+#define DOWNSAMPLING_FACTOR 20
 #define X_MIN BOULE_XAXIS
 #define X_MAX (BOULE_XAXIS + PAS_ENTRE_TUYAU)
 #define X_SIZE ((X_MAX - X_MIN) / DOWNSAMPLING_FACTOR)
 #define Y_SIZE (HAUTEUR_FENETRE / DOWNSAMPLING_FACTOR)
 
-#define SKY_RED 135
-#define SKY_GREEN 206
-#define SKY_BLUE 235
+#define SKY_RED 100
+#define SKY_GREEN 170
+#define SKY_BLUE 200
 
 enum {WAIT, JUMP};
+enum {NO_PIPE, LOWER_PIPE, WHOLE_PIPE};
 
 typedef struct Boule Boule;
 struct Boule {
-    SDL_Surface *image;
+    SDL_Surface **image;
+    int n_images;
+    int currentImage;
+    int frame_step;
+    int frame_counter;
     float x;
     float vx;
     float y;
@@ -45,6 +50,7 @@ typedef struct Tuyau Tuyau;
 struct Tuyau {
     float x;
     float y;
+    int number;
 };
 
 typedef struct Font Font;
@@ -59,7 +65,8 @@ typedef struct Game Game;
 struct Game {
     SDL_Surface *ecran;
     SDL_Surface *background;
-    SDL_Surface *pipe;
+    SDL_Surface **pipe;
+    int n_pipes;
     Boule boule;
     Font font;
     int score;
@@ -68,6 +75,7 @@ struct Game {
     char skyColorGrayScale;
     int stepsSurvived;
     int updatedScore;
+    int difficulty;
 };
 
 int min(int v1, int v2);

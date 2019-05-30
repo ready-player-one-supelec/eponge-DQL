@@ -4,6 +4,7 @@
 import tensorflow as tf
 import random
 import time
+import numpy as np
 from network import DQN
 
 
@@ -24,7 +25,7 @@ class Player :
     def initializeProperties(self) :
         # Q Network Constants
         self.imageSize = 80
-        self.synchronisationPeriod = 1000
+        self.synchronisationPeriod = 500
 
         # Constants
         self.explorationRate = 0.999
@@ -42,13 +43,13 @@ class Player :
         # trainingData will not have more than maxBatchSize elements
         self.miniBatchSize = 32
         self.miniBatch = []
-        self.startTraining = 500
+        self.startTraining = 1000
         # the training will happen iff we have more than startTraining data in trainingData
 
         print("Properties initialized")
 
     def training(self, step) :
-        if not self.trainable or len(self.trainingData) < self.startTraining or step % 5 == 0:
+        if not self.trainable or len(self.trainingData) < self.startTraining:
             return
         if step % self.synchronisationPeriod == 0 :
             self.synchronise()
@@ -61,7 +62,7 @@ class Player :
         if self.exploiting or random.random() > self.explorationRate :
             return self.QNetwork.evaluate(self.buffer)
         else :
-            return random.randrange(2)
+            return int(random.random() < 0.9)
 
     def updateConstants(self, learningRate = None, explorationRate = None) :
         self.QNetwork.updateConstants(learningRate)
@@ -80,6 +81,7 @@ class Player :
         print(self.score)
 
     def addStateSequence(self, action, reward, nS) :
+        # nS = np.transpose(nS, [1, 2, 0])
         if self.trainable :
             self.trainingData.append([self.buffer, action, reward, nS])
             while len(self.trainingData) > self.maxBatchSize :

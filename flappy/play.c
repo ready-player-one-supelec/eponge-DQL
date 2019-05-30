@@ -5,7 +5,7 @@
 
 int main (int argc, char *argv[]) {
 
-    init_flappy(1);
+    init_flappy(1, 1);
     run_flappy();
     exit_flappy();
     return EXIT_SUCCESS;

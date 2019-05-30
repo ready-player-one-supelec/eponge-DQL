@@ -1,7 +1,7 @@
 #pragma once
 
-void reset_flappy(void);
-char* init_flappy(int display);
+void reset_flappy(int difficulty);
+char* init_flappy(int display, int difficulty);
 void exit_flappy(void);
 void run_flappy(void);
 int step_flappy(int movement, float *reward);

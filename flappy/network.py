@@ -19,17 +19,31 @@ class DQN :
     def initializeProperties(self) :
 
         self.learningRate = 0.001
-        self.discountFactor = 0.9
+        self.discountFactor = 0.99
 
     def createQNetwork(self, imageSize) :
         # input layer
+        # self.x = tf.placeholder(tf.float32, [None, 22, 15, 2])
         self.x = tf.placeholder(tf.float32, [None, 6])
         # expected output placeholder
         self.y = tf.placeholder(tf.float32)
 
-        self.layer1_dense = tf.layers.dense(self.x, 256)
+        # first convolutional layer
+        # self.layer1_conv = tf.layers.conv2d(inputs=self.x / 255,
+                                            # filters=64,
+                                            # kernel_size=[2, 3],
+                                            # strides=[2, 3],
+                                            # activation=tf.nn.relu)
+
+        # self.layer1_dense = tf.layers.dense(tf.layers.flatten(self.layer1_conv), 512)
+        # self.layer1_dense = tf.nn.relu(self.layer1_dense)
+
+
+        self.layer1_dense = tf.layers.dense(self.x, 16)
         self.layer1_dense = tf.nn.relu(self.layer1_dense)
 
+        #self.layer2_dense = tf.layers.dense(self.layer1_dense, 16)
+        #self.layer2_dense = tf.nn.relu(self.layer2_dense)
         # output layer
         self.y_ = tf.layers.dense(self.layer1_dense, 2)
 
@@ -40,9 +54,9 @@ class DQN :
 
         # used to compute the expected output
         self.rewards = tf.placeholder(tf.float32)
-        self.zeros = tf.fill([self.miniBatchSize], 0.0)
+        self.zeros = tf.fill([self.miniBatchSize], -1.0)
         self.discountFactorPlaceHolder = tf.constant(self.discountFactor)
-        self.expectedOutput = tf.where(tf.not_equal(self.rewards, self.zeros), self.rewards, self.discountFactorPlaceHolder * tf.math.reduce_max(self.y_, axis=1))
+        self.expectedOutput = tf.where(tf.equal(self.rewards, self.zeros), self.rewards, self.discountFactorPlaceHolder * tf.math.reduce_max(self.y_, axis=1))
         # this filter allows us to ignore the discount factor iff the game is over
 
         print("Q Network created")

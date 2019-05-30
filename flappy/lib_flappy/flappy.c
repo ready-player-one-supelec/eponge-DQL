@@ -10,7 +10,7 @@
 #include "flappy.h"
 #include "game.h"
 
-char* init_flappy(int display) {
+char* init_flappy(int display, int difficulty) {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
     initFont(&game.font);
@@ -27,11 +27,26 @@ char* init_flappy(int display) {
         game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, (X_MAX - X_MIN), game.ecran->h, 32, 0, 0, 0, 0);
     }
     SDL_FillRect(game.background, NULL, skyColor);
-    game.pipe = SDL_CreateRGBSurface(SDL_HWSURFACE, LARGEUR_TUYAU, HAUTEUR_FENETRE, 32, 0, 0, 0, 0);
-    SDL_FillRect(game.pipe, NULL, pipeColor);
-    game.boule.image = IMG_Load("Images/boule.png");
-    game.boule.height = game.boule.image->w;
-    reset_flappy();
+
+    game.n_pipes = 3;
+    game.pipe = (SDL_Surface **) malloc(game.n_pipes * sizeof(SDL_Surface *));
+    char name[100];
+    for (int i = 0; i < game.n_pipes; i++) {
+        snprintf(name, sizeof(name), "Images/brick-wall-%d.png", i);
+        game.pipe[i] = IMG_Load(name);
+    }
+
+    game.boule.frame_counter = 0;
+    game.boule.frame_step = 3;
+    game.boule.n_images = 4;
+    game.boule.currentImage = 0;
+    game.boule.image = (SDL_Surface **) malloc(game.boule.n_images * sizeof(SDL_Surface *));
+    for (int i = 0; i < game.boule.n_images; i++) {
+        snprintf(name, sizeof(name), "Images/bird-%d.png", i);
+        game.boule.image[i] = IMG_Load(name);
+    }
+    game.boule.height = game.boule.image[0]->w;
+    reset_flappy(difficulty);
 
     char *pointeur = NULL;
     pointeur = (char *)malloc((X_SIZE * Y_SIZE + 1)* sizeof(char));
@@ -45,13 +60,14 @@ void initBoule(Boule *boule) {
     boule->vx = 3;
 }
 
-void reset_flappy(void) {
+void reset_flappy(int difficulty) {
     initBoule(&game.boule);
-    game.tuyaux[0].x = 700 ;
+    game.tuyaux[0].x = 300 ;
     game.tuyaux[0].y = randCenter();
     game.score = 0;
     game.stepsSurvived = 0;
     game.updatedScore = 1;
+    game.difficulty = difficulty;
 
     for (int i = 1; i < NOMBRE_TUYAUX ; i++) {
         nextTuyau(&game.tuyaux[i], &game.tuyaux[(i-1) % NOMBRE_TUYAUX]);
@@ -64,8 +80,14 @@ void changeDisplay(int display) {
 
 void exit_flappy(void) {
     SDL_FreeSurface(game.background);
-    SDL_FreeSurface(game.boule.image);
-    SDL_FreeSurface(game.pipe);
+    for (int i = 0; i < game.boule.n_images; i++) {
+        SDL_FreeSurface(game.boule.image[i]);
+    }
+    for (int i = 0; i < game.n_pipes; i++) {
+        SDL_FreeSurface(game.pipe[i]);
+    }
+    free(game.boule.image);
+    free(game.pipe);
     TTF_CloseFont(game.font.font);
     TTF_Quit();
 }
@@ -74,8 +96,8 @@ void initFont(Font *font) {
     font->font = NULL;
     font->font = TTF_OpenFont("Sugar Addiction - TTF.ttf", 30);
     font->color.r = 255;
-    font->color.g = 0;
-    font->color.b = 0;
+    font->color.g = 255;
+    font->color.b = 255;
     font->textSurface = NULL;
 }
 

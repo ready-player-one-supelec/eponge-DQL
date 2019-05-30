@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/bin/python3 -u
 # -*- coding: utf-8 -*-
 
 from interface import *
@@ -17,52 +17,54 @@ def setOfGames(player, isTraining, nbOfGames, display) :
 
     player.setBehaviour(isTraining)
 
-    with Game(display = display, returnFeatures = 1) as game :
+    with Game(display = display, returnFeatures = 1, difficulty = 2) as game :
         currentStep = 0
-        i = 0
-        observation, reward, done = game.game_step(0)
-        player.buffer = observation
 
-        while currentStep < 3000000 and i < nbOfGames:
+        for i in range(nbOfGames) :
             if isTraining :
-                if currentStep < 10000 :
-                    player.updateConstants(explorationRate= 0.1 - 0.0999 * currentStep / 10000)
+                tmp = 0.5 * 0.99**i
+                if tmp > 0.01 :
+                    player.updateConstants(explorationRate= tmp)
+                else :
+                    player.updateConstants(explorationRate= 0.01)
 
-            action = player.play()
-            observation, reward, done = game.game_step(action)
+            done = False
 
-            if player.score >= 50 :
-                game.reset()
-                done = True
+            observation, reward, done = game.game_step(0)
+            player.buffer = observation
 
-            player.addStateSequence(action, reward, observation)
-            player.updateStats(reward)
-            currentStep += 1
+            tmp = currentStep
+            while not done :
+                player.training(currentStep)
+                action = player.play()
+                observation, reward, done = game.game_step(action)
 
-            if done :
-                i += 1
-                print(text + "Game : {} ; Step : {} ; Reward : {}".format(i, currentStep, reward))
-                player.displayStats()
-                player.resetStats()
-                if i % 100 == 0 or player.score >= 50 :
-                    player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = i)
-                observation, reward, done = game.game_step(0)
-                player.buffer = observation
+                if isTraining and player.score >= 10 :
+                    game.reset()
+                    done = True
 
-            player.training(currentStep)
+                player.addStateSequence(action, reward, observation)
+                player.updateStats(reward)
+                currentStep += 1
 
+            print(text + "Game : {} ; Steps survived : {}".format(i+1, currentStep - tmp))
+            player.displayStats()
+            if isTraining and player.score >= 10 :
+                player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = i)
+                # break
+            player.resetStats()
 
 def testing(display = 0) :
-    network2restore = 4000
+    network2restore = 2988
     nbOfGames = 10
     player.restoreQNetwork("./Saved_Networks/test.ckpt", global_step = network2restore)
     setOfGames(player = player, isTraining = False, nbOfGames = nbOfGames, display = display)
 
 def training() :
-    nbOfGames = 1000000
+    nbOfGames = 5000
     setOfGames(player = player, isTraining = True, nbOfGames = nbOfGames, display = 0)
-    # player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
+    player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = nbOfGames)
     print("\n{}\n".format(time.time() - t))
 
-training()
-# testing(1)
+# training()
+testing(1)

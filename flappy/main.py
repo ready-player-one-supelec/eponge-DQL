@@ -29,12 +29,7 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                     player.updateConstants(explorationRate= 0.01)
 
             done = False
-            # observations = []
-            # for _ in range(2) :
-            #     observation, reward, done = game.game_step(0)
-            #     observations.append(observation)
-            #
-            # player.buffer = np.transpose(observations, [1, 2, 0])
+
             observation, reward, done = game.game_step(0)
             player.buffer = observation
 
@@ -43,10 +38,8 @@ def setOfGames(player, isTraining, nbOfGames, display) :
                 player.training(currentStep)
                 action = player.play()
                 observation, reward, done = game.game_step(action)
-                # observations.pop(0)
-                # observations.append(observation)
 
-                if player.score >= 200 :
+                if isTraining and player.score >= 10 :
                     game.reset()
                     done = True
 
@@ -56,9 +49,9 @@ def setOfGames(player, isTraining, nbOfGames, display) :
 
             print(text + "Game : {} ; Steps survived : {}".format(i+1, currentStep - tmp))
             player.displayStats()
-            if player.score >= 10 :
+            if isTraining and player.score >= 10 :
                 player.saveQNetwork("./Saved_Networks/test.ckpt", global_step = i)
-            #    break
+                # break
             player.resetStats()
 
 def testing(display = 0) :

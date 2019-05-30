@@ -42,11 +42,12 @@ int step_flappy(int movement, float *reward) {
     if (movement == JUMP) {
         game.boule.vy = IMPULSE;
     }
-
+    int t1 = SDL_GetTicks(), t2;
     int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score, reward, game.difficulty);
     draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display, game.difficulty);
+    t2 = SDL_GetTicks();
     if (game.display){
-        SDL_Delay(20);
+        SDL_Delay(20 - t2 + t1);
     }
     return continuer;
 }

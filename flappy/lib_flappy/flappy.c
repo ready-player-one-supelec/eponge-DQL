@@ -29,8 +29,18 @@ char* init_flappy(int display, int difficulty) {
     SDL_FillRect(game.background, NULL, skyColor);
     game.pipe = SDL_CreateRGBSurface(SDL_HWSURFACE, LARGEUR_TUYAU, HAUTEUR_FENETRE, 32, 0, 0, 0, 0);
     SDL_FillRect(game.pipe, NULL, pipeColor);
-    game.boule.image = IMG_Load("Images/boule.png");
-    game.boule.height = game.boule.image->w;
+
+    game.boule.frame_counter = 0;
+    game.boule.frame_step = 3;
+    game.boule.n_images = 4;
+    game.boule.currentImage = 0;
+    game.boule.image = (SDL_Surface **) malloc(game.boule.n_images * sizeof(SDL_Surface *));
+    char name[100];
+    for (int i = 0; i < game.boule.n_images; i++) {
+        snprintf(name, sizeof(name), "Images/bird-%d.png", i);
+        game.boule.image[i] = IMG_Load(name);
+    }
+    game.boule.height = game.boule.image[0]->w;
     reset_flappy(difficulty);
 
     char *pointeur = NULL;
@@ -65,7 +75,10 @@ void changeDisplay(int display) {
 
 void exit_flappy(void) {
     SDL_FreeSurface(game.background);
-    SDL_FreeSurface(game.boule.image);
+    for (int i = 0; i < game.boule.n_images; i++) {
+        SDL_FreeSurface(game.boule.image[i]);
+    }
+    free(game.boule.image);
     SDL_FreeSurface(game.pipe);
     TTF_CloseFont(game.font.font);
     TTF_Quit();

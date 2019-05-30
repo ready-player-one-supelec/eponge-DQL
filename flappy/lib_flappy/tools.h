@@ -34,7 +34,11 @@ enum {NO_PIPE, LOWER_PIPE, WHOLE_PIPE};
 
 typedef struct Boule Boule;
 struct Boule {
-    SDL_Surface *image;
+    SDL_Surface **image;
+    int n_images;
+    int currentImage;
+    int frame_step;
+    int frame_counter;
     float x;
     float vx;
     float y;

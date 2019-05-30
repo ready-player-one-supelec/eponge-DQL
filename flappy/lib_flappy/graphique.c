@@ -15,7 +15,11 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
 
     position.x = boule->x;
     position.y = boule->y;
-    SDL_BlitSurface(boule->image, NULL, ecran, &position);
+    SDL_BlitSurface(boule->image[boule->currentImage], NULL, ecran, &position);
+    boule->frame_counter++;
+    if (boule->frame_counter % boule->frame_step == 0) {
+        boule->currentImage = (boule->currentImage + 1) % boule->n_images;
+    }
 
     if (difficulty != NO_PIPE) {
         for (int i = 0; i < NOMBRE_TUYAUX; i++) {
@@ -31,7 +35,7 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
         if (font->textSurface != NULL) {
             SDL_FreeSurface(font->textSurface);
         }
-        sprintf(font->text, "Score : %d", score);
+        snprintf(font->text, sizeof(font->text), "Score : %d", score);
         font->textSurface = TTF_RenderText_Blended(font->font, font->text, font->color);
         game.updatedScore = 0;
     }
@@ -59,7 +63,7 @@ void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau, SDL_Rect *position, SDL_Rect *p
         position->y = 0;
         SDL_BlitSurface(game.pipe, pipePart, ecran, position);
     }
-    
+
     pipePart->h = HAUTEUR_FENETRE - tuyau->y - HAUTEUR_TROU / 2;
     position->y = tuyau->y + HAUTEUR_TROU / 2;
     SDL_BlitSurface(game.pipe, pipePart, ecran, position);

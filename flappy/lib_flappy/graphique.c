@@ -52,6 +52,7 @@ void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau, SDL_Rect *position, SDL_Rect *p
         pipePart->w = LARGEUR_TUYAU;
     } else if (tuyau->x < 0) {
         pipePart->w = LARGEUR_TUYAU + tuyau->x;
+        pipePart->x = - tuyau->x;
     } else {
         pipePart->w = LARGEUR_FENETRE - tuyau->x;
     }
@@ -61,12 +62,13 @@ void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau, SDL_Rect *position, SDL_Rect *p
     if (difficulty == WHOLE_PIPE) {
         pipePart->h = tuyau->y - HAUTEUR_TROU / 2;
         position->y = 0;
-        SDL_BlitSurface(game.pipe, pipePart, ecran, position);
+        SDL_BlitSurface(game.pipe[tuyau->number], pipePart, ecran, position);
     }
 
     pipePart->h = HAUTEUR_FENETRE - tuyau->y - HAUTEUR_TROU / 2;
     position->y = tuyau->y + HAUTEUR_TROU / 2;
-    SDL_BlitSurface(game.pipe, pipePart, ecran, position);
+    SDL_BlitSurface(game.pipe[tuyau->number], pipePart, ecran, position);
+    pipePart->x = 0;
 }
 
 Uint32 getpixel(SDL_Surface *surface, int x, int y) {

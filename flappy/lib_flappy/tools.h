@@ -25,9 +25,9 @@
 #define X_SIZE ((X_MAX - X_MIN) / DOWNSAMPLING_FACTOR)
 #define Y_SIZE (HAUTEUR_FENETRE / DOWNSAMPLING_FACTOR)
 
-#define SKY_RED 135
-#define SKY_GREEN 206
-#define SKY_BLUE 235
+#define SKY_RED 100
+#define SKY_GREEN 170
+#define SKY_BLUE 200
 
 enum {WAIT, JUMP};
 enum {NO_PIPE, LOWER_PIPE, WHOLE_PIPE};
@@ -50,6 +50,7 @@ typedef struct Tuyau Tuyau;
 struct Tuyau {
     float x;
     float y;
+    int number;
 };
 
 typedef struct Font Font;
@@ -64,7 +65,8 @@ typedef struct Game Game;
 struct Game {
     SDL_Surface *ecran;
     SDL_Surface *background;
-    SDL_Surface *pipe;
+    SDL_Surface **pipe;
+    int n_pipes;
     Boule boule;
     Font font;
     int score;

@@ -143,4 +143,5 @@ void updateValues(Boule *boule, Tuyau tuyaux[]) {
 void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau) {
     tuyau->x = previousTuyau->x + PAS_ENTRE_TUYAU;
     tuyau->y = randCenter();
+    tuyau->number = random() % game.n_pipes;
 }

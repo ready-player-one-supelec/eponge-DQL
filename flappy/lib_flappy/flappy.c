@@ -27,15 +27,20 @@ char* init_flappy(int display, int difficulty) {
         game.background = SDL_CreateRGBSurface(SDL_HWSURFACE, (X_MAX - X_MIN), game.ecran->h, 32, 0, 0, 0, 0);
     }
     SDL_FillRect(game.background, NULL, skyColor);
-    game.pipe = SDL_CreateRGBSurface(SDL_HWSURFACE, LARGEUR_TUYAU, HAUTEUR_FENETRE, 32, 0, 0, 0, 0);
-    SDL_FillRect(game.pipe, NULL, pipeColor);
+
+    game.n_pipes = 3;
+    game.pipe = (SDL_Surface **) malloc(game.n_pipes * sizeof(SDL_Surface *));
+    char name[100];
+    for (int i = 0; i < game.n_pipes; i++) {
+        snprintf(name, sizeof(name), "Images/brick-wall-%d.png", i);
+        game.pipe[i] = IMG_Load(name);
+    }
 
     game.boule.frame_counter = 0;
     game.boule.frame_step = 3;
     game.boule.n_images = 4;
     game.boule.currentImage = 0;
     game.boule.image = (SDL_Surface **) malloc(game.boule.n_images * sizeof(SDL_Surface *));
-    char name[100];
     for (int i = 0; i < game.boule.n_images; i++) {
         snprintf(name, sizeof(name), "Images/bird-%d.png", i);
         game.boule.image[i] = IMG_Load(name);
@@ -78,8 +83,11 @@ void exit_flappy(void) {
     for (int i = 0; i < game.boule.n_images; i++) {
         SDL_FreeSurface(game.boule.image[i]);
     }
+    for (int i = 0; i < game.n_pipes; i++) {
+        SDL_FreeSurface(game.pipe[i]);
+    }
     free(game.boule.image);
-    SDL_FreeSurface(game.pipe);
+    free(game.pipe);
     TTF_CloseFont(game.font.font);
     TTF_Quit();
 }
@@ -88,8 +96,8 @@ void initFont(Font *font) {
     font->font = NULL;
     font->font = TTF_OpenFont("Sugar Addiction - TTF.ttf", 30);
     font->color.r = 255;
-    font->color.g = 0;
-    font->color.b = 0;
+    font->color.g = 255;
+    font->color.b = 255;
     font->textSurface = NULL;
 }
 

@@ -16,7 +16,7 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     for (int i = 0; i < NOMBRE_NUAGES; i++) {
         position.x = clouds[i].x;
         position.y = clouds[i].y;
-        SDL_BlitSurface(game.cloud, NULL, ecran, &position);
+        SDL_BlitSurface(game.cloud[clouds[i].number], NULL, ecran, &position);
     }
 
     position.x = boule->x;

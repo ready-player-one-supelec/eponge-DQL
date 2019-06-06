@@ -76,7 +76,7 @@ struct Game {
     SDL_Surface *ecran;
     SDL_Surface *background;
     SDL_Surface **pipe;
-    SDL_Surface *cloud;
+    SDL_Surface **cloud;
     int n_pipes;
     int n_clouds;
     Boule boule;

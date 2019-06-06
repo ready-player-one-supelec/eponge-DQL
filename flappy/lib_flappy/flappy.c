@@ -36,8 +36,12 @@ char* init_flappy(int display, int difficulty) {
         game.pipe[i] = IMG_Load(name);
     }
 
-    game.cloud = IMG_Load("Images/cloud-0.png");
-    game.n_clouds = 1;
+    game.n_clouds = 14;
+    game.cloud = (SDL_Surface **) malloc(game.n_clouds * sizeof(SDL_Surface *));
+    for (int i = 0; i < game.n_clouds; i++) {
+        snprintf(name, sizeof(name), "Images/cloud-%d.png", i);
+        game.cloud[i] = IMG_Load(name);
+    }
 
     game.boule.frame_counter = 0;
     game.boule.frame_step = 3;
@@ -72,7 +76,7 @@ void reset_flappy(int difficulty) {
     game.clouds[0].y = random() % (HAUTEUR_FENETRE);
     game.clouds[0].number = random() % game.n_clouds;
     game.clouds[0].vx = (random() % 20) / 10.0;
-    game.clouds[0].width = game.cloud->w;
+    game.clouds[0].width = game.cloud[game.clouds[0].number]->w;
     game.score = 0;
     game.stepsSurvived = 0;
     game.updatedScore = 1;
@@ -98,6 +102,10 @@ void exit_flappy(void) {
     for (int i = 0; i < game.n_pipes; i++) {
         SDL_FreeSurface(game.pipe[i]);
     }
+    for (int i = 0; i < game.n_clouds; i++) {
+        SDL_FreeSurface(game.cloud[i]);
+    }
+    free(game.cloud);
     free(game.boule.image);
     free(game.pipe);
     TTF_CloseFont(game.font.font);

@@ -160,5 +160,5 @@ void nextCloud(Cloud *cloud) {
     cloud->y = random() % HAUTEUR_FENETRE - 50;
     cloud->number = random() % game.n_clouds;
     cloud->vx = (5 + random() % 10) / 10.0;
-    cloud->width = game.cloud->w;
+    cloud->width = game.cloud[cloud->number]->w;
 }

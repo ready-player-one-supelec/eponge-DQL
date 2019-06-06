@@ -82,7 +82,7 @@ void reset_flappy(int difficulty) {
         nextTuyau(&game.tuyaux[i], &game.tuyaux[(i-1) % NOMBRE_TUYAUX]);
     }
     for (int i = 1; i < NOMBRE_NUAGES; i++) {
-        nextCloud(&game.clouds[i], &game.clouds[(i-1) % NOMBRE_NUAGES]);
+        nextCloud(&game.clouds[i]);
     }
 }
 

@@ -69,7 +69,7 @@ int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *re
         }
         for (i = 0; i < NOMBRE_NUAGES; i++) {
             if (clouds[i].x < -clouds[i].width) {
-                nextCloud(&clouds[i], &clouds[(NOMBRE_NUAGES + i-1) % NOMBRE_NUAGES]);
+                nextCloud(&clouds[i]);
             }
         }
         for (i = 0; i < NOMBRE_TUYAUX; i++) {
@@ -155,10 +155,10 @@ void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau) {
     tuyau->number = random() % game.n_pipes;
 }
 
-void nextCloud(Cloud *cloud, Cloud *previousCloud) {
-    cloud->x = previousCloud->x + random() % (200);
-    cloud->y = 20 + random() % (HAUTEUR_FENETRE - 100);
+void nextCloud(Cloud *cloud) {
+    cloud->x = LARGEUR_FENETRE + random() % (200);
+    cloud->y = random() % HAUTEUR_FENETRE - 50;
     cloud->number = random() % game.n_clouds;
-    cloud->vx = (random() % 20) / 10.0;
+    cloud->vx = (5 + random() % 10) / 10.0;
     cloud->width = game.cloud->w;
 }

@@ -4,7 +4,7 @@
 #include "tools.h"
 #include "graphique.h"
 
-void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score, int display, int difficulty) {
+void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score, int display, int difficulty, Cloud clouds[]) {
     SDL_Rect position, pipePart;
     pipePart.x = 0;
     pipePart.y = 0;
@@ -12,6 +12,12 @@ void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyau
     position.x = game.display ? 0 : X_MIN;
     position.y = 0;
     SDL_BlitSurface(background, NULL, ecran, &position);
+
+    for (int i = 0; i < NOMBRE_NUAGES; i++) {
+        position.x = clouds[i].x;
+        position.y = clouds[i].y;
+        SDL_BlitSurface(game.cloud, NULL, ecran, &position);
+    }
 
     position.x = boule->x;
     position.y = boule->y;

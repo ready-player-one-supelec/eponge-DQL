@@ -43,8 +43,8 @@ int step_flappy(int movement, float *reward) {
         game.boule.vy = IMPULSE;
     }
     int t1 = SDL_GetTicks(), t2;
-    int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score, reward, game.difficulty);
-    draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display, game.difficulty);
+    int continuer = move(game.ecran, &game.boule, game.tuyaux, &game.score, reward, game.difficulty, game.clouds);
+    draw(game.ecran, game.background, &game.boule, game.tuyaux, &game.font, game.score, game.display, game.difficulty, game.clouds);
     t2 = SDL_GetTicks();
     if (game.display){
         SDL_Delay(20 - t2 + t1);
@@ -52,8 +52,8 @@ int step_flappy(int movement, float *reward) {
     return continuer;
 }
 
-int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *reward, int difficulty) {
-    updateValues(boule, tuyaux);
+int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *reward, int difficulty, Cloud clouds[]) {
+    updateValues(boule, tuyaux, clouds);
     *reward = 0;
     if (death(ecran, boule, tuyaux, difficulty)) {
         *reward = -1.0;
@@ -65,6 +65,11 @@ int move(SDL_Surface *ecran, Boule *boule, Tuyau tuyaux[], int *score, float *re
         for (i = 0; i < NOMBRE_TUYAUX; i++) {
             if (tuyaux[i].x < -LARGEUR_TUYAU) {
                 nextTuyau(&tuyaux[i], &tuyaux[(NOMBRE_TUYAUX + i-1) % NOMBRE_TUYAUX]);
+            }
+        }
+        for (i = 0; i < NOMBRE_NUAGES; i++) {
+            if (clouds[i].x < -clouds[i].width) {
+                nextCloud(&clouds[i], &clouds[(NOMBRE_NUAGES + i-1) % NOMBRE_NUAGES]);
             }
         }
         for (i = 0; i < NOMBRE_TUYAUX; i++) {
@@ -132,11 +137,14 @@ int collision(Boule boule, Tuyau tuyau, int difficulty) {
     }
 }
 
-void updateValues(Boule *boule, Tuyau tuyaux[]) {
+void updateValues(Boule *boule, Tuyau tuyaux[], Cloud clouds[]) {
     boule->vy += GRAVITY;
     boule->y += boule->vy;
     for (int i = 0; i < NOMBRE_TUYAUX; i++) {
         tuyaux[i].x -= boule->vx;
+    }
+    for (int i = 0; i < NOMBRE_NUAGES; i++) {
+        clouds[i].x -= clouds[i].vx;
     }
 }
 
@@ -145,4 +153,12 @@ void nextTuyau(Tuyau *tuyau, Tuyau *previousTuyau) {
     tuyau->x = previousTuyau->x + PAS_ENTRE_TUYAU;
     tuyau->y = randCenter();
     tuyau->number = random() % game.n_pipes;
+}
+
+void nextCloud(Cloud *cloud, Cloud *previousCloud) {
+    cloud->x = previousCloud->x + random() % (200);
+    cloud->y = 20 + random() % (HAUTEUR_FENETRE - 100);
+    cloud->number = random() % game.n_clouds;
+    cloud->vx = (random() % 20) / 10.0;
+    cloud->width = game.cloud->w;
 }

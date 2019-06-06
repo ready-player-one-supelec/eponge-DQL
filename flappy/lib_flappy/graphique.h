@@ -1,6 +1,6 @@
 #pragma once
 
-void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score, int display, int difficulty);
+void draw(SDL_Surface *ecran, SDL_Surface *background, Boule *boule, Tuyau tuyaux[], Font *font, int score, int display, int difficulty, Cloud clouds[]);
 void drawTuyau(SDL_Surface *ecran, Tuyau *tuyau, SDL_Rect *position, SDL_Rect *pipePart, int difficulty);
 Uint32 getpixel(SDL_Surface *surface, int x, int y);
 void setPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);

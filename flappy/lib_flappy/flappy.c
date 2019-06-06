@@ -36,6 +36,9 @@ char* init_flappy(int display, int difficulty) {
         game.pipe[i] = IMG_Load(name);
     }
 
+    game.cloud = IMG_Load("Images/cloud-0.png");
+    game.n_clouds = 1;
+
     game.boule.frame_counter = 0;
     game.boule.frame_step = 3;
     game.boule.n_images = 4;
@@ -64,6 +67,12 @@ void reset_flappy(int difficulty) {
     initBoule(&game.boule);
     game.tuyaux[0].x = 300 ;
     game.tuyaux[0].y = randCenter();
+    game.tuyaux[0].number = random() % game.n_pipes;
+    game.clouds[0].x = random() % (LARGEUR_FENETRE / 2);
+    game.clouds[0].y = random() % (HAUTEUR_FENETRE);
+    game.clouds[0].number = random() % game.n_clouds;
+    game.clouds[0].vx = (random() % 20) / 10.0;
+    game.clouds[0].width = game.cloud->w;
     game.score = 0;
     game.stepsSurvived = 0;
     game.updatedScore = 1;
@@ -71,6 +80,9 @@ void reset_flappy(int difficulty) {
 
     for (int i = 1; i < NOMBRE_TUYAUX ; i++) {
         nextTuyau(&game.tuyaux[i], &game.tuyaux[(i-1) % NOMBRE_TUYAUX]);
+    }
+    for (int i = 1; i < NOMBRE_NUAGES; i++) {
+        nextCloud(&game.clouds[i], &game.clouds[(i-1) % NOMBRE_NUAGES]);
     }
 }
 

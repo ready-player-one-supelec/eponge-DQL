@@ -17,6 +17,7 @@
 #define ESPACE_INTER_TUYAU (PAS_ENTRE_TUYAU+LARGEUR_TUYAU)
 #define NOMBRE_TUYAUX (2+(LARGEUR_FENETRE/ESPACE_INTER_TUYAU))
 #define BOULE_XAXIS 100
+#define NOMBRE_NUAGES 7
 
 // IMAGE GIVEN TO THE AI
 #define DOWNSAMPLING_FACTOR 20
@@ -53,6 +54,15 @@ struct Tuyau {
     int number;
 };
 
+typedef struct Cloud Cloud;
+struct Cloud {
+    float x;
+    float y;
+    int number;
+    float vx;
+    int width;
+};
+
 typedef struct Font Font;
 struct Font {
     SDL_Color color;
@@ -66,11 +76,14 @@ struct Game {
     SDL_Surface *ecran;
     SDL_Surface *background;
     SDL_Surface **pipe;
+    SDL_Surface *cloud;
     int n_pipes;
+    int n_clouds;
     Boule boule;
     Font font;
     int score;
     Tuyau tuyaux[NOMBRE_TUYAUX];
+    Cloud clouds[NOMBRE_NUAGES];
     int display;
     char skyColorGrayScale;
     int stepsSurvived;
